@@ -11,7 +11,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 `https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util`
 
 ## ◆使い方
-（Releasesからスクリプトのunitypackageをダウンロードしてインポート）  
+（[Releases](https://github.com/SleetCat123/MizoresUnityPackageExporter/releases)からスクリプトのunitypackageをダウンロードしてインポート）  
 1. Projectウィンドウ上で右クリック→Creare→MizoreNekoyanagi→UnityPackageExporter　でMizoresPackageExporterを作成  
 2. MizoresPackageExporterの名前を変更（この名前がunitypackageの名前になります）  
 3. インスペクタ上でエクスポート対象を指定  
