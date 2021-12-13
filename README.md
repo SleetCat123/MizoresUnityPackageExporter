@@ -13,7 +13,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 ## ◆使い方
 （[Releases](https://github.com/SleetCat123/MizoresUnityPackageExporter/releases)からスクリプトのunitypackageをダウンロードしてインポート）  
 1. Projectウィンドウ上で右クリック→Creare→MizoreNekoyanagi→UnityPackageExporter　でMizoresPackageExporterを作成  
-2. MizoresPackageExporterの名前を変更（この名前がunitypackageの名前になります）  
+2. 作成したMizoresPackageExporterの名前を変更（この名前がunitypackageの名前になります）  
 3. インスペクタ上でエクスポート対象を指定  
 4. Export to unitypackageボタンを押してエクスポート  
 （MizoresPackageExporterを複数選択することでまとめて編集したりエクスポートしたりできます）  
