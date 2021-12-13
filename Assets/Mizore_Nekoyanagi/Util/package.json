@@ -1,0 +1,14 @@
+{
+  "name": "com.mizore-nekoyanagi.utils.mizore-package-exporter",
+  "version": "1.0.0",
+  "displayName": "MizoresPackageExporter",
+  "description": "予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるようになるスクリプトです。",
+  "author": {
+    "name" : "Mizore Nekoyanagi",
+    "url" : "https://twitter.com/sleetcat123"
+  },
+  "keywords": [
+    "MizoreNekoyanagi",
+    "Script"
+  ]
+}

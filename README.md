@@ -6,7 +6,9 @@
 * 誤ったデータを混入させてしまう  
 
 といったミスが起こる可能性を軽減してくれるかもしれません。
-
+  
+Package Managerで導入するときは以下のURLを使用してください。
+'https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util'
 
 ## ◆使い方
 1. Projectウィンドウ上で右クリック→Creare→MizoreNekoyanagi→UnityPackageExporter　でMizoresPackageExporterを作成  
