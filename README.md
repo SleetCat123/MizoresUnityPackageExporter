@@ -1,5 +1,5 @@
 # MizoresPackageExporter
-予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるようになるスクリプトです。  
+予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるスクリプト（ScriptableObject）です。  
 エクスポートの手間が減るほか、
 
 * 必要なデータを入れ忘れる  
@@ -17,6 +17,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 4. Export to unitypackageボタンを押してエクスポート  
 （MizoresPackageExporterを複数選択することでまとめて編集したりエクスポートしたりできます）  
 
+## ◆インスペクタ
 ### ◇Objects
 エクスポート対象となるAssetの一覧です。  
 パスを直接指定して参照することもできます。  
