@@ -1,0 +1,2 @@
+# MizoresUnityPackageExporter
+予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるようになるスクリプトです。
