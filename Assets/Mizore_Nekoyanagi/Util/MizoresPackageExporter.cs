@@ -138,6 +138,8 @@ namespace MizoreNekoyanagi.PublishUtil
             public const string TEXT_BUTTON_OPEN = "Open";
             public const string TEXT_DIFF_LABEL = "?";
             public const string TEXT_DIFF_TOOLTIP = "Some values are different.\n一部のオブジェクトの値が異なっています。";
+            public const string TEXT_BUTTON_FOLDER = "Folder";
+            public const string TEXT_BUTTON_FILE = "File";
 
             public string t_Undo => TEXT_UNDO;
             public string t_Objects => TEXT_OBJECTS;
@@ -147,6 +149,8 @@ namespace MizoreNekoyanagi.PublishUtil
             public string t_Button_Open => TEXT_BUTTON_OPEN;
             public string t_Diff_Label => TEXT_DIFF_LABEL;
             public string t_Diff_Tooltip => TEXT_DIFF_TOOLTIP;
+            public string t_Button_Folder => TEXT_BUTTON_FOLDER;
+            public string t_Button_File => TEXT_BUTTON_FILE;
 
             public static string HelpBoxText;
             public static MessageType HelpBoxMessageType;
@@ -155,6 +159,13 @@ namespace MizoreNekoyanagi.PublishUtil
             private void OnEnable( ) {
                 HelpBoxText = null;
                 t = target as MizoresPackageExporter;
+            }
+            static string ToAssetsPath( string path ) {
+                string datapath = Application.dataPath;
+                if ( path.StartsWith( datapath ) ) {
+                    path = path.Substring( datapath.Length - "Assets".Length );
+                }
+                return path;
             }
             public static void Resize<T>( List<T> list, int newSize, System.Func<T> newvalue ) {
                 if ( list.Count == newSize ) {
@@ -179,6 +190,26 @@ namespace MizoreNekoyanagi.PublishUtil
                 } else {
                     list.RemoveRange( newSize, list.Count - newSize );
                 }
+            }
+            string BrowseButtons( string text ) {
+                string result=text;
+                if ( GUILayout.Button( TEXT_BUTTON_FOLDER, GUILayout.Width( 50 ) ) ) {
+                    text = EditorUtility.OpenFolderPanel( null, t.ConvertDynamicPath( text ), null );
+                    text = ToAssetsPath( text );
+                    if ( string.IsNullOrEmpty( text ) == false ) {
+                        GUI.changed = true;
+                        result = text;
+                    }
+                }
+                if ( GUILayout.Button( TEXT_BUTTON_FILE, GUILayout.Width( 50 ) ) ) {
+                    text = EditorUtility.OpenFilePanel( null, t.ConvertDynamicPath( text ), null );
+                    text = ToAssetsPath( text );
+                    if ( string.IsNullOrEmpty( text ) == false ) {
+                        GUI.changed = true;
+                        result = text;
+                    }
+                }
+                return result;
             }
             /// <summary>
             /// 複数オブジェクトの編集
@@ -286,9 +317,12 @@ namespace MizoreNekoyanagi.PublishUtil
                         string path;
                         if ( same ) {
                             path = EditorGUILayout.TextField( t.dynamicpath[i] );
+                            path = BrowseButtons( path );
                         } else {
                             path = EditorGUILayout.TextField( string.Empty );
+                            path = BrowseButtons( Application.dataPath );
                         }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             foreach ( var item in targetlist ) {
                                 Resize( item.dynamicpath, Mathf.Max( i + 1, item.dynamicpath.Count ) );
@@ -392,6 +426,8 @@ namespace MizoreNekoyanagi.PublishUtil
 
                         EditorGUI.BeginChangeCheck( );
                         t.dynamicpath[i] = EditorGUILayout.TextField( t.dynamicpath[i] );
+                        t.dynamicpath[i] = BrowseButtons( t.dynamicpath[i] );
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             EditorUtility.SetDirty( t );
                         }
@@ -416,6 +452,8 @@ namespace MizoreNekoyanagi.PublishUtil
                     UnityPackageExporterEditor.HelpBoxText = string.Empty;
                     t.Export( );
                 }
+
+                // Open Button
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                     EditorGUILayout.LabelField( new GUIContent( t.ExportPath, t.ExportPath ) );
                     if ( GUILayout.Button( TEXT_BUTTON_OPEN, GUILayout.Width( 60 ) ) ) {
