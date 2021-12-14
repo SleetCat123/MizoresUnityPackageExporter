@@ -1,4 +1,5 @@
 # MizoresPackageExporter
+![Image](Image1b.png)
 予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるスクリプト（ScriptableObject）です。  
 エクスポートの手間が減るほか、
 
