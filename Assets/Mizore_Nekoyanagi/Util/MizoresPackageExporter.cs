@@ -322,6 +322,7 @@ namespace MizoreNekoyanagi.PublishUtil
                 // Export Button
                 EditorGUILayout.Separator( );
                 if ( GUILayout.Button( t_Button_ExportPackages ) ) {
+                    UnityPackageExporterEditor.HelpBoxText = string.Empty;
                     foreach ( var item in targetlist ) {
                         item.Export( );
                     }
@@ -412,6 +413,7 @@ namespace MizoreNekoyanagi.PublishUtil
                 EditorGUILayout.EndScrollView( );
                 EditorGUILayout.Separator( );
                 if ( GUILayout.Button( t_Button_ExportPackage ) ) {
+                    UnityPackageExporterEditor.HelpBoxText = string.Empty;
                     t.Export( );
                 }
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
