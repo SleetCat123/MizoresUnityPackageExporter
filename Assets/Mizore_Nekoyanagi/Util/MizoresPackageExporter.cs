@@ -57,10 +57,12 @@ namespace MizoreNekoyanagi.PublishUtil
 
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
         public List<string> dynamicpath = new List<string>( );
+        public PackagePrefsElement versionFile;
 
         public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
         public const string EXPORT_LOG_NOT_FOUND = "[{0}] is not exists. The export has been cancelled.\n[{0}]は存在しません。エクスポートは中断されました。\n";
-        public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + ".unitypackage"; } }
+        public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + ExportVersion + ".unitypackage"; } }
+        public string ExportVersion { get { return versionFile == null || string.IsNullOrEmpty(versionFile.Path) ? "" : "-" + File.ReadAllText(versionFile.Path).Trim(); } }
 
         string ConvertDynamicPath( string path ) {
             path = path.Replace( "%name%", name );
@@ -133,6 +135,7 @@ namespace MizoreNekoyanagi.PublishUtil
             public const string TEXT_UNDO = "PackagePrefs";
             public const string TEXT_OBJECTS = "Objects";
             public const string TEXT_DYNAMIC_PATH = "Dynamic Path";
+            public const string TEXT_VERSION_FILE = "Version File";
             public const string TEXT_BUTTON_EXPORT = "Export to unitypackage";
             public const string TEXT_BUTTON_EXPORT_M = "Export to unitypackages";
             public const string TEXT_BUTTON_OPEN = "Open";
@@ -144,6 +147,7 @@ namespace MizoreNekoyanagi.PublishUtil
             public string t_Undo => TEXT_UNDO;
             public string t_Objects => TEXT_OBJECTS;
             public string t_DynamicPath => TEXT_DYNAMIC_PATH;
+            public string t_VersionFile => TEXT_VERSION_FILE;
             public string t_Button_ExportPackage => TEXT_BUTTON_EXPORT;
             public string t_Button_ExportPackages => TEXT_BUTTON_EXPORT_M;
             public string t_Button_Open => TEXT_BUTTON_OPEN;
@@ -351,6 +355,58 @@ namespace MizoreNekoyanagi.PublishUtil
                 }
                 // ↑ Dynamic Path
 
+                // ↓ Version File
+                EditorGUILayout.Separator();
+                EditorGUILayout.LabelField(t_VersionFile, EditorStyles.boldLabel);
+                using (var horizontalScope = new EditorGUILayout.HorizontalScope())
+                {
+                    var same = targetlist.All(v => t.versionFile.Object == v.versionFile.Object);
+
+                    EditorGUI.BeginChangeCheck();
+                    Object obj;
+                    if (same)
+                    {
+                        obj = EditorGUILayout.ObjectField(t.versionFile.Object, typeof(Object), false);
+                    }
+                    else
+                    {
+                        obj = EditorGUILayout.ObjectField(null, typeof(Object), false);
+                    }
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        foreach (var item in targetlist)
+                        {
+                            item.versionFile.Object = obj;
+                            EditorUtility.SetDirty(item);
+                        }
+                    }
+
+                    EditorGUI.BeginChangeCheck();
+                    string path;
+                    if (same)
+                    {
+                        path = EditorGUILayout.TextField(t.versionFile.Path);
+                    }
+                    else
+                    {
+                        path = EditorGUILayout.TextField(string.Empty);
+                    }
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        // パスが変更されたらオブジェクトを置き換える
+                        Object o = AssetDatabase.LoadAssetAtPath<Object>(path);
+                        if (o != null)
+                        {
+                            foreach (var item in targetlist)
+                            {
+                                item.versionFile.Object = o;
+                                EditorUtility.SetDirty(item);
+                            }
+                        }
+                    }
+                }
+                // ↑ Version File
+
                 EditorGUILayout.EndScrollView( );
 
                 // Export Button
@@ -444,6 +500,33 @@ namespace MizoreNekoyanagi.PublishUtil
                     EditorUtility.SetDirty( t );
                 }
                 // ↑ Dynamic Path
+
+                // ↓ Version File
+                EditorGUILayout.Separator();
+                EditorGUILayout.LabelField(t_VersionFile, EditorStyles.boldLabel);
+                using (var horizontalScope = new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUI.BeginChangeCheck();
+                    t.versionFile.Object = EditorGUILayout.ObjectField(t.versionFile.Object, typeof(Object), false);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        EditorUtility.SetDirty(t);
+                    }
+                    EditorGUI.BeginChangeCheck();
+                    string path = t.versionFile.Path;
+                    path = EditorGUILayout.TextField(path);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        // パスが変更されたらオブジェクトを置き換える
+                        Object o = AssetDatabase.LoadAssetAtPath<Object>(path);
+                        if (o != null)
+                        {
+                            t.versionFile.Object = o;
+                        }
+                        EditorUtility.SetDirty(t);
+                    }
+                }
+                // ↑ Version File
 
                 // Export Button
                 EditorGUILayout.EndScrollView( );
