@@ -48,6 +48,9 @@ Package Managerで導入するときは以下のURLを使用してください�
 例：左側の欄が`neko`、右側の欄が`ねこ`なら、Dynamic Path中の`%neko%`が`ねこ`という文字列に置換されます。
 
 
+### ◇Version File
+指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。
+（こちらからマージしました。 https://github.com/SleetCat123/MizoresUnityPackageExporter/pull/1 ）
 
 ### ◇Check
 上記の設定項目で指定したファイル／フォルダが存在するかどうかを確認します。  

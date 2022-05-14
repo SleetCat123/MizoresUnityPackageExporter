@@ -168,8 +168,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             EditorGUILayout.LabelField( ExporterTexts.t_VersionFile, EditorStyles.boldLabel );
             using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                 EditorGUI.BeginChangeCheck( );
-                t.versionFile.Object = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( Object ), false );
+                t.versionFile.Object = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
                 if ( EditorGUI.EndChangeCheck( ) ) {
+                    t.UpdateExportVersion( );
                     EditorUtility.SetDirty( t );
                 }
                 EditorGUI.BeginChangeCheck( );
@@ -177,9 +178,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 path = EditorGUILayout.TextField( path );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     // パスが変更されたらオブジェクトを置き換える
-                    Object o = AssetDatabase.LoadAssetAtPath<Object>( path );
+                    Object o = AssetDatabase.LoadAssetAtPath<TextAsset>( path );
                     if ( o != null ) {
                         t.versionFile.Object = o;
+                        t.UpdateExportVersion( );
                     }
                     EditorUtility.SetDirty( t );
                 }
