@@ -12,6 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string HelpBoxText;
         public static MessageType HelpBoxMessageType;
         public static Vector2 scroll;
+        public static string variable_key_temp;
         public MizoresPackageExporter t;
         private void OnEnable( ) {
             HelpBoxText = null;

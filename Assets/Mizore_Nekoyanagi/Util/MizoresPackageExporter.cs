@@ -26,6 +26,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public string ExportVersion { get { return versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ? "" : "-" + File.ReadAllText( versionFile.Path ).Trim( ); } }
 
         public string ConvertDynamicPath( string path ) {
+            foreach ( var kvp in variables ) {
+                path = path.Replace( string.Format( "%{0}%", kvp.Key ), kvp.Value );
+            }
             path = path.Replace( "%name%", name );
             path = path.Replace( "%version%", ExportVersion );
             return path;
