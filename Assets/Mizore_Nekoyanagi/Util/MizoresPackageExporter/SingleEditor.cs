@@ -124,6 +124,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             t.variables.Add( temp_key, t.variables[key] );
                             t.variables.Remove( key );
                             key = temp_key;
+                            EditorUtility.SetDirty( t );
                         }
                     }
 
@@ -156,6 +157,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         // キー追加
                         t.variables.Add( temp, string.Empty );
                         UnityPackageExporterEditor.variable_key_temp = null;
+                        EditorUtility.SetDirty( t );
                     }
                 }
             }
