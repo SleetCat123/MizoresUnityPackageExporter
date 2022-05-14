@@ -49,7 +49,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 
 
 ### ◇Version File
-指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。
+指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。  
 （こちらからマージしました。 https://github.com/SleetCat123/MizoresUnityPackageExporter/pull/1 ）
 
 ### ◇Check
