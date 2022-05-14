@@ -9,7 +9,8 @@
 といったミスが起こる可能性を軽減してくれるかもしれません。
   
 Package Managerで導入するときは以下のURLを使用してください。
-`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util`
+`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter`
+（2022-05-14：URLが変わりました）
 
 ## ◆使い方
 （[Releases](https://github.com/SleetCat123/MizoresUnityPackageExporter/releases)からスクリプトのunitypackageをダウンロードしてインポート）  
