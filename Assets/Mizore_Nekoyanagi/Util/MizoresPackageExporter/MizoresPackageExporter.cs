@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -22,7 +23,57 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
         public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + ExportVersion + ".unitypackage"; } }
-        public string ExportVersion { get { return versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ? "" : "-" + File.ReadAllText( versionFile.Path ).Trim( ); } }
+        static Regex _invalidCharsRegex;
+        /// <summary>
+        /// ファイル名に使用できない文字の判定用
+        /// </summary>
+        static Regex InvalidCharsRegex {
+            get {
+                if ( _invalidCharsRegex == null ) {
+                    string invalid = "." + new string( Path.GetInvalidFileNameChars( ) );
+                    string pattern = string.Format( "[{0}]", Regex.Escape( invalid ) );
+                    _invalidCharsRegex = new Regex( pattern );
+                }
+                return _invalidCharsRegex;
+            }
+        }
+        const float UPDATE_INTERVAL = 2.5f;
+        double lastUpdate;
+        string _exportVersion;
+        public string ExportVersion {
+            get {
+#if UNITY_EDITOR
+                // 短時間に連続してファイルを読めないようにする
+                if ( UPDATE_INTERVAL < EditorApplication.timeSinceStartup - lastUpdate ) {
+                    lastUpdate = EditorApplication.timeSinceStartup;
+                    UpdateExportVersion( );
+                }
+#endif
+                return ( string.IsNullOrWhiteSpace( _exportVersion ) ) ? string.Empty : "-" + _exportVersion;
+            }
+        }
+        public void UpdateExportVersion( ) {
+            if ( versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ) {
+                _exportVersion = string.Empty;
+            } else {
+                try {
+                    using ( StreamReader sr = new StreamReader( versionFile.Path ) ) {
+                        string line;
+                        // versionfileの空白ではない最初の行をバージョンとして扱う
+                        while ( ( line = sr.ReadLine( ) ) != null && string.IsNullOrWhiteSpace( line ) ) { }
+                        if ( string.IsNullOrWhiteSpace( line ) ) {
+                            _exportVersion = string.Empty;
+                        } else {
+                            _exportVersion = line.Trim( );
+                            // ファイル名に使用できない文字を_に置き換え
+                            _exportVersion = InvalidCharsRegex.Replace( _exportVersion, "_" );
+                        }
+                    }
+                } catch ( System.Exception e ) {
+                    throw e;
+                }
+            }
+        }
 
         public string ConvertDynamicPath( string path ) {
             foreach ( var kvp in variables ) {
