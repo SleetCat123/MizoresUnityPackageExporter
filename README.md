@@ -8,8 +8,9 @@
 
 といったミスが起こる可能性を軽減してくれるかもしれません。
   
-Package Managerで導入するときは以下のURLを使用してください。
-`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util`
+Package Managerで導入するときは以下のURLを使用してください。  
+`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter`  
+（2022-05-14：URLが変わりました）
 
 ## ◆使い方
 （[Releases](https://github.com/SleetCat123/MizoresUnityPackageExporter/releases)からスクリプトのunitypackageをダウンロードしてインポート）  
@@ -40,8 +41,19 @@ Package Managerで導入するときは以下のURLを使用してください�
 `Assets/Mizore_Nekoyanagi/C`  
 をunitypackageにエクスポートします。
 
+### ◇Dynamic Path Variables
+左側の欄の文字列を%%で囲んでDynamic Pathに書くと、右側の欄に書かれている文字列に置き換えられます。  
+（複数オブジェクト選択中の編集には未対応）  
+
+例：左側の欄が`neko`、右側の欄が`ねこ`なら、Dynamic Path中の`%neko%`が`ねこ`という文字列に置換されます。
+
+
+
+### ◇Check
+上記の設定項目で指定したファイル／フォルダが存在するかどうかを確認します。  
+
 ### ◇Export to unitypackage
-指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
+上記の設定項目で指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
 unitypackageの名前はMizoresPackageExporterのファイル名が使用されます。  
 存在しないデータがある場合、処理を中断します。
 
