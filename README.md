@@ -8,8 +8,8 @@
 
 といったミスが起こる可能性を軽減してくれるかもしれません。
   
-Package Managerで導入するときは以下のURLを使用してください。
-`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter`
+Package Managerで導入するときは以下のURLを使用してください。  
+`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter`  
 （2022-05-14：URLが変わりました）
 
 ## ◆使い方
@@ -40,6 +40,14 @@ Package Managerで導入するときは以下のURLを使用してください�
 `Assets/Mizore_Nekoyanagi/B`
 `Assets/Mizore_Nekoyanagi/C`  
 をunitypackageにエクスポートします。
+
+### ◇Dynamic Path Variables
+左側の欄の文字列を%%で囲んでDynamic Pathに書くと、右側の欄に書かれている文字列に置き換えられます。  
+（複数オブジェクト選択中の編集には未対応）  
+
+例：左側の欄が`neko`、右側の欄が`ねこ`なら、Dynamic Path中の`%neko%`が`ねこ`という文字列に置換されます。
+
+
 
 ### ◇Export to unitypackage
 指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
