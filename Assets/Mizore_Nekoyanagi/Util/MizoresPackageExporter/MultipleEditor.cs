@@ -213,9 +213,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ↑ Version File
 
             EditorGUILayout.EndScrollView( );
+            EditorGUILayout.Separator( );
+
+            // Check Button
+            if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
+                UnityPackageExporterEditor.HelpBoxText = string.Empty;
+                foreach ( var item in targetlist ) {
+                    item.AllFileExists( );
+                }
+            }
 
             // Export Button
-            EditorGUILayout.Separator( );
             if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
                 UnityPackageExporterEditor.HelpBoxText = string.Empty;
                 foreach ( var item in targetlist ) {

@@ -21,7 +21,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public PackagePrefsElement versionFile;
 
         public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
-        public const string EXPORT_LOG_NOT_FOUND = "[{0}] is not exists. The export has been cancelled.\n[{0}]は存在しません。エクスポートは中断されました。\n";
         public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + ExportVersion + ".unitypackage"; } }
         public string ExportVersion { get { return versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ? "" : "-" + File.ReadAllText( versionFile.Path ).Trim( ); } }
 
@@ -33,10 +32,37 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             path = path.Replace( "%version%", ExportVersion );
             return path;
         }
-        public void Export( ) {
-#if UNITY_EDITOR
+        public IEnumerable<string> GetAllPath( ) {
             var list = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
             list = list.Concat( dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) ) );
+            return list;
+        }
+        public bool AllFileExists( ) {
+            // ファイルが存在するか確認
+            bool result = true;
+            var list = GetAllPath( );
+            foreach ( var item in list ) {
+                if ( Path.GetExtension( item ).Length != 0 ) {
+                    if ( File.Exists( item ) == false ) {
+                        var text = string.Format( ExporterTexts.t_ExportLog_NotFound, item );
+                        UnityPackageExporterEditor.HelpBoxText += text;
+                        UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
+                        Debug.LogError( text );
+                        result = false;
+                    }
+                } else if ( Directory.Exists( item ) == false ) {
+                    var text = string.Format( ExporterTexts.t_ExportLog_NotFound, item );
+                    UnityPackageExporterEditor.HelpBoxText += text;
+                    UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
+                    Debug.LogError( text );
+                    result = false;
+                }
+            }
+            return result;
+        }
+        public void Export( ) {
+#if UNITY_EDITOR
+            var list = GetAllPath( );
 
             // console
             StringBuilder sb = new StringBuilder( );
@@ -47,24 +73,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             Debug.Log( sb );
             // ファイルが存在するか確認
-            foreach ( var item in list ) {
-                if ( Path.GetExtension( item ).Length != 0 ) {
-                    if ( File.Exists( item ) == false ) {
-                        var text = string.Format( EXPORT_LOG_NOT_FOUND, item );
-                        UnityPackageExporterEditor.HelpBoxText += text;
-                        UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
-                        Debug.LogError( text );
-                        return;
-                    }
-                } else if ( Directory.Exists( item ) == false ) {
-                    var text = string.Format( EXPORT_LOG_NOT_FOUND, item );
-                    UnityPackageExporterEditor.HelpBoxText += text;
-                    UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
-                    Debug.LogError( text );
-                    return;
-                }
+            bool exists = AllFileExists( );
+            if ( exists == false ) {
+                UnityPackageExporterEditor.HelpBoxText += ExporterTexts.t_ExportLog_Failed;
+                return;
             }
-            //
 
             string[] pathNames = list.ToArray( );
             string exportPath = ExportPath;
