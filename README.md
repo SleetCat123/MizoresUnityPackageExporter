@@ -49,8 +49,11 @@ Package Managerで導入するときは以下のURLを使用してください�
 
 
 
+### ◇Check
+上記の設定項目で指定したファイル／フォルダが存在するかどうかを確認します。  
+
 ### ◇Export to unitypackage
-指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
+上記の設定項目で指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
 unitypackageの名前はMizoresPackageExporterのファイル名が使用されます。  
 存在しないデータがある場合、処理を中断します。
 
