@@ -119,6 +119,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public void Export( ) {
 #if UNITY_EDITOR
+            UpdateExportVersion( );
             var list = GetAllPath( );
 
             // console
