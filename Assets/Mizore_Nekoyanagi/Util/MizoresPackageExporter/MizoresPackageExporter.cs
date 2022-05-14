@@ -58,6 +58,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     result = false;
                 }
             }
+            if ( result ) {
+                var text = ExporterTexts.t_ExportLog_AllFileExists;
+                UnityPackageExporterEditor.HelpBoxText += text;
+                UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
+                Debug.Log( text );
+            }
             return result;
         }
         public void Export( ) {
@@ -76,6 +82,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             bool exists = AllFileExists( );
             if ( exists == false ) {
                 UnityPackageExporterEditor.HelpBoxText += ExporterTexts.t_ExportLog_Failed;
+                UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
                 return;
             }
 
@@ -86,7 +93,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Recurse );
             EditorUtility.RevealInFinder( exportPath );
-            Debug.Log( this.name + "をエクスポートしました。" );
+
+            UnityPackageExporterEditor.HelpBoxText += string.Format( ExporterTexts.t_ExportLog_Success, exportPath );
+            UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
+            Debug.Log( exportPath + "をエクスポートしました。" );
 #endif
         }
 

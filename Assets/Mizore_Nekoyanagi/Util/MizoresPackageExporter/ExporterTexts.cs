@@ -20,6 +20,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_BUTTON_FILE = "File";
         public const string TEXT_EXPORT_LOG_NOT_FOUND = "[{0}] is not exists.\n[{0}]は存在しません。\n";
         public const string TEXT_EXPORT_LOG_FAILED = "Export has been cancelled.\nエクスポートは中断されました。\n";
+        public const string TEXT_EXPORT_LOG_ALL_FILE_EXISTS = "All files or directories exist.\n全てのファイル／フォルダが存在しています。\n";
+        public const string TEXT_EXPORT_LOG_SUCCESS = "[{0}] Export completed.\n[{0}]のエクスポートに成功しました。\n";
 
         public static string t_Undo => TEXT_UNDO;
         public static string t_Objects => TEXT_OBJECTS;
@@ -36,5 +38,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_Button_File => TEXT_BUTTON_FILE;
         public static string t_ExportLog_NotFound => TEXT_EXPORT_LOG_NOT_FOUND;
         public static string t_ExportLog_Failed => TEXT_EXPORT_LOG_FAILED;
+        public static string t_ExportLog_AllFileExists => TEXT_EXPORT_LOG_ALL_FILE_EXISTS;
+        public static string t_ExportLog_Success => TEXT_EXPORT_LOG_SUCCESS;
     }
 }
