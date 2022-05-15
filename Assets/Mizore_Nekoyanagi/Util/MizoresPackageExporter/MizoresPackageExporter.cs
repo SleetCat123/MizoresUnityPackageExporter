@@ -91,6 +91,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public bool AllFileExists( ) {
             // ファイルが存在するか確認
             bool result = true;
+#if UNITY_EDITOR
             var list = GetAllPath( );
             foreach ( var item in list ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
@@ -115,6 +116,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
                 Debug.Log( text );
             }
+#endif
             return result;
         }
         public void Export( ) {
