@@ -39,8 +39,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     // （複数インスタンス選択時）全てのオブジェクトの値が同じか
                     bool samevalue_in_all = i < objects_count.min && targetlist.All( v => t.objects[i].Object == v.objects[i].Object );
 
+                    ExporterUtils.Indent( 1 );
                     if ( samevalue_in_all ) {
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                     } else {
                         // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                         EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
@@ -97,10 +98,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 }
             }
-            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                foreach ( var item in targetlist ) {
-                    ExporterUtils.ResizeList( item.objects, objects_count.max + 1 );
-                    EditorUtility.SetDirty( item );
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                ExporterUtils.Indent( 1 );
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    foreach ( var item in targetlist ) {
+                        ExporterUtils.ResizeList( item.objects, objects_count.max + 1 );
+                        EditorUtility.SetDirty( item );
+                    }
                 }
             }
             // ↑ Objects
@@ -114,8 +118,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     // 全てのオブジェクトの値が同じか
                     bool samevalue_in_all = i < dpath_count.min && targetlist.All( v => t.dynamicpath[i] == v.dynamicpath[i] );
 
+                    ExporterUtils.Indent( 1 );
                     if ( samevalue_in_all ) {
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                     } else {
                         // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                         EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
@@ -150,11 +155,35 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         i--;
                     }
                 }
+            }
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                ExporterUtils.Indent( 1 );
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    foreach ( var item in targetlist ) {
+                        ExporterUtils.ResizeList( item.dynamicpath, dpath_count.max + 1, ( ) => string.Empty );
+                        EditorUtility.SetDirty( item );
+                    }
+                }
+            }
+            // ↑ Dynamic Path
 
-                // プレビュー
-                foreach ( var item in targetlist ) {
+            // ↓ Dynamic Path Preview
+            EditorGUILayout.Separator( );
+            EditorGUILayout.LabelField( ExporterTexts.t_DynamicPathPreview, EditorStyles.boldLabel );
+            bool first = true;
+            foreach ( var item in targetlist ) {
+                if ( first == false ) EditorGUILayout.Separator( );
+                first = false;
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    GUI.enabled = false;
+                    ExporterUtils.Indent( 1 );
+                    EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                    GUI.enabled = true;
+                }
+                for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                        ExporterUtils.Indent( 2 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         if ( i < item.dynamicpath.Count ) {
                             string previewpath = item.ConvertDynamicPath( item.dynamicpath[i] );
                             EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
@@ -164,13 +193,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 }
             }
-            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                foreach ( var item in targetlist ) {
-                    ExporterUtils.ResizeList( item.dynamicpath, dpath_count.max + 1, ( ) => string.Empty );
-                    EditorUtility.SetDirty( item );
-                }
-            }
-            // ↑ Dynamic Path
+            // ↑ Dynamic Path Preview
 
             // ↓ Version File
             EditorGUILayout.Separator( );

@@ -1,10 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     public static class ExporterUtils
     {
+        public const int EDITOR_INDENT = 15;
+        public static void Indent( int indent ) {
+#if UNITY_EDITOR
+            for ( int i = 0; i < indent; i++ ) {
+                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( EDITOR_INDENT ) );
+            }
+#endif
+        }
+
         public struct MinMax
         {
             public int min, max;

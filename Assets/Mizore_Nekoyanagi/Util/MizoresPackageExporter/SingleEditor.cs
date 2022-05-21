@@ -24,7 +24,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             for ( int i = 0; i < t.objects.Count; i++ ) {
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                     PackagePrefsElement item = t.objects[i];
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    ExporterUtils.Indent( 1 );
+                    EditorGUILayout.LabelField( i.ToString(), GUILayout.Width( 30 ) );
 
                     EditorGUI.BeginChangeCheck( );
                     item.Object = EditorGUILayout.ObjectField( item.Object, typeof( Object ), false );
@@ -51,9 +52,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 }
             }
-            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                t.objects.Add( new PackagePrefsElement( ) );
-                EditorUtility.SetDirty( t );
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                ExporterUtils.Indent( 1 );
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    t.objects.Add( new PackagePrefsElement( ) );
+                    EditorUtility.SetDirty( t );
+                }
             }
             // ↑ Objects
 
@@ -62,7 +66,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             EditorGUILayout.LabelField( ExporterTexts.t_DynamicPath, EditorStyles.boldLabel );
             for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    ExporterUtils.Indent( 1 );
+                    EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
                     // 値編集
                     EditorGUI.BeginChangeCheck( );
@@ -80,18 +85,29 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         EditorUtility.SetDirty( t );
                     }
                 }
+            }
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                ExporterUtils.Indent( 1 );
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    t.dynamicpath.Add( string.Empty );
+                    EditorUtility.SetDirty( t );
+                }
+            }
+            // ↑ Dynamic Path
+
+            // ↓ Dynamic Path Preview
+            EditorGUILayout.Separator( );
+            EditorGUILayout.LabelField( ExporterTexts.t_DynamicPathPreview, EditorStyles.boldLabel );
+            for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                     // プレビュー
                     string previewpath = t.ConvertDynamicPath( t.dynamicpath[i] );
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    ExporterUtils.Indent( 1 );
+                    EditorGUILayout.LabelField( i.ToString(), GUILayout.Width( 30 ) );
                     EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
                 }
             }
-            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                t.dynamicpath.Add( string.Empty );
-                EditorUtility.SetDirty( t );
-            }
-            // ↑ Dynamic Path
+            // ↓ Dynamic Path Preview
 
             // ↓ Dynamic Path Variables
             EditorGUILayout.Separator( );

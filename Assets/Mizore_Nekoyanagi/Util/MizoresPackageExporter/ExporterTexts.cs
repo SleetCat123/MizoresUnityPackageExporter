@@ -8,6 +8,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_UNDO = "PackagePrefs";
         public const string TEXT_OBJECTS = "Objects";
         public const string TEXT_DYNAMIC_PATH = "Dynamic Path";
+        public const string TEXT_DYNAMIC_PATH_PREVIEW = "Dynamic Path Preview";
         public const string TEXT_DYNAMIC_PATH_VARIABLES = "Dynamic Path Variables";
         public const string TEXT_VERSION_FILE = "Version File";
         public const string TEXT_BUTTON_CHECK = "Check";
@@ -31,6 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_Undo => TEXT_UNDO;
         public static string t_Objects => TEXT_OBJECTS;
         public static string t_DynamicPath => TEXT_DYNAMIC_PATH;
+        public static string t_DynamicPathPreview => TEXT_DYNAMIC_PATH_PREVIEW;
         public static string t_DynamicPath_Variables => TEXT_DYNAMIC_PATH_VARIABLES;
         public static string t_VersionFile => TEXT_VERSION_FILE;
         public static string t_Button_Check => TEXT_BUTTON_CHECK;
