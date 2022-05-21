@@ -107,6 +107,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 EditorGUILayout.TextField( "version" );
                 EditorGUILayout.TextField( t.ExportVersion );
             }
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                EditorGUILayout.TextField( "versionprefix" );
+                EditorGUILayout.TextField( t.versionPrefix );
+            }
             GUI.enabled = true;
             List<string> keys = new List<string>( t.variables.Keys );
             for ( int i = 0; i < keys.Count; i++ ) {
@@ -185,6 +190,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                     EditorUtility.SetDirty( t );
                 }
+            }
+            EditorGUI.BeginChangeCheck( );
+            t.versionPrefix = EditorGUILayout.TextField( "Prefix", t.versionPrefix );
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                EditorUtility.SetDirty( t );
             }
             // ↑ Version File
 
