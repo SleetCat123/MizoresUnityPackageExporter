@@ -18,6 +18,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
 
+        public static int UpDownButton( int index, int listLength, int buttonWidth = 15 ) {
+            index = Mathf.Clamp( index, 0, listLength - 1 );
+#if UNITY_EDITOR
+            var w = GUILayout.Width( buttonWidth );
+            using ( var scope = new EditorGUI.DisabledGroupScope( index == 0 ) ) {
+                if ( GUILayout.Button( "↑", w ) ) {
+                    index = index - 1;
+                }
+            }
+            using ( var scope = new EditorGUI.DisabledGroupScope( index == listLength - 1 ) ) {
+                if ( GUILayout.Button( "↓", w ) ) {
+                    index = index + 1;
+                }
+            }
+#endif
+            return index;
+        }
+
         public struct MinMax
         {
             public int min, max;
@@ -32,6 +50,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 int max = list.Max( func );
                 return new MinMax( min, max );
             }
+        }
+        public static void Swap<T>( this List<T> list, int indexA, int indexB ) {
+            T temp = list[indexA];
+            list[indexA] = list[indexB];
+            list[indexB] = temp;
         }
         public static void ResizeList<T>( List<T> list, int newSize, System.Func<T> newvalue ) {
             if ( list.Count == newSize ) {

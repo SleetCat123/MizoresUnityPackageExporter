@@ -45,6 +45,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         EditorUtility.SetDirty( t );
                     }
 
+                    int index_after = ExporterUtils.UpDownButton( i, t.objects.Count );
+                    if ( i != index_after ) {
+                        t.objects.Swap( i, index_after );
+                        EditorUtility.SetDirty( t );
+                    }
+                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
                     if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                         t.objects.RemoveAt( i );
                         i--;
@@ -77,8 +83,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         EditorUtility.SetDirty( t );
                     }
 
-                    // ボタン
                     EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    // ボタン
+                    int index_after = ExporterUtils.UpDownButton( i, t.dynamicpath.Count );
+                    if ( i != index_after ) {
+                        t.dynamicpath.Swap( i, index_after );
+                        EditorUtility.SetDirty( t );
+                    }
+                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
                     if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                         t.dynamicpath.RemoveAt( i );
                         i--;

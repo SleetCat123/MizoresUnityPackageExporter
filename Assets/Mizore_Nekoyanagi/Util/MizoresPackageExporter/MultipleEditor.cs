@@ -87,6 +87,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         }
                     }
 
+                    // Button
+                    int index_after = ExporterUtils.UpDownButton( i, objects_count.max );
+                    if ( i != index_after ) {
+                        foreach ( var item in targetlist ) {
+                            if ( item.objects.Count <= index_after ) {
+                                ExporterUtils.ResizeList( item.objects, index_after + 1, ( ) => new PackagePrefsElement( ) );
+                            }
+                            item.objects.Swap( i, index_after );
+                            EditorUtility.SetDirty( item );
+                        }
+                    }
                     if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.objects, Mathf.Max( i + 1, item.objects.Count ), ( ) => new PackagePrefsElement( ) );
@@ -145,6 +156,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         }
                     }
 
+                    // Button
+                    int index_after = ExporterUtils.UpDownButton( i, dpath_count.max );
+                    if ( i != index_after ) {
+                        foreach ( var item in targetlist ) {
+                            if ( item.dynamicpath.Count <= index_after ) {
+                                ExporterUtils.ResizeList( item.dynamicpath, index_after + 1 );
+                            }
+                            item.dynamicpath.Swap( i, index_after );
+                            EditorUtility.SetDirty( item );
+                        }
+                    }
+                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
                     if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.dynamicpath, Mathf.Max( i + 1, item.dynamicpath.Count ) );

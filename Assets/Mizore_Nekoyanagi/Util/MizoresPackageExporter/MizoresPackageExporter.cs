@@ -89,6 +89,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public string ConvertDynamicPath( string path ) {
+            if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
             foreach ( var kvp in variables ) {
                 path = path.Replace( string.Format( "%{0}%", kvp.Key ), kvp.Value );
             }
