@@ -21,177 +21,182 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             Undo.RecordObject( t, ExporterTexts.t_Undo );
 
             // ↓ Objects
-            EditorGUILayout.LabelField( ExporterTexts.t_Objects, EditorStyles.boldLabel );
-            for ( int i = 0; i < t.objects.Count; i++ ) {
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    PackagePrefsElement item = t.objects[i];
-                    ExporterUtils.Indent( 1 );
-                    EditorGUILayout.LabelField( i.ToString(), GUILayout.Width( 30 ) );
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_OBJECT, ExporterTexts.t_Objects ) ) {
+                for ( int i = 0; i < t.objects.Count; i++ ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        PackagePrefsElement item = t.objects[i];
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
-                    EditorGUI.BeginChangeCheck( );
-                    item.Object = EditorGUILayout.ObjectField( item.Object, typeof( Object ), false );
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        EditorUtility.SetDirty( t );
-                    }
-
-                    EditorGUI.BeginChangeCheck( );
-                    string path = item.Path;
-                    path = EditorGUILayout.TextField( path );
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        // パスが変更されたらオブジェクトを置き換える
-                        Object o = AssetDatabase.LoadAssetAtPath<Object>( path );
-                        if ( o != null ) {
-                            item.Object = o;
+                        EditorGUI.BeginChangeCheck( );
+                        item.Object = EditorGUILayout.ObjectField( item.Object, typeof( Object ), false );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            EditorUtility.SetDirty( t );
                         }
-                        EditorUtility.SetDirty( t );
-                    }
 
-                    int index_after = ExporterUtils.UpDownButton( i, t.objects.Count );
-                    if ( i != index_after ) {
-                        t.objects.Swap( i, index_after );
-                        EditorUtility.SetDirty( t );
-                    }
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                    if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
-                        t.objects.RemoveAt( i );
-                        i--;
-                        EditorUtility.SetDirty( t );
+                        EditorGUI.BeginChangeCheck( );
+                        string path = item.Path;
+                        path = EditorGUILayout.TextField( path );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            // パスが変更されたらオブジェクトを置き換える
+                            Object o = AssetDatabase.LoadAssetAtPath<Object>( path );
+                            if ( o != null ) {
+                                item.Object = o;
+                            }
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        int index_after = ExporterUtils.UpDownButton( i, t.objects.Count );
+                        if ( i != index_after ) {
+                            t.objects.Swap( i, index_after );
+                            EditorUtility.SetDirty( t );
+                        }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                            t.objects.RemoveAt( i );
+                            i--;
+                            EditorUtility.SetDirty( t );
+                        }
                     }
                 }
-            }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
-                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                    t.objects.Add( new PackagePrefsElement( ) );
-                    EditorUtility.SetDirty( t );
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                        t.objects.Add( new PackagePrefsElement( ) );
+                        EditorUtility.SetDirty( t );
+                    }
                 }
             }
             // ↑ Objects
 
             // ↓ Dynamic Path
             EditorGUILayout.Separator( );
-            EditorGUILayout.LabelField( ExporterTexts.t_DynamicPath, EditorStyles.boldLabel );
-            for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
-                    EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH, ExporterTexts.t_DynamicPath ) ) {
+                for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
-                    // 値編集
-                    EditorGUI.BeginChangeCheck( );
-                    t.dynamicpath[i] = EditorGUILayout.TextField( t.dynamicpath[i] );
-                    t.dynamicpath[i] = ed.BrowseButtons( t.dynamicpath[i] );
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        EditorUtility.SetDirty( t );
-                    }
+                        // 値編集
+                        EditorGUI.BeginChangeCheck( );
+                        t.dynamicpath[i] = EditorGUILayout.TextField( t.dynamicpath[i] );
+                        t.dynamicpath[i] = ed.BrowseButtons( t.dynamicpath[i] );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            EditorUtility.SetDirty( t );
+                        }
 
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                    // ボタン
-                    int index_after = ExporterUtils.UpDownButton( i, t.dynamicpath.Count );
-                    if ( i != index_after ) {
-                        t.dynamicpath.Swap( i, index_after );
-                        EditorUtility.SetDirty( t );
-                    }
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                    if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
-                        t.dynamicpath.RemoveAt( i );
-                        i--;
-                        EditorUtility.SetDirty( t );
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                        // ボタン
+                        int index_after = ExporterUtils.UpDownButton( i, t.dynamicpath.Count );
+                        if ( i != index_after ) {
+                            t.dynamicpath.Swap( i, index_after );
+                            EditorUtility.SetDirty( t );
+                        }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                            t.dynamicpath.RemoveAt( i );
+                            i--;
+                            EditorUtility.SetDirty( t );
+                        }
                     }
                 }
-            }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
-                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                    t.dynamicpath.Add( string.Empty );
-                    EditorUtility.SetDirty( t );
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                        t.dynamicpath.Add( string.Empty );
+                        EditorUtility.SetDirty( t );
+                    }
                 }
             }
             // ↑ Dynamic Path
 
             // ↓ Dynamic Path Preview
             EditorGUILayout.Separator( );
-            EditorGUILayout.LabelField( ExporterTexts.t_DynamicPathPreview, EditorStyles.boldLabel );
-            for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    // プレビュー
-                    string previewpath = t.ConvertDynamicPath( t.dynamicpath[i] );
-                    ExporterUtils.Indent( 1 );
-                    EditorGUILayout.LabelField( i.ToString(), GUILayout.Width( 30 ) );
-                    EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
+                for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        // プレビュー
+                        string previewpath = t.ConvertDynamicPath( t.dynamicpath[i] );
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                        EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                    }
                 }
             }
-            // ↓ Dynamic Path Preview
+            // ↑ Dynamic Path Preview
 
             // ↓ Dynamic Path Variables
             EditorGUILayout.Separator( );
-            EditorGUILayout.LabelField( ExporterTexts.t_DynamicPath_Variables, EditorStyles.boldLabel );
-            GUI.enabled = false;
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                EditorGUILayout.TextField( "name" );
-                EditorGUILayout.TextField( t.name );
-            }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                EditorGUILayout.TextField( "version" );
-                EditorGUILayout.TextField( t.ExportVersion );
-            }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                EditorGUILayout.TextField( "versionprefix" );
-                EditorGUILayout.TextField( t.versionPrefix );
-            }
-            GUI.enabled = true;
-            List<string> keys = new List<string>( t.variables.Keys );
-            for ( int i = 0; i < keys.Count; i++ ) {
-                string key = keys[i];
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES, ExporterTexts.t_DynamicPath_Variables ) ) {
+                var space = GUILayout.Width( 30 );
+                GUI.enabled = false;
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.TextField( "name" );
+                    EditorGUILayout.TextField( t.name );
+                }
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.TextField( "version" );
+                    EditorGUILayout.TextField( t.ExportVersion );
+                }
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.TextField( "versionprefix" );
+                    EditorGUILayout.TextField( t.versionPrefix );
+                }
+                GUI.enabled = true;
+                List<string> keys = new List<string>( t.variables.Keys );
+                for ( int i = 0; i < keys.Count; i++ ) {
+                    string key = keys[i];
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        EditorGUILayout.LabelField( string.Empty, space );
 
-                    // キー名変更
-                    EditorGUI.BeginChangeCheck( );
-                    string temp_key = EditorGUILayout.DelayedTextField( key );
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        if ( string.IsNullOrWhiteSpace( temp_key ) || t.variables.ContainsKey( temp_key ) ) {
+                        // キー名変更
+                        EditorGUI.BeginChangeCheck( );
+                        string temp_key = EditorGUILayout.DelayedTextField( key );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            if ( string.IsNullOrWhiteSpace( temp_key ) || t.variables.ContainsKey( temp_key ) ) {
 
-                        } else {
-                            t.variables.Add( temp_key, t.variables[key] );
+                            } else {
+                                t.variables.Add( temp_key, t.variables[key] );
+                                t.variables.Remove( key );
+                                key = temp_key;
+                                EditorUtility.SetDirty( t );
+                            }
+                        }
+
+                        // 値変更
+                        EditorGUI.BeginChangeCheck( );
+                        t.variables[key] = EditorGUILayout.TextField( t.variables[key] );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        // ボタン
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                             t.variables.Remove( key );
-                            key = temp_key;
                             EditorUtility.SetDirty( t );
                         }
                     }
-
-                    // 値変更
-                    EditorGUI.BeginChangeCheck( );
-                    t.variables[key] = EditorGUILayout.TextField( t.variables[key] );
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        EditorUtility.SetDirty( t );
-                    }
-
-                    // ボタン
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                    if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
-                        t.variables.Remove( key );
-                        EditorUtility.SetDirty( t );
-                    }
                 }
-            }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                // 新規キー追加
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                EditorGUI.BeginChangeCheck( );
-                UnityPackageExporterEditor.variable_key_temp = EditorGUILayout.DelayedTextField( UnityPackageExporterEditor.variable_key_temp );
-                EditorGUILayout.LabelField( string.Empty );
-                string temp = UnityPackageExporterEditor.variable_key_temp;
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
-                        UnityPackageExporterEditor.variable_key_temp = null;
-                    } else {
-                        // キー追加
-                        t.variables.Add( temp, string.Empty );
-                        UnityPackageExporterEditor.variable_key_temp = null;
-                        EditorUtility.SetDirty( t );
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    // 新規キー追加
+                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    EditorGUI.BeginChangeCheck( );
+                    UnityPackageExporterEditor.variable_key_temp = EditorGUILayout.DelayedTextField( UnityPackageExporterEditor.variable_key_temp );
+                    EditorGUILayout.LabelField( string.Empty );
+                    string temp = UnityPackageExporterEditor.variable_key_temp;
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
+                            UnityPackageExporterEditor.variable_key_temp = null;
+                        } else {
+                            // キー追加
+                            t.variables.Add( temp, string.Empty );
+                            UnityPackageExporterEditor.variable_key_temp = null;
+                            EditorUtility.SetDirty( t );
+                        }
                     }
                 }
             }
@@ -230,6 +235,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             EditorGUILayout.EndScrollView( );
             EditorGUILayout.Separator( );
 
+
+            EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
                 UnityPackageExporterEditor.HelpBoxText = string.Empty;

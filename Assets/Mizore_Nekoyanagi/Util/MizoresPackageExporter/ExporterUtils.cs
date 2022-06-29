@@ -36,6 +36,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return index;
         }
 
+        public static bool EditorPrefFoldout( string key, string label ) {
+            bool result = true;
+#if UNITY_EDITOR
+            bool before = EditorPrefs.GetBool( key, true );
+            result= EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
+            // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
+            if ( before != result ) {
+                EditorPrefs.SetBool( key, result );
+            }
+            EditorGUI.EndFoldoutHeaderGroup( );
+#endif
+            return result;
+        }
+
         public struct MinMax
         {
             public int min, max;

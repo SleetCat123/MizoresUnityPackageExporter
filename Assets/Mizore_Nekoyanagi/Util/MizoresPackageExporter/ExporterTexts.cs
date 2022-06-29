@@ -35,6 +35,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_DynamicPathPreview => TEXT_DYNAMIC_PATH_PREVIEW;
         public static string t_DynamicPath_Variables => TEXT_DYNAMIC_PATH_VARIABLES;
         public static string t_VersionFile => TEXT_VERSION_FILE;
+        public static string t_Label_ExportPackage => TEXT_BUTTON_EXPORT;
         public static string t_Button_Check => TEXT_BUTTON_CHECK;
         public static string t_Button_ExportPackage => TEXT_BUTTON_EXPORT;
         public static string t_Button_ExportPackages => TEXT_BUTTON_EXPORT_M;
