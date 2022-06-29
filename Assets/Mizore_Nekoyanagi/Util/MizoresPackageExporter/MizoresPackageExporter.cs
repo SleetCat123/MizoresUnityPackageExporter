@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -27,8 +28,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public PackagePrefsElement versionFile;
         public string versionPrefix="-";
 
-        public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
-        public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + versionPrefix + ExportVersion + ".unitypackage"; } }
+        public string ExportPath { get { return Const.EXPORT_FOLDER_PATH + this.name + versionPrefix + ExportVersion + ".unitypackage"; } }
         static Regex _invalidCharsRegex;
         /// <summary>
         /// ファイル名に使用できない文字の判定用

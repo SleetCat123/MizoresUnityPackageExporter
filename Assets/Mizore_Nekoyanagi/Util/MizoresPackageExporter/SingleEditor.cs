@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -248,7 +249,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     if ( File.Exists( t.ExportPath ) ) {
                         EditorUtility.RevealInFinder( t.ExportPath );
                     } else {
-                        EditorUtility.RevealInFinder( MizoresPackageExporter.EXPORT_FOLDER_PATH );
+                        EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
                     }
                 }
             }

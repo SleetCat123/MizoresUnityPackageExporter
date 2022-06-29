@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -286,7 +287,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 EditorGUILayout.LabelField( new GUIContent( path, path ) );
             }
             if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_OPEN, GUILayout.Width( 60 ) ) ) {
-                EditorUtility.RevealInFinder( MizoresPackageExporter.EXPORT_FOLDER_PATH );
+                EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
             }
         }
     }
