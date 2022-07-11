@@ -99,6 +99,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                 EditorUtility.SetDirty( item );
                             }
                         }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
                         if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.objects, Mathf.Max( i + 1, item.objects.Count ), ( ) => new PackagePrefsElement( ) );
@@ -148,7 +149,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             path = EditorGUILayout.TextField( string.Empty );
                             path = ed.BrowseButtons( Application.dataPath );
                         }
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath, Mathf.Max( i + 1, item.dynamicpath.Count ) );

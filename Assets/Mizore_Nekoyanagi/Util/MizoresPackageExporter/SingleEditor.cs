@@ -85,7 +85,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             EditorUtility.SetDirty( t );
                         }
 
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
                         // ボタン
                         int index_after = ExporterUtils.UpDownButton( i, t.dynamicpath.Count );
                         if ( i != index_after ) {
@@ -128,29 +127,36 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ↓ Dynamic Path Variables
             EditorGUILayout.Separator( );
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES, ExporterTexts.t_DynamicPath_Variables ) ) {
-                var space = GUILayout.Width( 30 );
+                var space_width = GUILayout.Width( 30 );
+                var button_width = GUILayout.Width( 15 );
                 GUI.enabled = false;
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUILayout.TextField( "name" );
                     EditorGUILayout.TextField( t.name );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
+                    EditorGUILayout.LabelField( string.Empty, button_width );
                 }
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUILayout.TextField( "version" );
                     EditorGUILayout.TextField( t.ExportVersion );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
+                    EditorGUILayout.LabelField( string.Empty, button_width );
                 }
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUILayout.TextField( "versionprefix" );
                     EditorGUILayout.TextField( t.versionPrefix );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
+                    EditorGUILayout.LabelField( string.Empty, button_width );
                 }
                 GUI.enabled = true;
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {
                     string key = keys[i];
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        EditorGUILayout.LabelField( string.Empty, space );
+                        EditorGUILayout.LabelField( string.Empty, space_width );
 
                         // キー名変更
                         EditorGUI.BeginChangeCheck( );
@@ -174,8 +180,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         }
 
                         // ボタン
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                        EditorGUILayout.LabelField( string.Empty, space_width );
+                        if ( GUILayout.Button( "-", button_width ) ) {
                             t.variables.Remove( key );
                             EditorUtility.SetDirty( t );
                         }
@@ -183,7 +189,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                     // 新規キー追加
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
+                    EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUI.BeginChangeCheck( );
                     UnityPackageExporterEditor.variable_key_temp = EditorGUILayout.DelayedTextField( UnityPackageExporterEditor.variable_key_temp );
                     EditorGUILayout.LabelField( string.Empty );
