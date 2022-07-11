@@ -18,5 +18,6 @@ MonoBehaviour:
   dynamicpath: []
   s_variables: []
   versionFile:
-    obj: {fileID: 4900000, guid: 867641a278a9e234387188906b5b4ccf, type: 3}
-    path: Assets/version.txt
+    obj: {fileID: 4900000, guid: 576d863475544c046b0f68d3c7db78e1, type: 3}
+    path: Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter/package.json
+  versionPrefix: -v

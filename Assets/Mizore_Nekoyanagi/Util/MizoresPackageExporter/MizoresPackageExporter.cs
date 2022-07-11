@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,6 +14,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     [CreateAssetMenu( menuName = "MizoreNekoyanagi/UnityPackageExporter" )]
     public class MizoresPackageExporter : ScriptableObject, ISerializationCallbackReceiver
     {
+        [System.Serializable]
+        private class VersionJson {
+            public string version;
+        }
+
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
         public List<string> dynamicpath = new List<string>( );
         [SerializeField]
@@ -20,9 +26,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
         public PackagePrefsElement versionFile;
+        public string versionPrefix="-";
 
-        public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
-        public string ExportPath { get { return EXPORT_FOLDER_PATH + this.name + ExportVersion + ".unitypackage"; } }
+        public string ExportPath { get { return Const.EXPORT_FOLDER_PATH + this.name + versionPrefix + ExportVersion + ".unitypackage"; } }
         static Regex _invalidCharsRegex;
         /// <summary>
         /// ファイル名に使用できない文字の判定用
@@ -49,7 +55,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     UpdateExportVersion( );
                 }
 #endif
-                return ( string.IsNullOrWhiteSpace( _exportVersion ) ) ? string.Empty : "-" + _exportVersion;
+                return ( string.IsNullOrWhiteSpace( _exportVersion ) ) ? string.Empty : _exportVersion;
             }
         }
         public void UpdateExportVersion( ) {
@@ -57,14 +63,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 _exportVersion = string.Empty;
             } else {
                 try {
-                    using ( StreamReader sr = new StreamReader( versionFile.Path ) ) {
-                        string line;
-                        // versionfileの空白ではない最初の行をバージョンとして扱う
-                        while ( ( line = sr.ReadLine( ) ) != null && string.IsNullOrWhiteSpace( line ) ) { }
-                        if ( string.IsNullOrWhiteSpace( line ) ) {
+                    string path = versionFile.Path;
+                    using ( StreamReader sr = new StreamReader( path ) ) {
+                        string ext = Path.GetExtension( path );
+                        if ( ext == ".json" ) {
+                            _exportVersion = JsonUtility.FromJson<VersionJson>( sr.ReadToEnd() ).version;
+                        } else {
+                            string line;
+                            // versionfileの空白ではない最初の行をバージョンとして扱う
+                            while ( ( line = sr.ReadLine( ) ) != null && string.IsNullOrWhiteSpace( line ) ) { }
+                            _exportVersion = line;
+                        }
+                        if ( string.IsNullOrWhiteSpace( _exportVersion ) ) {
                             _exportVersion = string.Empty;
                         } else {
-                            _exportVersion = line.Trim( );
+                            _exportVersion = _exportVersion.Trim( );
                             // ファイル名に使用できない文字を_に置き換え
                             _exportVersion = InvalidCharsRegex.Replace( _exportVersion, "_" );
                         }
@@ -76,11 +89,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public string ConvertDynamicPath( string path ) {
+            if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
             foreach ( var kvp in variables ) {
                 path = path.Replace( string.Format( "%{0}%", kvp.Key ), kvp.Value );
             }
             path = path.Replace( "%name%", name );
             path = path.Replace( "%version%", ExportVersion );
+            path = path.Replace( "%versionprefix%", versionPrefix );
             return path;
         }
         public IEnumerable<string> GetAllPath( ) {
