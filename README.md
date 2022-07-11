@@ -1,5 +1,6 @@
 # MizoresPackageExporter
-![Image](Image1b.png)  
+![Photo20220712000604](https://user-images.githubusercontent.com/37854026/178295998-3e0fc1de-1af0-4eee-8511-d347da2bfbe7.png)
+
 予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるスクリプト（ScriptableObject）です。  
 エクスポートの手間が減るほか、
 
@@ -31,7 +32,8 @@ Package Managerで導入するときは以下のURLを使用してください�
 エクスポート対象となるファイル／フォルダのパス一覧です。  
 （存在しないパスを指定することもできますが、エクスポート時にエラーが出ます）
 
-このパスの文字列中の %name% はMizoresPackageExporterのファイル名で置換されます。
+このパスの文字列中にある%で囲まれた文字列はDynamic Path Variablesで定義された文字列に置き換えられます。  
+（例：`%name%`はMizoresPackageExporterのファイル名で置換されます）
 
 例えば、**A　B　C**という名前の３つのMizoresPackageExporterのDynamic Pathに  
 `Assets/Mizore_Nekoyanagi/%name%`  
@@ -40,6 +42,11 @@ Package Managerで導入するときは以下のURLを使用してください�
 `Assets/Mizore_Nekoyanagi/B`
 `Assets/Mizore_Nekoyanagi/C`  
 をunitypackageにエクスポートします。
+
+
+### ◇Dynamic Path Preview
+Dynamic Pathの文字列を実際にエクスポートされるファイルパスに変換して表示します。
+
 
 ### ◇Dynamic Path Variables
 左側の欄の文字列を%%で囲んでDynamic Pathに書くと、右側の欄に書かれている文字列に置き換えられます。  
