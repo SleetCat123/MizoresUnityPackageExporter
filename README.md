@@ -26,7 +26,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 エクスポート対象となるAssetの一覧です。  
 パスを直接指定して参照することもできます。  
 （存在しないパスを指定することはできません）
-
+***
 
 ### ◇Dynamic Path
 エクスポート対象となるファイル／フォルダのパス一覧です。  
@@ -42,30 +42,33 @@ Package Managerで導入するときは以下のURLを使用してください�
 `Assets/Mizore_Nekoyanagi/B`
 `Assets/Mizore_Nekoyanagi/C`  
 をunitypackageにエクスポートします。
-
+***
 
 ### ◇Dynamic Path Preview
 Dynamic Pathの文字列を実際にエクスポートされるファイルパスに変換して表示します。
-
+***
 
 ### ◇Dynamic Path Variables
 左側の欄の文字列を%%で囲んでDynamic Pathに書くと、右側の欄に書かれている文字列に置き換えられます。  
 （複数オブジェクト選択中の編集には未対応）  
 
 例：左側の欄が`neko`、右側の欄が`ねこ`なら、Dynamic Path中の`%neko%`が`ねこ`という文字列に置換されます。
-
+***
 
 ### ◇Version File
 指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。  
 （こちらからマージしました。 https://github.com/SleetCat123/MizoresUnityPackageExporter/pull/1 ）
+***
 
 ### ◇Check
 上記の設定項目で指定したファイル／フォルダが存在するかどうかを確認します。  
+***
 
 ### ◇Export to unitypackage
 上記の設定項目で指定したファイル／フォルダをプロジェクトフォルダ直下の MizorePackageExporter/ にunitypackageとして出力します。  
 unitypackageの名前はMizoresPackageExporterのファイル名が使用されます。  
 存在しないデータがある場合、処理を中断します。
+***
 
 ### ◇Open
 出力先フォルダを開きます。  
