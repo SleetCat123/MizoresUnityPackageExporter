@@ -15,7 +15,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     public class MizoresPackageExporter : ScriptableObject, ISerializationCallbackReceiver
     {
         [System.Serializable]
-        private class VersionJson {
+        private class VersionJson
+        {
             public string version;
         }
 
@@ -26,9 +27,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
         public PackagePrefsElement versionFile;
-        public string versionPrefix="-";
+        public string versionPrefix = "-";
 
-        public string ExportPath { get { return Const.EXPORT_FOLDER_PATH + this.name + versionPrefix + ExportVersion + ".unitypackage"; } }
+        public string ExportPath {
+            get {
+                var version = ExportVersion;
+                if ( string.IsNullOrWhiteSpace( version ) ) {
+                    return Const.EXPORT_FOLDER_PATH + this.name + ".unitypackage";
+                } else {
+                    return Const.EXPORT_FOLDER_PATH + this.name + versionPrefix + version + ".unitypackage";
+                }
+            }
+        }
         static Regex _invalidCharsRegex;
         /// <summary>
         /// ファイル名に使用できない文字の判定用
@@ -67,7 +77,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     using ( StreamReader sr = new StreamReader( path ) ) {
                         string ext = Path.GetExtension( path );
                         if ( ext == ".json" ) {
-                            _exportVersion = JsonUtility.FromJson<VersionJson>( sr.ReadToEnd() ).version;
+                            _exportVersion = JsonUtility.FromJson<VersionJson>( sr.ReadToEnd( ) ).version;
                         } else {
                             string line;
                             // versionfileの空白ではない最初の行をバージョンとして扱う
