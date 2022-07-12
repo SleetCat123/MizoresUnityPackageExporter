@@ -20,12 +20,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public string version;
         }
 
+        public bool debugmode = false;
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
         public List<string> dynamicpath = new List<string>( );
         [SerializeField]
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
+
+        public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
+
         public PackagePrefsElement versionFile;
         public string versionPrefix = "-";
 
@@ -98,6 +102,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
 
+        public void DEBUGLOG( string value ) {
+            if ( debugmode ) {
+                Debug.Log( "[DEBUG] " + value );
+            }
+        }
+
         public string ConvertDynamicPath( string path ) {
             if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
             foreach ( var kvp in variables ) {
@@ -109,9 +119,50 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return path;
         }
         public IEnumerable<string> GetAllPath( ) {
-            var list = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
-            list = list.Concat( dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) ) );
-            return list;
+            var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
+            var list2 = dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) );
+            var result = list1.Concat( list2 );
+            return result;
+        }
+        IEnumerable<string> GetReferencesPath( ) {
+            var list1 = references.
+                Where( v => !string.IsNullOrWhiteSpace( v.Path ) && Directory.Exists( v.Path ) ).
+                SelectMany( v => Directory.GetFiles( v.Path, "*", SearchOption.AllDirectories ) );
+            var result = list1;
+            // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
+            result = result.Select( v => v.Replace( '\\', '/' ) );
+            return result;
+        }
+        public IEnumerable<string> GetAllPath_Full( ) {
+            var references_path = GetReferencesPath( );
+            DEBUGLOG( "References: " + string.Join( "\n", references_path ) );
+
+            var list = GetAllPath( );
+            var result = new List<string>( list.Count( ) );
+#if UNITY_EDITOR
+            foreach ( var item in list ) {
+                if ( Path.GetExtension( item ).Length != 0 ) {
+                    var dependencies = AssetDatabase.GetDependencies( item, true );
+                    foreach ( var dp in dependencies ) {
+                        if ( dp == item ) {
+                            result.Add( dp );
+                        } else if ( references_path.Contains( dp ) ) {
+                            result.Add( dp );
+                            DEBUGLOG( "Dependency: " + dp );
+                        } else {
+                            DEBUGLOG( "Ignore Dependency: " + dp );
+                        }
+                    }
+                } else if ( Directory.Exists( item ) ) {
+                    result.Add( item );
+                    var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
+                    result.AddRange( subdirs );
+                } else {
+                    result.Add( item );
+                }
+            }
+#endif
+            return result;
         }
         public bool AllFileExists( ) {
             // ファイルが存在するか確認

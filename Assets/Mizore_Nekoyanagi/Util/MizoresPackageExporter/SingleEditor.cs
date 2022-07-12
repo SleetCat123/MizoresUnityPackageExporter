@@ -208,6 +208,55 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             // ↑ Dynamic Path Variables
 
+            // ↓ References
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_REFERENCES, ExporterTexts.t_References ) ) {
+                for ( int i = 0; i < t.references.Count; i++ ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        PackagePrefsElement item = t.references[i];
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+
+                        EditorGUI.BeginChangeCheck( );
+                        item.Object = EditorGUILayout.ObjectField( item.Object, typeof( DefaultAsset ), false );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        EditorGUI.BeginChangeCheck( );
+                        string path = item.Path;
+                        path = EditorGUILayout.TextField( path );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            // パスが変更されたらオブジェクトを置き換える
+                            Object o = AssetDatabase.LoadAssetAtPath<Object>( path );
+                            if ( o != null ) {
+                                item.Object = o;
+                            }
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        int index_after = ExporterUtils.UpDownButton( i, t.references.Count );
+                        if ( i != index_after ) {
+                            t.references.Swap( i, index_after );
+                            EditorUtility.SetDirty( t );
+                        }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                            t.references.RemoveAt( i );
+                            i--;
+                            EditorUtility.SetDirty( t );
+                        }
+                    }
+                }
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                        t.references.Add( new PackagePrefsElement( ) );
+                        EditorUtility.SetDirty( t );
+                    }
+                }
+            }
+            // ↑ References
+
             // ↓ Version File
             EditorGUILayout.Separator( );
             EditorGUILayout.LabelField( ExporterTexts.t_VersionFile, EditorStyles.boldLabel );
@@ -246,6 +295,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
                 UnityPackageExporterEditor.HelpBoxText = string.Empty;
+                Debug.Log( string.Join( "\n", t.GetAllPath_Full( ) ) );
                 t.AllFileExists( );
             }
 
