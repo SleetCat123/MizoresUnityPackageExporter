@@ -28,6 +28,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
 
+        public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
         public PackagePrefsElement versionFile;
@@ -135,25 +136,32 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public IEnumerable<string> GetAllPath_Full( ) {
             var references_path = GetReferencesPath( );
-            DEBUGLOG( "References: " + string.Join( "\n", references_path ) );
+            DEBUGLOG( "References: \n" + string.Join( "\n", references_path ) );
+            bool useReference = references_path.Any( );
 
             var list = GetAllPath( );
             var result = new List<string>( list.Count( ) );
 #if UNITY_EDITOR
             foreach ( var item in list ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
-                    var dependencies = AssetDatabase.GetDependencies( item, true );
-                    foreach ( var dp in dependencies ) {
-                        if ( dp == item ) {
-                            result.Add( dp );
-                        } else if ( references_path.Contains( dp ) ) {
-                            result.Add( dp );
-                            DEBUGLOG( "Dependency: " + dp );
-                        } else {
-                            DEBUGLOG( "Ignore Dependency: " + dp );
+                    if ( useReference ) {
+                        var dependencies = AssetDatabase.GetDependencies( item, true );
+                        foreach ( var dp in dependencies ) {
+                            if ( dp == item ) {
+                                result.Add( dp );
+                            } else if ( references_path.Contains( dp ) ) {
+                                // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
+                                result.Add( dp );
+                                DEBUGLOG( "Dependency: " + dp );
+                            } else {
+                                DEBUGLOG( "Ignore Dependency: " + dp );
+                            }
                         }
+                    } else {
+                        result.Add( item );
                     }
                 } else if ( Directory.Exists( item ) ) {
+                    // サブファイル・フォルダを取得
                     result.Add( item );
                     var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
                     result.AddRange( subdirs );
@@ -161,6 +169,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     result.Add( item );
                 }
             }
+
+            // 除外指定されたファイル・フォルダを処理
+            IEnumerable<string> result_enumerable = result;
+            foreach ( var item in excludes ) {
+                var exclude = new SearchPath( item.searchType, ConvertDynamicPath( item.value ) );
+                result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
+            }
+            if ( debugmode ) {
+                DEBUGLOG( "Excludes: \n" + string.Join( "\n", result.Except( result_enumerable ) ) );
+            }
+            result = result_enumerable.ToList( );
 #endif
             return result;
         }
