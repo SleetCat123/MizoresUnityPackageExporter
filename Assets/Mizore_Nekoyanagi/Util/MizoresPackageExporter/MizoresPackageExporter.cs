@@ -231,16 +231,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public void Export( ) {
 #if UNITY_EDITOR
             UpdateExportVersion( );
-            var list = GetAllPath( );
-
-            // console
-            StringBuilder sb = new StringBuilder( );
-            sb.Append( "Start Export: " ).Append( name );
-            sb.AppendLine( );
-            foreach ( var item in list ) {
-                sb.AppendLine( item );
-            }
-            Debug.Log( sb );
+            var list = GetAllPath_Full( );
+            Debug.Log( "Start Export: " + string.Join("/n", list) );
             // ファイルが存在するか確認
             bool exists = AllFileExists( );
             if ( exists == false ) {
@@ -254,7 +246,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             if ( Directory.Exists( exportPath ) == false ) {
                 Directory.CreateDirectory( Path.GetDirectoryName( exportPath ) );
             }
-            AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Recurse );
+            AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
             EditorUtility.RevealInFinder( exportPath );
 
             UnityPackageExporterEditor.HelpBoxText += string.Format( ExporterTexts.t_ExportLog_Success, exportPath );
