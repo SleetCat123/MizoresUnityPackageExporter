@@ -36,6 +36,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return index;
         }
 
+        public static void SeparateLine( ) {
+#if UNITY_EDITOR
+            EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+#endif
+        }
         public static bool EditorPrefFoldout( string key, string label ) {
             bool result = true;
 #if UNITY_EDITOR

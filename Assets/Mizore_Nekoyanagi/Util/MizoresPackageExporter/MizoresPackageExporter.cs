@@ -170,7 +170,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                     // prefixがついているので追加済みかどうかの判定を行う
                                     result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
                                 }
-                                DEBUGLOG( "Dependency: " + dp );
+                                Debug.Log( "Dependency: " + dp );
                             } else {
                                 DEBUGLOG( "Ignore Dependency: " + dp );
                             }
@@ -196,9 +196,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 var exclude = new SearchPath( item.searchType, ConvertDynamicPath( item.value ) );
                 result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
             }
-            if ( debugmode ) {
-                DEBUGLOG( "Excludes: \n" + string.Join( "\n", result.Except( result_enumerable ) ) );
-            }
+            Debug.Log( "Excludes: \n" + string.Join( "\n", result.Except( result_enumerable ) ) );
             return result_enumerable;
 #else
             return new string[0];
