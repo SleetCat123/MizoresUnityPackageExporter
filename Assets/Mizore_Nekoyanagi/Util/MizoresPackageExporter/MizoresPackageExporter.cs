@@ -135,13 +135,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return result;
         }
         public IEnumerable<string> GetAllPath_Full( bool decorate = false ) {
+#if UNITY_EDITOR
             var references_path = GetReferencesPath( );
             DEBUGLOG( "References: \n" + string.Join( "\n", references_path ) );
             bool useReference = references_path.Any( );
 
             var list = GetAllPath( );
-            var result = new List<string>( list.Count( ) );
-#if UNITY_EDITOR
+            var result = new HashSet<string>( );
+            foreach ( var item in list ) {
+                if ( Directory.Exists( item ) ) {
+                    // サブファイル・フォルダを取得
+                    result.Add( item );
+                    var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
+                    foreach ( var sub in subdirs ) {
+                        result.Add( sub );
+                    }
+                }
+            }
             foreach ( var item in list ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( useReference ) {
@@ -152,7 +162,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
                                 if ( decorate ) {
-                                    result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
+                                    if ( result.Contains( dp ) == false ) {
+                                        result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
+                                    }
                                 } else {
                                     result.Add( dp );
                                 }
@@ -165,10 +177,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         result.Add( item );
                     }
                 } else if ( Directory.Exists( item ) ) {
-                    // サブファイル・フォルダを取得
-                    result.Add( item );
-                    var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
-                    result.AddRange( subdirs );
+                    // 何もしない
                 } else {
                     result.Add( item );
                 }
@@ -183,9 +192,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             if ( debugmode ) {
                 DEBUGLOG( "Excludes: \n" + string.Join( "\n", result.Except( result_enumerable ) ) );
             }
-            result = result_enumerable.ToList( );
+            return result_enumerable;
+#else
+            return new string[0];
 #endif
-            return result;
         }
         public bool AllFileExists( ) {
             // ファイルが存在するか確認
@@ -232,7 +242,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #if UNITY_EDITOR
             UpdateExportVersion( );
             var list = GetAllPath_Full( );
-            Debug.Log( "Start Export: " + string.Join("/n", list) );
+            Debug.Log( "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
             bool exists = AllFileExists( );
             if ( exists == false ) {
