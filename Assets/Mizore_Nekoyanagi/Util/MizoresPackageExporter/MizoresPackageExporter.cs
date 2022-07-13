@@ -123,6 +123,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
             var list2 = dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) );
             var result = list1.Concat( list2 );
+            result = result.Select( v => v.Replace( '\\', '/' ) );
             return result;
         }
         IEnumerable<string> GetReferencesPath( ) {
@@ -148,7 +149,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     result.Add( item );
                     var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
-                        result.Add( sub );
+                        result.Add( sub.Replace( '\\', '/' ) );
                     }
                 }
             }
@@ -162,9 +163,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
                                 if ( decorate ) {
-                                    if ( result.Contains( dp ) == false ) {
-                                        result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
-                                    }
+                                    // 先頭にprefixがついているのですでにパスが追加済みでも追加される
+                                    result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
                                 } else {
                                     result.Add( dp );
                                 }
