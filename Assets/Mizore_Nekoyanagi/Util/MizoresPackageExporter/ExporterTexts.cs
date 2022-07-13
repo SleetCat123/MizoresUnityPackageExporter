@@ -22,6 +22,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string JP_TEXT_DIFF_TOOLTIP = "一部のオブジェクトの値が異なっています。";
         public const string TEXT_BUTTON_FOLDER = "Folder";
         public const string TEXT_BUTTON_FILE = "File";
+        public const string TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX = "[! Error !]";
+        public const string TEXT_EXPORT_LOG_DEPENDENCY_PATH_PREFIX = "[Dependency]";
         public const string EN_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}] is not exists.\n";
         public const string JP_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}]は存在しません。\n";
         public const string EN_TEXT_EXPORT_LOG_FAILED = "Export has been cancelled.\n";
@@ -49,6 +51,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_Button_Folder => TEXT_BUTTON_FOLDER;
         public static string t_Button_File => TEXT_BUTTON_FILE;
         public static string t_ExportLog_NotFound => EN_TEXT_EXPORT_LOG_NOT_FOUND + JP_TEXT_EXPORT_LOG_NOT_FOUND;
+        public static string t_ExportLog_NotFoundPathPrefix => TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX;
+        public static string t_ExportLog_DependencyPathPrefix => TEXT_EXPORT_LOG_DEPENDENCY_PATH_PREFIX;
         public static string t_ExportLog_Failed => EN_TEXT_EXPORT_LOG_FAILED + JP_TEXT_EXPORT_LOG_FAILED;
         public static string t_ExportLog_AllFileExists => EN_TEXT_EXPORT_LOG_ALL_FILE_EXISTS + JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS;
         public static string t_ExportLog_Success => EN_TEXT_EXPORT_LOG_SUCCESS + JP_TEXT_EXPORT_LOG_SUCCESS;

@@ -134,7 +134,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             result = result.Select( v => v.Replace( '\\', '/' ) );
             return result;
         }
-        public IEnumerable<string> GetAllPath_Full( ) {
+        public IEnumerable<string> GetAllPath_Full( bool decorate = false ) {
             var references_path = GetReferencesPath( );
             DEBUGLOG( "References: \n" + string.Join( "\n", references_path ) );
             bool useReference = references_path.Any( );
@@ -151,7 +151,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                 result.Add( dp );
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
-                                result.Add( dp );
+                                if ( decorate ) {
+                                    result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
+                                } else {
+                                    result.Add( dp );
+                                }
                                 DEBUGLOG( "Dependency: " + dp );
                             } else {
                                 DEBUGLOG( "Ignore Dependency: " + dp );
@@ -187,6 +191,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
+            var list_full = GetAllPath_Full( decorate: true ).ToList( );
+            Debug.Log( string.Join( "\n", list_full ) );
+            // 依存Assetやサブフォルダは確実に存在するのでチェックは不要
             var list = GetAllPath( );
             foreach ( var item in list ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
@@ -196,6 +203,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
                         Debug.LogError( text );
                         result = false;
+
+                        int index = list_full.IndexOf( item );
+                        list_full[index] = ExporterTexts.t_ExportLog_NotFoundPathPrefix + list_full[index];
                     }
                 } else if ( Directory.Exists( item ) == false ) {
                     var text = string.Format( ExporterTexts.t_ExportLog_NotFound, item );
@@ -203,6 +213,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
                     Debug.LogError( text );
                     result = false;
+
+                    int index = list_full.IndexOf( item );
+                    list_full[index] = ExporterTexts.t_ExportLog_NotFoundPathPrefix + list_full[index];
                 }
             }
             if ( result ) {
@@ -211,6 +224,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
                 Debug.Log( text );
             }
+            UnityPackageExporterEditor.HelpBoxText += "----------\n" + string.Join( "\n", list_full ) + "\n----------\n";
 #endif
             return result;
         }

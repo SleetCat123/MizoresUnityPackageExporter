@@ -336,7 +336,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
                 UnityPackageExporterEditor.HelpBoxText = string.Empty;
-                Debug.Log( string.Join( "\n", t.GetAllPath_Full( ) ) );
                 t.AllFileExists( );
             }
 
