@@ -28,6 +28,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
 
+        public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
@@ -135,7 +136,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             result = result.Select( v => v.Replace( '\\', '/' ) );
             return result;
         }
-        public IEnumerable<string> GetAllPath_Full( bool decorate = false ) {
+        public IEnumerable<string> GetAllPath_Full( ) {
 #if UNITY_EDITOR
             var references_path = GetReferencesPath( );
             DEBUGLOG( "References: \n" + string.Join( "\n", references_path ) );
@@ -153,6 +154,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 }
             }
+            // .metaファイルを除外
+            result = new HashSet<string>( result.Where( v => Path.GetExtension( v ) != ".meta" ) );
+
             foreach ( var item in list ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( useReference ) {
@@ -162,11 +166,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                 result.Add( dp );
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
-                                if ( decorate ) {
-                                    // 先頭にprefixがついているのですでにパスが追加済みでも追加される
+                                if ( result.Contains( dp ) == false ) {
+                                    // prefixがついているので追加済みかどうかの判定を行う
                                     result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
-                                } else {
-                                    result.Add( dp );
                                 }
                                 DEBUGLOG( "Dependency: " + dp );
                             } else {
@@ -185,6 +187,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             // 除外指定されたファイル・フォルダを処理
             IEnumerable<string> result_enumerable = result;
+            foreach ( var item in excludeObjects ) {
+                if ( item == null || item.Object == null ) continue;
+                var exclude = new SearchPath( SearchPathType.Exact, ConvertDynamicPath( item.Path ) );
+                result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
+            }
             foreach ( var item in excludes ) {
                 var exclude = new SearchPath( item.searchType, ConvertDynamicPath( item.value ) );
                 result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
@@ -201,7 +208,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
-            var list_full = GetAllPath_Full( decorate: true ).ToList( );
+            var list_full = GetAllPath_Full( ).ToList( );
             Debug.Log( string.Join( "\n", list_full ) );
             // 依存Assetやサブフォルダは確実に存在するのでチェックは不要
             var list = GetAllPath( );

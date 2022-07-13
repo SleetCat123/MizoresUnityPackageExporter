@@ -257,6 +257,55 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             // ↑ References
 
+            // ↓ Exclude Objects
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS, ExporterTexts.t_ExcludeObjects ) ) {
+                for ( int i = 0; i < t.excludeObjects.Count; i++ ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        PackagePrefsElement item = t.excludeObjects[i];
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+
+                        EditorGUI.BeginChangeCheck( );
+                        item.Object = EditorGUILayout.ObjectField( item.Object, typeof( Object ), false );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        EditorGUI.BeginChangeCheck( );
+                        string path = item.Path;
+                        path = EditorGUILayout.TextField( path );
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            // パスが変更されたらオブジェクトを置き換える
+                            Object o = AssetDatabase.LoadAssetAtPath<Object>( path );
+                            if ( o != null ) {
+                                item.Object = o;
+                            }
+                            EditorUtility.SetDirty( t );
+                        }
+
+                        int index_after = ExporterUtils.UpDownButton( i, t.excludeObjects.Count );
+                        if ( i != index_after ) {
+                            t.excludeObjects.Swap( i, index_after );
+                            EditorUtility.SetDirty( t );
+                        }
+                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                            t.excludeObjects.RemoveAt( i );
+                            i--;
+                            EditorUtility.SetDirty( t );
+                        }
+                    }
+                }
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                        t.excludeObjects.Add( new PackagePrefsElement( ) );
+                        EditorUtility.SetDirty( t );
+                    }
+                }
+            }
+            // ↑ Exclude Objects
+
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES, ExporterTexts.t_Excludes ) ) {
                 for ( int i = 0; i < t.excludes.Count; i++ ) {
