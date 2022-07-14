@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,7 +34,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_OBJECT, ExporterTexts.t_Objects ) ) {
+            MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
+            if ( ExporterUtils.EditorPrefFoldout( 
+                Const.EDITOR_PREF_FOLDOUT_OBJECT,
+                string.Format( ExporterTexts.t_Objects, objects_count.GetRangeString( ) )
+                ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
             }
             // ↑ Objects
@@ -44,7 +49,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 
             ExporterUtils.SeparateLine( );
             // ↓ References
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_REFERENCES, ExporterTexts.t_References ) ) {
+            MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
+            if ( ExporterUtils.EditorPrefFoldout( 
+                Const.EDITOR_PREF_FOLDOUT_REFERENCES,
+                string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) )
+                ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<DefaultAsset>( t, targetlist, ( v ) => v.references );
             }
             // ↑ References
@@ -52,7 +61,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Exclude Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS, ExporterTexts.t_ExcludeObjects ) ) {
+            MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
+                string.Format( ExporterTexts.t_ExcludeObjects, excludeObjects_count.GetRangeString( ) )
+                ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
             }
             // ↑ Exclude Objects

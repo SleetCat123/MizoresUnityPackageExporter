@@ -6,14 +6,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     public class ExporterTexts
     {
         public const string TEXT_UNDO = "PackagePrefs";
-        public const string TEXT_OBJECTS = "Objects";
-        public const string TEXT_REFERENCES = "References";
-        public const string TEXT_EXCLUDES = "Excludes";
+        public const string TEXT_OBJECTS = "Objects ({0})";
+        public const string TEXT_REFERENCES = "References ({0})";
+        public const string TEXT_EXCLUDES = "Excludes ({0})";
         public const string TEXT_EXCLUDES_PREVIEW = "Excludes Preview";
-        public const string TEXT_EXCLUDE_OBJECTS = "Exclude Objects";
-        public const string TEXT_DYNAMIC_PATH = "Dynamic Path";
+        public const string TEXT_EXCLUDE_OBJECTS = "Exclude Objects ({0})";
+        public const string TEXT_DYNAMIC_PATH = "Dynamic Path ({0})";
         public const string TEXT_DYNAMIC_PATH_PREVIEW = "Dynamic Path Preview";
-        public const string TEXT_DYNAMIC_PATH_VARIABLES = "Dynamic Path Variables";
+        public const string TEXT_DYNAMIC_PATH_VARIABLES = "Dynamic Path Variables ({0})";
         public const string TEXT_VERSION_FILE = "Version File";
         public const string TEXT_BUTTON_CHECK = "Check";
         public const string TEXT_BUTTON_EXPORT = "Export to unitypackage";

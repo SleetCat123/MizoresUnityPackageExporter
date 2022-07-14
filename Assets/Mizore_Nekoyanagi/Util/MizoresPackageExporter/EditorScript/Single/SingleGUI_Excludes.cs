@@ -9,7 +9,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
     {
         public static void Draw( MizoresPackageExporter t ) {
             // ↓ Excludes
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES, ExporterTexts.t_Excludes ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( 
+                Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
+                string.Format( ExporterTexts.t_Excludes, t.excludes.Count )
+                ) ) {
                 for ( int i = 0; i < t.excludes.Count; i++ ) {
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
                         SearchPath item = t.excludes[i];

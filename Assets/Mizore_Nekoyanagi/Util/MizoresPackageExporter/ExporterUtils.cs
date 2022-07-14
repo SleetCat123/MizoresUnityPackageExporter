@@ -42,15 +42,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
         public static bool EditorPrefFoldout( string key, string label ) {
+            return EditorPrefFoldout( key, label, label );
+        }
+        public static bool EditorPrefFoldout( string key, string labelOnEnabled, string labelOnDisabled ) {
             bool result = true;
 #if UNITY_EDITOR
+            string label;
             bool before = EditorPrefs.GetBool( key, true );
-            //if ( before ) {
-            //    label = "▼ " + label;
-            //} else {
-            //    label = "▶ " + label;
-            //}
-            result= EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
+            if ( before ) {
+                //label = "▼ " + label;
+                label = labelOnEnabled;
+            } else {
+                //label = "▶ " + label;
+                label = labelOnDisabled;
+            }
+            result = EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
             if ( before != result ) {
                 EditorPrefs.SetBool( key, result );
@@ -67,6 +73,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public MinMax( int min, int max ) {
                 this.min = min;
                 this.max = max;
+            }
+
+            public string GetRangeString( ) {
+                if ( min == max ) {
+                    return min.ToString( );
+                } else {
+                    return $"{min}-{max}";
+                }
             }
 
             public static MinMax Create<T>( IEnumerable<T> list, System.Func<T, int> func ) {

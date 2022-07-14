@@ -18,7 +18,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_OBJECT, ExporterTexts.t_Objects ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_OBJECT,
+                string.Format( ExporterTexts.t_Objects, t.objects.Count )
+                ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.objects );
             }
             // ↑ Objects
@@ -30,7 +33,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ References
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_REFERENCES, ExporterTexts.t_References ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_REFERENCES,
+                string.Format( ExporterTexts.t_References, t.references.Count )
+                ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<DefaultAsset>( t, t.references );
             }
             // ↑ References
@@ -38,7 +44,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Exclude Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS, ExporterTexts.t_ExcludeObjects ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
+                string.Format( ExporterTexts.t_ExcludeObjects, t.excludeObjects.Count )
+                ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.excludeObjects );
             }
             // ↑ Exclude Objects

@@ -9,7 +9,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
     public static class SingleGUI_DynamicPathVariables
     {
         public static void Draw( MizoresPackageExporter t ) {
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES, ExporterTexts.t_DynamicPath_Variables ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( 
+                Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES,
+                string.Format( ExporterTexts.t_DynamicPath_Variables, t.variables.Count )
+                ) ) {
                 var space_width = GUILayout.Width( 30 );
                 var button_width = GUILayout.Width( 15 );
                 GUI.enabled = false;

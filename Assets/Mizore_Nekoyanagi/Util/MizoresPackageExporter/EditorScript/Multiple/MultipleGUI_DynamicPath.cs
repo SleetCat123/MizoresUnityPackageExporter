@@ -16,7 +16,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
         public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath.Count );
             // ↓ Dynamic Path
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH, ExporterTexts.t_DynamicPath ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
+                string.Format( ExporterTexts.t_DynamicPath, dpath_count.GetRangeString( ) )
+                ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか

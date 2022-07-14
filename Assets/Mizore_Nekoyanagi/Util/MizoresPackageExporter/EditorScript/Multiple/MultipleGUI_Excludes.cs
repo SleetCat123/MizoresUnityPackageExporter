@@ -15,7 +15,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
         public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
             // ↓ Excludes
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES, ExporterTexts.t_Excludes ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
+                string.Format( ExporterTexts.t_Excludes, minmax_count.GetRangeString( ) )
+                ) ) {
                 for ( int i = 0; i < minmax_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか

@@ -10,7 +10,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
     public static class SingleGUI_DynamicPath {
         public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t ) {
             // ↓ Dynamic Path
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH, ExporterTexts.t_DynamicPath ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
+                string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count )
+                ) ) {
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         ExporterUtils.Indent( 1 );
@@ -49,7 +52,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↑ Dynamic Path
 
             // ↓ Dynamic Path Preview
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
+            if ( ExporterUtils.EditorPrefFoldout(
+                Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         // プレビュー
