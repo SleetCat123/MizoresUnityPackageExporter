@@ -9,6 +9,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_OBJECTS = "Objects";
         public const string TEXT_REFERENCES = "References";
         public const string TEXT_EXCLUDES = "Excludes";
+        public const string TEXT_EXCLUDES_PREVIEW = "Excludes Preview";
         public const string TEXT_EXCLUDE_OBJECTS = "Exclude Objects";
         public const string TEXT_DYNAMIC_PATH = "Dynamic Path";
         public const string TEXT_DYNAMIC_PATH_PREVIEW = "Dynamic Path Preview";
@@ -38,6 +39,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_Objects => TEXT_OBJECTS;
         public static string t_References => TEXT_REFERENCES;
         public static string t_Excludes => TEXT_EXCLUDES;
+        public static string t_ExcludesPreview => TEXT_EXCLUDES_PREVIEW;
         public static string t_ExcludeObjects => TEXT_EXCLUDE_OBJECTS;
         public static string t_DynamicPath => TEXT_DYNAMIC_PATH;
         public static string t_DynamicPathPreview => TEXT_DYNAMIC_PATH_PREVIEW;

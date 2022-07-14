@@ -46,9 +46,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public override void OnInspectorGUI( ) {
             if ( targets.Length != 1 ) {
-                MultipleEditor.EditMultiple( this );
+                MultipleEditor.MultipleEditorGUI.EditMultiple( this );
             } else {
-                SingleEditor.EditSingle( this );
+                SingleEditor.SingleEditorGUI.EditSingle( this );
             }
 
             if ( string.IsNullOrEmpty( HelpBoxText ) == false ) {

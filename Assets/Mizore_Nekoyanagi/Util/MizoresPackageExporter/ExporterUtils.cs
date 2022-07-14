@@ -45,11 +45,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             bool result = true;
 #if UNITY_EDITOR
             bool before = EditorPrefs.GetBool( key, true );
-            if ( before ) {
-                label = "▼ " + label;
-            } else {
-                label = "▶ " + label;
-            }
+            //if ( before ) {
+            //    label = "▼ " + label;
+            //} else {
+            //    label = "▶ " + label;
+            //}
             result= EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
             if ( before != result ) {

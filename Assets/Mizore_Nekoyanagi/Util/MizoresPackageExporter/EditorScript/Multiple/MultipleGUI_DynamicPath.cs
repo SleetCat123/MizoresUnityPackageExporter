@@ -2,45 +2,20 @@
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 {
+
 #if UNITY_EDITOR
-    public static class MultipleEditor
+    public static class MultipleGUI_DynamicPath
     {
-        /// <summary>
-        /// 複数オブジェクトの編集
-        /// </summary>
-        public static void EditMultiple( UnityPackageExporterEditor ed ) {
-            var targets = ed.targets;
-            var t = ed.t;
-
-            if ( targets.Length <= 1 ) return;
-            Undo.RecordObjects( targets, ExporterTexts.t_Undo );
-
-            var targetlist = targets.Select( v => v as MizoresPackageExporter );
-
-            // Targets
-            GUI.enabled = false;
-            foreach ( var item in targetlist ) {
-                EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-            }
-            GUI.enabled = true;
-
-            ExporterUtils.SeparateLine( );
-
-            // ↓ Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_OBJECT, ExporterTexts.t_Objects ) ) {
-                GUIElement_PackagePrefsElementList.DrawMultiple<Object>( t, targetlist, ( v ) => v.objects );
-            }
-            // ↑ Objects
-
+        public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath.Count );
             // ↓ Dynamic Path
-            EditorGUILayout.Separator( );
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH, ExporterTexts.t_DynamicPath ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
@@ -109,7 +84,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ↑ Dynamic Path
 
             // ↓ Dynamic Path Preview
-            EditorGUILayout.Separator( );
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
@@ -136,92 +110,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
             }
             // ↑ Dynamic Path Preview
-
-            ExporterUtils.SeparateLine( );
-            // ↓ References
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_REFERENCES, ExporterTexts.t_References ) ) {
-                GUIElement_PackagePrefsElementList.DrawMultiple<DefaultAsset>( t, targetlist, ( v ) => v.references );
-            }
-            // ↑ References
-
-            ExporterUtils.SeparateLine( );
-
-            // ↓ Exclude Objects
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS, ExporterTexts.t_ExcludeObjects ) ) {
-                GUIElement_PackagePrefsElementList.DrawMultiple<Object>( t, targetlist, ( v ) => v.excludeObjects );
-            }
-            // ↑ Exclude Objects
-            ExporterUtils.SeparateLine( );
-
-            // ↓ Version File
-            EditorGUILayout.LabelField( ExporterTexts.t_VersionFile, EditorStyles.boldLabel );
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                var samevalue_in_all = targetlist.All( v => t.versionFile.Object == v.versionFile.Object );
-
-                EditorGUI.BeginChangeCheck( );
-                Object obj;
-                if ( samevalue_in_all ) {
-                    obj = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
-                } else {
-                    obj = EditorGUILayout.ObjectField( null, typeof( TextAsset ), false );
-                }
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    foreach ( var item in targetlist ) {
-                        item.versionFile.Object = obj;
-                        item.UpdateExportVersion( );
-                        EditorUtility.SetDirty( item );
-                    }
-                }
-
-                EditorGUI.BeginChangeCheck( );
-                string path;
-                if ( samevalue_in_all ) {
-                    path = EditorGUILayout.TextField( t.versionFile.Path );
-                } else {
-                    path = EditorGUILayout.TextField( string.Empty );
-                }
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    // パスが変更されたらオブジェクトを置き換える
-                    Object o = AssetDatabase.LoadAssetAtPath<TextAsset>( path );
-                    if ( o != null ) {
-                        foreach ( var item in targetlist ) {
-                            item.versionFile.Object = o;
-                            item.UpdateExportVersion( );
-                            EditorUtility.SetDirty( item );
-                        }
-                    }
-                }
-            }
-            // ↑ Version File
-
-            ExporterUtils.SeparateLine( );
-
-            EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
-            // Check Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
-                foreach ( var item in targetlist ) {
-                    item.AllFileExists( );
-                }
-            }
-
-            // Export Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
-                foreach ( var item in targetlist ) {
-                    item.Export( );
-                }
-            }
-
-            // 出力先一覧
-            EditorGUILayout.Separator( );
-            foreach ( var item in targets ) {
-                var path = ( item as MizoresPackageExporter ).ExportPath;
-                EditorGUILayout.LabelField( new GUIContent( path, path ) );
-            }
-            if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_OPEN, GUILayout.Width( 60 ) ) ) {
-                EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
-            }
         }
     }
 #endif
