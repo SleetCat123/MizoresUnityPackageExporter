@@ -57,11 +57,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                         string previewpath = t.ConvertDynamicPath( t.excludes[i].value );
                         ExporterUtils.Indent( 1 );
                         EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
-                            using ( new EditorGUI.DisabledGroupScope( true ) ) {
-                                EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 140 ) );
-                            }
+
+                        EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                        using ( new EditorGUI.DisabledGroupScope( true ) ) {
+                            EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 140 ) );
                         }
                     }
                 }

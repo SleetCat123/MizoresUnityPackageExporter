@@ -39,7 +39,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↑ Objects
 
             // ↓ Dynamic Path
-            MultipleGUI_DynamicPath.Draw( ed, t, targetlist );
+            MultipleGUI_Excludes.Draw( ed, t, targetlist );
             // ↑ Dynamic Path
 
             ExporterUtils.SeparateLine( );
@@ -56,6 +56,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
             }
             // ↑ Exclude Objects
+
+            // ↓ Excludes
+            MultipleGUI_Excludes.Draw( ed, t, targetlist );
+            // ↑ Excludes
+
             ExporterUtils.SeparateLine( );
 
             // ↓ Version File

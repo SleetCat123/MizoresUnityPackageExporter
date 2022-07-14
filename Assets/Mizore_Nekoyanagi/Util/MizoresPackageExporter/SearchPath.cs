@@ -7,8 +7,10 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     [System.Serializable]
-    public class SearchPath
+    public class SearchPath: System.IEquatable<SearchPath>
     {
+        public const SearchPathType DUMMY_TYPE = (SearchPathType)100;
+
         public SearchPathType searchType;
         public string value;
 
@@ -19,6 +21,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public SearchPath( SearchPathType searchType, string value ) {
             this.searchType = searchType;
             this.value = value;
+        }
+
+        public override int GetHashCode( ) {
+            return value.GetHashCode( ) ^ searchType.GetHashCode( );
+        }
+        public bool Equals( SearchPath other ) {
+            return this.value == other.value && this.searchType == other.searchType;
+        }
+        public override bool Equals( object obj ) {
+            return Equals( (SearchPath)obj );
+        }
+        public static bool operator ==( SearchPath a, SearchPath b ) {
+            return a.Equals( b );
+        }
+        public static bool operator !=( SearchPath a, SearchPath b ) {
+            return !a.Equals( b );
         }
 
         public bool IsMatch( string path ) {
