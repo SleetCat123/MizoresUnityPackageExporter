@@ -57,6 +57,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             bool before = EditorPrefs.GetBool( key, true );
             Rect rect = EditorGUILayout.GetControlRect( );
 
+            result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
+            // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
+
             if ( onDragPerform != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
                 var eventType = Event.current.type;
                 if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
@@ -66,11 +69,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     DragAndDrop.AcceptDrag( );
                     Event.current.Use( );
                     onDragPerform( DragAndDrop.objectReferences );
+                    result = true;
                 }
             }
 
-            result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
-            // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
             if ( before != result ) {
                 EditorPrefs.SetBool( key, result );
             }

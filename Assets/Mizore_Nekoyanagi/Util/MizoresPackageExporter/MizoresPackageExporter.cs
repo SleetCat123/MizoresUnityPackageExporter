@@ -128,13 +128,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return result;
         }
         IEnumerable<string> GetReferencesPath( ) {
-            var list1 = references.
-                Where( v => !string.IsNullOrWhiteSpace( v.Path ) && Directory.Exists( v.Path ) ).
-                SelectMany( v => Directory.GetFiles( v.Path, "*", SearchOption.AllDirectories ) );
-            var result = list1;
+            List<string> result = new List<string>( );
+            foreach ( var v in references ) {
+                if ( string.IsNullOrWhiteSpace( v.Path ) ) continue;
+                if ( File.Exists( v.Path ) ) {
+                    result.Add( v.Path );
+                } else if ( Directory.Exists( v.Path ) ) {
+                    result.AddRange( Directory.GetFiles( v.Path, "*", SearchOption.AllDirectories ) );
+                }
+            }
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
-            result = result.Select( v => v.Replace( '\\', '/' ) );
-            return result;
+            return result.Select( v => v.Replace( '\\', '/' ) );
         }
         public IEnumerable<string> GetAllPath_Full( ) {
 #if UNITY_EDITOR

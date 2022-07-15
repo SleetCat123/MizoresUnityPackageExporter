@@ -54,7 +54,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
                 string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) )
                 ) ) {
-                MultipleGUIElement_PackagePrefsElementList.Draw<DefaultAsset>( t, targetlist, ( v ) => v.references );
+                MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
             }
             // ↑ References
 

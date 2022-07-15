@@ -50,10 +50,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
                 string.Format( ExporterTexts.t_References, t.references.Count ),
-                ( objectReferences ) => Filter<DefaultAsset>( objectReferences ),
-                ( objectReferences ) => AddObjects<DefaultAsset>( t.references, objectReferences )
+                ( objectReferences ) => Filter<Object>( objectReferences ),
+                ( objectReferences ) => AddObjects<Object>( t.references, objectReferences )
                 ) ) {
-                SingleGUIElement_PackagePrefsElementList.Draw<DefaultAsset>( t, t.references );
+                SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.references );
             }
             // ↑ References
 
