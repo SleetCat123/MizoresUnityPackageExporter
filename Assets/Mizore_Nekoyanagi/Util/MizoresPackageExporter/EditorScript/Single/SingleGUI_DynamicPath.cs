@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using System.Collections.Generic;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,11 +10,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
 #if UNITY_EDITOR
     public static class SingleGUI_DynamicPath {
+        static bool Filter( Object[] objectReferences ) {
+            return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
+        }
+        static void AddObjects( List<string> list, Object[] objectReferences ) {
+            list.AddRange(
+                objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => AssetDatabase.GetAssetPath( v.GetInstanceID( ) ) )
+                );
+        }
         public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t ) {
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
-                string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count )
+                string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count ),
+                Filter,
+                ( objectReferences ) => AddObjects( t.dynamicpath, objectReferences )
                 ) ) {
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
