@@ -41,22 +41,35 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
 #endif
         }
-        public static bool EditorPrefFoldout( string key, string label ) {
-            return EditorPrefFoldout( key, label, label );
+
+        public static void DiffLabel( ) {
+#if UNITY_EDITOR
+            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
+#endif
         }
-        public static bool EditorPrefFoldout( string key, string labelOnEnabled, string labelOnDisabled ) {
+
+        public static bool EditorPrefFoldout( string key, string label ) {
+            return EditorPrefFoldout( key, label, null, null );
+        }
+        public static bool EditorPrefFoldout( string key, string label, System.Func<Object[], bool> canDragDrop, System.Action<Object[]> onDragPerform ) {
             bool result = true;
 #if UNITY_EDITOR
-            string label;
             bool before = EditorPrefs.GetBool( key, true );
-            if ( before ) {
-                //label = "▼ " + label;
-                label = labelOnEnabled;
-            } else {
-                //label = "▶ " + label;
-                label = labelOnDisabled;
+            Rect rect = EditorGUILayout.GetControlRect( );
+
+            if ( onDragPerform != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
+                var eventType = Event.current.type;
+                if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                }
+                if ( eventType == EventType.DragPerform ) {
+                    DragAndDrop.AcceptDrag( );
+                    Event.current.Use( );
+                    onDragPerform( DragAndDrop.objectReferences );
+                }
             }
-            result = EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
+
+            result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
             if ( before != result ) {
                 EditorPrefs.SetBool( key, result );

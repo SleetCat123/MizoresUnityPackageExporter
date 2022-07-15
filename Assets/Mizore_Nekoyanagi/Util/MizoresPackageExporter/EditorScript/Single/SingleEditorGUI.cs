@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using System.Linq;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -7,6 +9,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
     public static class SingleEditorGUI
     {
+        static bool Filter<T>( Object[] objectReferences ) {
+            return objectReferences.Any( v => EditorUtility.IsPersistent( v ) && v is T );
+        }
+        static void AddObjects<T>( List<PackagePrefsElement> list, Object[] objectReferences ) {
+            list.AddRange(
+                objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) && v is T ).
+                Select( v => new PackagePrefsElement( v ) )
+                );
+        }
         public static void EditSingle( UnityPackageExporterEditor ed ) {
             var t = ed.t;
 
@@ -20,7 +32,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↓ Objects
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_OBJECT,
-                string.Format( ExporterTexts.t_Objects, t.objects.Count )
+                string.Format( ExporterTexts.t_Objects, t.objects.Count ),
+                ( objectReferences ) => Filter<Object>( objectReferences ),
+                ( objectReferences ) => AddObjects<Object>( t.objects, objectReferences )
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.objects );
             }
@@ -35,7 +49,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↓ References
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
-                string.Format( ExporterTexts.t_References, t.references.Count )
+                string.Format( ExporterTexts.t_References, t.references.Count ),
+                ( objectReferences ) => Filter<DefaultAsset>( objectReferences ),
+                ( objectReferences ) => AddObjects<DefaultAsset>( t.references, objectReferences )
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<DefaultAsset>( t, t.references );
             }
@@ -46,7 +62,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↓ Exclude Objects
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
-                string.Format( ExporterTexts.t_ExcludeObjects, t.excludeObjects.Count )
+                string.Format( ExporterTexts.t_ExcludeObjects, t.excludeObjects.Count ),
+                ( objectReferences ) => Filter<Object>( objectReferences ),
+                ( objectReferences ) => AddObjects<Object>( t.excludeObjects, objectReferences )
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.excludeObjects );
             }

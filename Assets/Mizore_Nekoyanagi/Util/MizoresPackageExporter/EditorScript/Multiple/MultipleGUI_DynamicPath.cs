@@ -30,7 +30,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         } else {
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
-                            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
+                            DiffLabel( );
                         }
 
                         EditorGUI.BeginChangeCheck( );

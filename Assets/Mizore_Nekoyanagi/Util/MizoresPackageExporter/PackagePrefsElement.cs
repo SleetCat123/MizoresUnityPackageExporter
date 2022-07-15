@@ -13,6 +13,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [SerializeField]
         private string path;
 
+        public PackagePrefsElement( ) { }
+        public PackagePrefsElement( Object obj ) {
+            this.Object = obj;
+        }
+
         public Object Object {
             get {
 #if UNITY_EDITOR

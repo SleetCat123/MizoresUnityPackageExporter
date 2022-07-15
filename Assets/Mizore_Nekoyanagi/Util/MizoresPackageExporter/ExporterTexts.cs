@@ -15,6 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_DYNAMIC_PATH_PREVIEW = "Dynamic Path Preview";
         public const string TEXT_DYNAMIC_PATH_VARIABLES = "Dynamic Path Variables ({0})";
         public const string TEXT_VERSION_FILE = "Version File";
+        public const string TEXT_VERSION_PREFIX = "Prefix";
         public const string TEXT_BUTTON_CHECK = "Check";
         public const string TEXT_BUTTON_EXPORT = "Export to unitypackage";
         public const string TEXT_BUTTON_EXPORT_M = "Export to unitypackages";
@@ -45,6 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_DynamicPathPreview => TEXT_DYNAMIC_PATH_PREVIEW;
         public static string t_DynamicPath_Variables => TEXT_DYNAMIC_PATH_VARIABLES;
         public static string t_VersionFile => TEXT_VERSION_FILE;
+        public static string t_VersionPrefix => TEXT_VERSION_PREFIX;
         public static string t_Label_ExportPackage => TEXT_BUTTON_EXPORT;
         public static string t_Button_Check => TEXT_BUTTON_CHECK;
         public static string t_Button_ExportPackage => TEXT_BUTTON_EXPORT;
