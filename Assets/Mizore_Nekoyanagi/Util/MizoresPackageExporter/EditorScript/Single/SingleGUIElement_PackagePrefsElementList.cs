@@ -22,7 +22,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 
                     EditorGUI.BeginChangeCheck( );
                     string path = item.Path;
-                    path = EditorGUILayout.TextField( path );
+                    Rect textrect = EditorGUILayout.GetControlRect( );
+                    path = EditorGUI.TextField( textrect, path );
+                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                        GUI.changed = true;
+                        path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                    }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         // パスが変更されたらオブジェクトを置き換える
                         Object o = AssetDatabase.LoadAssetAtPath<T>( path );

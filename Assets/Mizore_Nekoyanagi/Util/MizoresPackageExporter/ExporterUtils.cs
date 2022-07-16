@@ -48,6 +48,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
 
+        public static bool Filter_HasPersistentObject( Object[] objectReferences ) {
+            return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
+        }
+        public static bool DragDrop( Rect rect, System.Func<Object[], bool> canDragDrop ) {
+            if ( canDragDrop != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
+                var eventType = Event.current.type;
+                if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                }
+                if ( eventType == EventType.DragPerform ) {
+                    DragAndDrop.AcceptDrag( );
+                    Event.current.Use( );
+                    return true;
+                }
+            }
+            return false;
+        }
         public static bool EditorPrefFoldout( string key, string label ) {
             return EditorPrefFoldout( key, label, null, null );
         }
@@ -60,17 +77,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
 
-            if ( onDragPerform != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
-                var eventType = Event.current.type;
-                if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                }
-                if ( eventType == EventType.DragPerform ) {
-                    DragAndDrop.AcceptDrag( );
-                    Event.current.Use( );
-                    onDragPerform( DragAndDrop.objectReferences );
-                    result = true;
-                }
+            if ( DragDrop( rect, canDragDrop ) ) {
+                onDragPerform( DragAndDrop.objectReferences );
+                result = true;
             }
 
             if ( before != result ) {

@@ -9,24 +9,23 @@ using UnityEditor;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
 #if UNITY_EDITOR
-    public static class SingleGUI_DynamicPath {
-        static bool Filter( Object[] objectReferences ) {
-            return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
-        }
-        static void AddObjects( List<string> list, Object[] objectReferences ) {
+    public static class SingleGUI_DynamicPath
+    {
+        static void AddObjects( MizoresPackageExporter t, List<string> list, Object[] objectReferences ) {
             list.AddRange(
                 objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
-                Select( v => AssetDatabase.GetAssetPath( v.GetInstanceID( ) ) )
+                Select( v => AssetDatabase.GetAssetPath( v ) )
                 );
+            EditorUtility.SetDirty( t );
         }
         public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t ) {
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
                 string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count ),
-                Filter,
-                ( objectReferences ) => AddObjects( t.dynamicpath, objectReferences )
+                ExporterUtils.Filter_HasPersistentObject,
+                ( objectReferences ) => AddObjects( t, t.dynamicpath, objectReferences )
                 ) ) {
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
@@ -35,8 +34,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 
                         // 値編集
                         EditorGUI.BeginChangeCheck( );
-                        t.dynamicpath[i] = EditorGUILayout.TextField( t.dynamicpath[i] );
+                        Rect textrect = EditorGUILayout.GetControlRect( );
+                        t.dynamicpath[i] = EditorGUI.TextField( textrect, t.dynamicpath[i] );
                         t.dynamicpath[i] = ed.BrowseButtons( t.dynamicpath[i] );
+                        if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                            GUI.changed = true;
+                            t.dynamicpath[i] = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                        }
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             EditorUtility.SetDirty( t );
                         }

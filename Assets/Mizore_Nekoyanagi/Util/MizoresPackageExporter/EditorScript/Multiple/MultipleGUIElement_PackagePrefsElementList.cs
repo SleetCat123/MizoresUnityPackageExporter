@@ -42,11 +42,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     }
 
                     EditorGUI.BeginChangeCheck( );
+                    Rect textrect = EditorGUILayout.GetControlRect( );
                     string path;
                     if ( samevalue_in_all ) {
-                        path = EditorGUILayout.TextField( getlist( t )[i].Path );
+                        path = EditorGUI.TextField( textrect, getlist( t )[i].Path );
                     } else {
-                        path = EditorGUILayout.TextField( string.Empty );
+                        path = EditorGUI.TextField( textrect, string.Empty );
+                    }
+                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                        GUI.changed = true;
+                        path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         // パスが変更されたらオブジェクトを置き換える

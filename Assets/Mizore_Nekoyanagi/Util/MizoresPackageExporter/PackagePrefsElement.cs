@@ -45,7 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 if ( obj != null ) {
-                    path = AssetDatabase.GetAssetPath( obj.GetInstanceID( ) );
+                    path = AssetDatabase.GetAssetPath( obj );
                 }
 #endif
                 return path;
