@@ -15,6 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_VersionFile ) ) {
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
                     var samevalue_in_all_obj = targetlist.All( v => t.versionFile.Object == v.versionFile.Object );
 
                     EditorGUI.BeginChangeCheck( );
@@ -53,23 +54,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     }
 
                 }
-                // Version Prefix
+                // Version Format
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    var samevalue_in_all_prefix = targetlist.All( v => t.versionPrefix == v.versionPrefix );
+                    ExporterUtils.Indent( 1 );
+                    var samevalue_in_all = targetlist.All( v => t.versionFormat == v.versionFormat );
                     EditorGUI.BeginChangeCheck( );
-                    string versionPrefix;
-                    if ( samevalue_in_all_prefix ) {
-                        versionPrefix = EditorGUILayout.TextField( ExporterTexts.t_VersionPrefix, t.versionPrefix );
+                    string value;
+                    if ( samevalue_in_all ) {
+                        value = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, t.versionFormat );
                     } else {
                         ExporterUtils.DiffLabel( );
-                        versionPrefix = EditorGUILayout.TextField( ExporterTexts.t_VersionPrefix, string.Empty );
+                        value = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, string.Empty );
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
-                            item.versionPrefix = versionPrefix;
+                            item.versionFormat = value;
                             item.UpdateExportVersion( );
                             EditorUtility.SetDirty( item );
                         }
+                    }
+                }
+            }
+            // Package Name
+            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                var samevalue_in_all = targetlist.All( v => t.packageName == v.packageName );
+                EditorGUI.BeginChangeCheck( );
+                string value;
+                if ( samevalue_in_all ) {
+                    value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, t.packageName );
+                } else {
+                    ExporterUtils.DiffLabel( );
+                    value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, string.Empty );
+                }
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    foreach ( var item in targetlist ) {
+                        item.packageName = value;
+                        item.UpdateExportVersion( );
+                        EditorUtility.SetDirty( item );
                     }
                 }
             }

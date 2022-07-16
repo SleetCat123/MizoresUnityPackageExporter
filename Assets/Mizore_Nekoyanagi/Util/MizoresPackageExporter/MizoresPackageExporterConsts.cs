@@ -15,4 +15,11 @@
         public const string EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES = EDITOR_PREF_PREFIX + "Foldout_DynamicPathVariables";
         public const string EDITOR_PREF_FOLDOUT_VERSIONFILE = EDITOR_PREF_PREFIX + "Foldout_VersionFile";
     }
+    public static class MizoresPackageExporterConsts_Keys
+    {
+        public const string KEY_NAME= "%name%";
+        public const string KEY_VERSION = "%version%";
+        public const string KEY_FORMATTED_VERSION = "%versionf%";
+        public const string KEY_PACKAGE_NAME= "%packagename%";
+    }
 }

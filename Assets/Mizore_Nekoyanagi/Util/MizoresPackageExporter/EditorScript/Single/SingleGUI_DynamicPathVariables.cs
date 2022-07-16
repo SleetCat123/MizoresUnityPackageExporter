@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts_Keys;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -8,35 +9,31 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
     public static class SingleGUI_DynamicPathVariables
     {
+        const int SPACE_WIDTH = 30;
+        const int BUTTON_WIDTH = 15;
+        static void DrawBuiltInVariable( string key, string value ) {
+            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                var space_width = GUILayout.Width( SPACE_WIDTH );
+                var button_width = GUILayout.Width( BUTTON_WIDTH );
+                EditorGUILayout.LabelField( string.Empty, space_width );
+                EditorGUILayout.TextField( key.Replace( "%", string.Empty ) );
+                EditorGUILayout.TextField( value );
+                EditorGUILayout.LabelField( string.Empty, space_width );
+                EditorGUILayout.LabelField( string.Empty, button_width );
+            }
+        }
         public static void Draw( MizoresPackageExporter t ) {
-            if ( ExporterUtils.EditorPrefFoldout( 
+            if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES,
                 string.Format( ExporterTexts.t_DynamicPath_Variables, t.variables.Count )
                 ) ) {
-                var space_width = GUILayout.Width( 30 );
-                var button_width = GUILayout.Width( 15 );
+                var space_width = GUILayout.Width( SPACE_WIDTH );
+                var button_width = GUILayout.Width( BUTTON_WIDTH );
                 GUI.enabled = false;
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.TextField( "name" );
-                    EditorGUILayout.TextField( t.name );
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.LabelField( string.Empty, button_width );
-                }
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.TextField( "version" );
-                    EditorGUILayout.TextField( t.ExportVersion );
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.LabelField( string.Empty, button_width );
-                }
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.TextField( "versionprefix" );
-                    EditorGUILayout.TextField( t.versionPrefix );
-                    EditorGUILayout.LabelField( string.Empty, space_width );
-                    EditorGUILayout.LabelField( string.Empty, button_width );
-                }
+                DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
+                DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.ExportVersion );
+                DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.FormattedVersion );
+                DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.PackageName );
                 GUI.enabled = true;
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {

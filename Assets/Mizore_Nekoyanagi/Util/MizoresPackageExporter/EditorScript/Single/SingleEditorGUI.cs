@@ -23,6 +23,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
         public static void EditSingle( UnityPackageExporterEditor ed ) {
             var t = ed.t;
 
+            if ( t.debugmode ) {
+                EditorGUILayout.LabelField( "[DEBUG]" );
+            }
+
             using ( var s = new EditorGUI.DisabledGroupScope( true ) ) {
                 EditorGUILayout.ObjectField( t, typeof( MizoresPackageExporter ), false );
             }

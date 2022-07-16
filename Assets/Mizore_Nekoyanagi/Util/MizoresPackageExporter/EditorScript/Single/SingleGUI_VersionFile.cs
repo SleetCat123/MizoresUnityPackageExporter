@@ -10,7 +10,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
         public static void Draw( MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_VersionFile ) ) {
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
                     EditorGUI.BeginChangeCheck( );
                     t.versionFile.Object = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
                     if ( EditorGUI.EndChangeCheck( ) ) {
@@ -31,10 +32,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                     }
                 }
                 EditorGUI.BeginChangeCheck( );
-                t.versionPrefix = EditorGUILayout.TextField( ExporterTexts.t_VersionPrefix, t.versionPrefix );
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    t.versionFormat = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, t.versionFormat );
+                }
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     EditorUtility.SetDirty( t );
                 }
+            }
+            EditorGUI.BeginChangeCheck( );
+            t.packageName = EditorGUILayout.TextField( ExporterTexts.t_PackageName, t.packageName );
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                EditorUtility.SetDirty( t );
             }
         }
     }

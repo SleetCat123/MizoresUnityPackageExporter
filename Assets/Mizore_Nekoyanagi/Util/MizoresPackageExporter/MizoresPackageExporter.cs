@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts_Keys;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,16 +34,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
         public PackagePrefsElement versionFile;
-        public string versionPrefix = "-";
+        public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
+        public string packageName = $"{Const_Keys.KEY_NAME}{Const_Keys.KEY_FORMATTED_VERSION}";
 
+        public string PackageName {
+            get {
+                return ConvertDynamicPath( packageName );
+            }
+        }
         public string ExportPath {
             get {
-                var version = ExportVersion;
-                if ( string.IsNullOrWhiteSpace( version ) ) {
-                    return Const.EXPORT_FOLDER_PATH + this.name + ".unitypackage";
-                } else {
-                    return Const.EXPORT_FOLDER_PATH + this.name + versionPrefix + version + ".unitypackage";
-                }
+                return Const.EXPORT_FOLDER_PATH + PackageName + ".unitypackage";
             }
         }
         static Regex _invalidCharsRegex;
@@ -72,6 +74,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
 #endif
                 return ( string.IsNullOrWhiteSpace( _exportVersion ) ) ? string.Empty : _exportVersion;
+            }
+        }
+        public string FormattedVersion {
+            get {
+                if ( string.IsNullOrWhiteSpace( ExportVersion ) ) {
+                    return string.Empty;
+                } else {
+                    return ConvertDynamicPath( versionFormat );
+                }
             }
         }
         public void UpdateExportVersion( ) {
@@ -111,13 +122,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public string ConvertDynamicPath( string path ) {
+            return ConvertDynamicPath_Main( path, 0 );
+        }
+        string ConvertDynamicPath_Main( string path, int recursiveCount ) {
             if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
-            foreach ( var kvp in variables ) {
-                path = path.Replace( string.Format( "%{0}%", kvp.Key ), kvp.Value );
+            if ( 1 < recursiveCount ) {
+                return path;
             }
-            path = path.Replace( "%name%", name );
-            path = path.Replace( "%version%", ExportVersion );
-            path = path.Replace( "%versionprefix%", versionPrefix );
+            recursiveCount += 1;
+            string key = null;
+            foreach ( var kvp in variables ) {
+                key = string.Format( "%{0}%", kvp.Key );
+                path = path.Replace( key, kvp.Value );
+            }
+
+            key = Const_Keys.KEY_NAME;
+            path = path.Replace( key, name );
+
+            key = Const_Keys.KEY_VERSION;
+            path = path.Replace( key, ExportVersion );
+
+            key = Const_Keys.KEY_FORMATTED_VERSION;
+            if ( path.Contains( key ) ) {
+                if ( string.IsNullOrWhiteSpace( ExportVersion ) ) {
+                    path = path.Replace( key, string.Empty );
+                } else {
+                    path = path.Replace( key, ConvertDynamicPath_Main( versionFormat, recursiveCount ) );
+                }
+            }
+
+            key = Const_Keys.KEY_PACKAGE_NAME;
+            if ( path.Contains( key ) ) {
+                var str = ConvertDynamicPath_Main( packageName, recursiveCount );
+                // ファイル名に使用できない文字を_に置き換え
+                str = InvalidCharsRegex.Replace( str, "_" );
+                path = path.Replace( key, str );
+            }
+
             return path;
         }
         public IEnumerable<string> GetAllPath( ) {
