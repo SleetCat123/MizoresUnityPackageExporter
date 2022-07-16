@@ -126,7 +126,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         string ConvertDynamicPath_Main( string path, int recursiveCount ) {
             if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
-            if ( 1 < recursiveCount ) {
+            if ( 2 < recursiveCount ) {
                 return path;
             }
             recursiveCount += 1;
