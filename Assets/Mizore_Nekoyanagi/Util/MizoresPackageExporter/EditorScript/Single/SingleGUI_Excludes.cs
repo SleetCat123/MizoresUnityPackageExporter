@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using System.Collections.Generic;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -7,11 +9,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
     public static class SingleGUI_Excludes
     {
+        static void AddObjects( MizoresPackageExporter t, List<SearchPath> list, Object[] objectReferences ) {
+            list.AddRange(
+                objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => new SearchPath( SearchPathType.Exact, AssetDatabase.GetAssetPath( v ) ) )
+                );
+            EditorUtility.SetDirty( t );
+        }
         public static void Draw( MizoresPackageExporter t ) {
             // ↓ Excludes
-            if ( ExporterUtils.EditorPrefFoldout( 
+            if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
-                string.Format( ExporterTexts.t_Excludes, t.excludes.Count )
+                string.Format( ExporterTexts.t_Excludes, t.excludes.Count ),
+                ExporterUtils.Filter_HasPersistentObject,
+                ( objectReferences ) => AddObjects( t, t.excludes, objectReferences )
                 ) ) {
                 for ( int i = 0; i < t.excludes.Count; i++ ) {
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
@@ -21,8 +33,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 
                         EditorGUI.BeginChangeCheck( );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            item.value = EditorGUILayout.TextField( item.value );
+                            Rect textrect = EditorGUILayout.GetControlRect( );
+                            item.value = EditorGUI.TextField( textrect, item.value );
                             item.searchType = (SearchPathType)EditorGUILayout.EnumPopup( item.searchType, GUILayout.Width( 70 ) );
+                            if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                                GUI.changed = true;
+                                item.value = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                            }
                         }
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             EditorUtility.SetDirty( t );

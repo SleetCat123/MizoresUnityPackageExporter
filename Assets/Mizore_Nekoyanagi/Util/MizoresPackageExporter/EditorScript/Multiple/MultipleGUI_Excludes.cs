@@ -36,11 +36,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             EditorGUI.BeginChangeCheck( );
+                            Rect textrect = EditorGUILayout.GetControlRect( );
                             string value;
                             if ( samevalue_in_all_value ) {
-                                value = EditorGUILayout.TextField( t.excludes[i].value );
+                                value = EditorGUI.TextField( textrect, t.excludes[i].value );
                             } else {
-                                value = EditorGUILayout.TextField( string.Empty );
+                                value = EditorGUI.TextField( textrect, string.Empty );
+                            }
+                            if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                                GUI.changed = true;
+                                value = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
                             }
                             if ( EditorGUI.EndChangeCheck( ) ) {
                                 foreach ( var item in targetlist ) {
