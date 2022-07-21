@@ -1,5 +1,6 @@
 # MizoresPackageExporter
-![Photo20220712000604](https://user-images.githubusercontent.com/37854026/178295998-3e0fc1de-1af0-4eee-8511-d347da2bfbe7.png)
+![Photo20220721215253](https://user-images.githubusercontent.com/37854026/180218003-c003bf99-c605-4ce0-a0ea-fd16de4fdfab.png)
+
 
 予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるスクリプト（ScriptableObject）です。  
 エクスポートの手間が減るほか、
