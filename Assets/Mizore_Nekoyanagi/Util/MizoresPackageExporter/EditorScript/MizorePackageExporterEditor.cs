@@ -7,14 +7,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
 #if UNITY_EDITOR
     [CustomEditor( typeof( MizoresPackageExporter ) ), CanEditMultipleObjects]
-    public class UnityPackageExporterEditor : Editor
+    public class MizoresPackageExporterEditor : Editor
     {
-        public static string HelpBoxText;
-        public static MessageType HelpBoxMessageType;
-        public static string variable_key_temp;
+        public MizoresPackageExporterEditorValues values = new MizoresPackageExporterEditorValues( );
         public MizoresPackageExporter t;
         private void OnEnable( ) {
-            HelpBoxText = null;
             t = target as MizoresPackageExporter;
         }
         static string ToAssetsPath( string path ) {
@@ -51,8 +48,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 SingleEditor.SingleEditorGUI.EditSingle( this );
             }
 
-            if ( string.IsNullOrEmpty( HelpBoxText ) == false ) {
-                EditorGUILayout.HelpBox( HelpBoxText.Trim( ), HelpBoxMessageType );
+            if ( string.IsNullOrEmpty( values._helpBoxText ) == false ) {
+                EditorGUILayout.HelpBox( values._helpBoxText.Trim( ), values._helpBoxMessageType );
             }
         }
     }

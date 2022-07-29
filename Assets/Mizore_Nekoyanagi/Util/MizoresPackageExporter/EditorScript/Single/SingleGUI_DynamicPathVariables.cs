@@ -22,7 +22,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 EditorGUILayout.LabelField( string.Empty, button_width );
             }
         }
-        public static void Draw( MizoresPackageExporter t ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES,
                 string.Format( ExporterTexts.t_DynamicPath_Variables, t.variables.Count )
@@ -74,16 +74,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                     // 新規キー追加
                     EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUI.BeginChangeCheck( );
-                    UnityPackageExporterEditor.variable_key_temp = EditorGUILayout.DelayedTextField( UnityPackageExporterEditor.variable_key_temp );
+                    ed.values._variableKeyTemp = EditorGUILayout.DelayedTextField( ed.values._variableKeyTemp );
                     EditorGUILayout.LabelField( string.Empty );
-                    string temp = UnityPackageExporterEditor.variable_key_temp;
+                    string temp = ed.values._variableKeyTemp;
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
-                            UnityPackageExporterEditor.variable_key_temp = null;
+                            ed.values._variableKeyTemp = null;
                         } else {
                             // キー追加
                             t.variables.Add( temp, string.Empty );
-                            UnityPackageExporterEditor.variable_key_temp = null;
+                            ed.values._variableKeyTemp = null;
                             EditorUtility.SetDirty( t );
                         }
                     }
