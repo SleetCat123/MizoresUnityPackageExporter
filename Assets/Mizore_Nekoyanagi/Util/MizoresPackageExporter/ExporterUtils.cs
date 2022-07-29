@@ -36,17 +36,52 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return index;
         }
 
+        public static void SeparateLine( ) {
+#if UNITY_EDITOR
+            EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+#endif
+        }
+
+        public static void DiffLabel( ) {
+#if UNITY_EDITOR
+            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
+#endif
+        }
+
+        public static bool Filter_HasPersistentObject( Object[] objectReferences ) {
+            return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
+        }
+        public static bool DragDrop( Rect rect, System.Func<Object[], bool> canDragDrop ) {
+            if ( canDragDrop != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
+                var eventType = Event.current.type;
+                if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                }
+                if ( eventType == EventType.DragPerform ) {
+                    DragAndDrop.AcceptDrag( );
+                    Event.current.Use( );
+                    return true;
+                }
+            }
+            return false;
+        }
         public static bool EditorPrefFoldout( string key, string label ) {
+            return EditorPrefFoldout( key, label, null, null );
+        }
+        public static bool EditorPrefFoldout( string key, string label, System.Func<Object[], bool> canDragDrop, System.Action<Object[]> onDragPerform ) {
             bool result = true;
 #if UNITY_EDITOR
             bool before = EditorPrefs.GetBool( key, true );
-            if ( before ) {
-                label = "▼ " + label;
-            } else {
-                label = "▶ " + label;
-            }
-            result= EditorGUI.BeginFoldoutHeaderGroup( EditorGUILayout.GetControlRect( ), before, label );
+            Rect rect = EditorGUILayout.GetControlRect( );
+
+            result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
+
+            if ( DragDrop( rect, canDragDrop ) ) {
+                onDragPerform( DragAndDrop.objectReferences );
+                result = true;
+            }
+
             if ( before != result ) {
                 EditorPrefs.SetBool( key, result );
             }
@@ -62,6 +97,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public MinMax( int min, int max ) {
                 this.min = min;
                 this.max = max;
+            }
+
+            public string GetRangeString( ) {
+                if ( min == max ) {
+                    return min.ToString( );
+                } else {
+                    return $"{min}-{max}";
+                }
             }
 
             public static MinMax Create<T>( IEnumerable<T> list, System.Func<T, int> func ) {

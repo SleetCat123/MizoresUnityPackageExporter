@@ -11,7 +11,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     {
         public static string HelpBoxText;
         public static MessageType HelpBoxMessageType;
-        public static Vector2 scroll;
         public static string variable_key_temp;
         public MizoresPackageExporter t;
         private void OnEnable( ) {
@@ -47,9 +46,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public override void OnInspectorGUI( ) {
             if ( targets.Length != 1 ) {
-                MultipleEditor.EditMultiple( this );
+                MultipleEditor.MultipleEditorGUI.EditMultiple( this );
             } else {
-                SingleEditor.EditSingle( this );
+                SingleEditor.SingleEditorGUI.EditSingle( this );
             }
 
             if ( string.IsNullOrEmpty( HelpBoxText ) == false ) {

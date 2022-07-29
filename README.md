@@ -1,5 +1,6 @@
 # MizoresPackageExporter
-![Photo20220712000604](https://user-images.githubusercontent.com/37854026/178295998-3e0fc1de-1af0-4eee-8511-d347da2bfbe7.png)
+![Photo20220721215253](https://user-images.githubusercontent.com/37854026/180218003-c003bf99-c605-4ce0-a0ea-fd16de4fdfab.png)
+
 
 予め指定したファイル／フォルダをunitypackageとしてまとめて出力できるスクリプト（ScriptableObject）です。  
 エクスポートの手間が減るほか、
@@ -32,7 +33,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 エクスポート対象となるファイル／フォルダのパス一覧です。  
 （存在しないパスを指定することもできますが、エクスポート時にエラーが出ます）
 
-このパスの文字列中にある%で囲まれた文字列はDynamic Path Variablesで定義された文字列に置き換えられます。  
+このパスの文字列中にある%で囲まれた文字列は下記DynamicPathVariablesで定義された文字列に置き換えられます。  
 （例：`%name%`はMizoresPackageExporterのファイル名で置換されます）
 
 例えば、**A　B　C**という名前の３つのMizoresPackageExporterのDynamic Pathに  
@@ -55,9 +56,39 @@ Dynamic Pathの文字列を実際にエクスポートされるファイルパ�
 例：左側の欄が`neko`、右側の欄が`ねこ`なら、Dynamic Path中の`%neko%`が`ねこ`という文字列に置換されます。
 ***
 
+### ◇References
+この項目に指定されているファイル／フォルダをエクスポート対象の他Assetが参照している場合、該当するファイルをエクスポート対象に加えます。
+***
+
+### ◇Exclude Objects
+この項目に指定されているファイル／フォルダはエクスポートから除外されます。
+***
+
+### ◇Excludes
+入力した条件に一致するファイルパス／フォルダパスをエクスポートから除外します。  
+%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。　　
+右のボックスで除外パスの検索方法を変更できます。
+
+- Disable：除外処理を行いません。
+- Exact：文字列と完全に一致するファイルパス／フォルダパスをエクスポートから除外します。
+- Partial：文字列と部分的に一致するファイルパス／フォルダパスをエクスポートから除外します。
+- Partial_Ignore Case：アルファベットの大文字と小文字を区別せず、文字列と部分的に一致するファイルパス／フォルダパスをエクスポートから除外します。
+- Regex：正規表現にマッチしたファイルパス／フォルダパスをエクスポートから除外します。
+- Regex_Ignore Case：アルファベットの大文字と小文字を区別せず、正規表現にマッチしたファイルパス／フォルダパスをエクスポートから除外します。
+***
+
+### ◇Excludes Preview
+Excludesの文字列を除外パスの検索で実際に使用される文字列に変換して表示します。
+***
+
 ### ◇Version File
 指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。  
-（こちらからマージしました。 https://github.com/SleetCat123/MizoresUnityPackageExporter/pull/1 ）
+Format欄を編集することでバージョンの表記方法を変更できます。
+Format欄にある%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
+***
+### ◇Package Name
+エクスポートされるunitypackageの名前を指定できます。  
+%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
 ***
 
 ### ◇Check
