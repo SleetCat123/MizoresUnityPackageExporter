@@ -188,21 +188,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             bool useReference = references_path.Any( );
 
             var list = GetAllPath( );
-            var result = new HashSet<string>( );
+            var list_include_sub = new HashSet<string>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item ) ) {
                     // サブファイル・フォルダを取得
-                    result.Add( item );
+                    list_include_sub.Add( item );
                     var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
-                        result.Add( sub.Replace( '\\', '/' ) );
+                        var path = sub.Replace( '\\', '/' );
+                        list_include_sub.Add( path );
                     }
                 }
             }
             // .metaファイルを除外
-            result = new HashSet<string>( result.Where( v => Path.GetExtension( v ) != ".meta" ) );
+            list_include_sub = new HashSet<string>( list_include_sub.Where( v => Path.GetExtension( v ) != ".meta" ) );
 
-            foreach ( var item in list ) {
+            var result = new HashSet<string>( );
+
+            foreach ( var item in list_include_sub ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( useReference ) {
                         var dependencies = AssetDatabase.GetDependencies( item, true );
