@@ -33,7 +33,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 エクスポート対象となるファイル／フォルダのパス一覧です。  
 （存在しないパスを指定することもできますが、エクスポート時にエラーが出ます）
 
-このパスの文字列中にある%で囲まれた文字列はDynamic Path Variablesで定義された文字列に置き換えられます。  
+このパスの文字列中にある%で囲まれた文字列は下記DynamicPathVariablesで定義された文字列に置き換えられます。  
 （例：`%name%`はMizoresPackageExporterのファイル名で置換されます）
 
 例えば、**A　B　C**という名前の３つのMizoresPackageExporterのDynamic Pathに  
@@ -66,6 +66,7 @@ Dynamic Pathの文字列を実際にエクスポートされるファイルパ�
 
 ### ◇Excludes
 入力した条件に一致するファイルパス／フォルダパスをエクスポートから除外します。  
+%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。　　
 右のボックスで除外パスの検索方法を変更できます。
 
 - Disable：除外処理を行いません。
@@ -82,7 +83,12 @@ Excludesの文字列を除外パスの検索で実際に使用される文字列
 
 ### ◇Version File
 指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。  
-（こちらからマージしました。 https://github.com/SleetCat123/MizoresUnityPackageExporter/pull/1 ）
+Format欄を編集することでバージョンの表記方法を変更できます。
+Format欄にある%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
+***
+### ◇Package Name
+エクスポートされるunitypackageの名前を指定できます。  
+%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
 ***
 
 ### ◇Check
