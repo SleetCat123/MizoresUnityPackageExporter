@@ -211,10 +211,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                 result.Add( dp );
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
-                                if ( result.Contains( dp ) == false ) {
-                                    // prefixがついているので追加済みかどうかの判定を行う
-                                    result.Add( ExporterTexts.t_ExportLog_DependencyPathPrefix + dp );
-                                }
+                                result.Add( dp );
                                 Debug.Log( "Dependency: " + dp );
                             } else {
                                 DEBUGLOG( "Ignore Dependency: " + dp );
