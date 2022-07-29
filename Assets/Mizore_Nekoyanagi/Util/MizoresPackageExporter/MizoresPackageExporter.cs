@@ -191,13 +191,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             var list_include_sub = new HashSet<string>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item ) ) {
-                    // サブファイル・フォルダを取得
                     list_include_sub.Add( item );
+                    // サブファイル・フォルダを取得
                     var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
                         var path = sub.Replace( '\\', '/' );
                         list_include_sub.Add( path );
                     }
+                } else {
+                    list_include_sub.Add( item );
                 }
             }
             // .metaファイルを除外
