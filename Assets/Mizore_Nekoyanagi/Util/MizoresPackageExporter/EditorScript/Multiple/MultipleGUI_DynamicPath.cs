@@ -13,7 +13,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleGUI_DynamicPath
     {
-        public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath.Count );
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(

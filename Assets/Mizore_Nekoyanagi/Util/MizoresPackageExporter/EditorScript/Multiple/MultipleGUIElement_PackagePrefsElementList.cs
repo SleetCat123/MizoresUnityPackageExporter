@@ -102,5 +102,5 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             }
         }
     }
-#endif
 }
+#endif

@@ -8,18 +8,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 {
     public static class SingleGUI_ExportPackage
     {
-        public static void Draw( MizoresPackageExporter t ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
-                t.AllFileExists( );
+                ed.values._helpBoxText = string.Empty;
+                t.AllFileExists( ed.values );
             }
 
             // Export Button
             if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
-                t.Export( );
+                ed.values._helpBoxText = string.Empty;
+                t.Export( ed.values );
             }
 
             // Open Button
@@ -35,5 +35,5 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             }
         }
     }
-#endif
 }
+#endif

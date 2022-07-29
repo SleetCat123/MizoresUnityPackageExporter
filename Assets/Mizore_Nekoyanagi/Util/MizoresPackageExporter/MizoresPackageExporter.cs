@@ -188,21 +188,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             bool useReference = references_path.Any( );
 
             var list = GetAllPath( );
-            var result = new HashSet<string>( );
+            var list_include_sub = new HashSet<string>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item ) ) {
+                    list_include_sub.Add( item );
                     // サブファイル・フォルダを取得
-                    result.Add( item );
                     var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
-                        result.Add( sub.Replace( '\\', '/' ) );
+                        var path = sub.Replace( '\\', '/' );
+                        list_include_sub.Add( path );
                     }
+                } else {
+                    list_include_sub.Add( item );
                 }
             }
             // .metaファイルを除外
-            result = new HashSet<string>( result.Where( v => Path.GetExtension( v ) != ".meta" ) );
+            list_include_sub = new HashSet<string>( list_include_sub.Where( v => Path.GetExtension( v ) != ".meta" ) );
 
-            foreach ( var item in list ) {
+            var result = new HashSet<string>( );
+
+            foreach ( var item in list_include_sub ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( useReference ) {
                         var dependencies = AssetDatabase.GetDependencies( item, true );
@@ -244,7 +249,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return new string[0];
 #endif
         }
-        public bool AllFileExists( ) {
+        public bool AllFileExists( MizoresPackageExporterEditorValues values ) {
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
@@ -256,8 +261,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( File.Exists( item ) == false ) {
                         var text = string.Format( ExporterTexts.t_ExportLog_NotFound, item );
-                        UnityPackageExporterEditor.HelpBoxText += text;
-                        UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
+                        values._helpBoxText += text;
+                        values._helpBoxMessageType = MessageType.Error;
                         Debug.LogError( text );
                         result = false;
 
@@ -266,8 +271,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 } else if ( Directory.Exists( item ) == false ) {
                     var text = string.Format( ExporterTexts.t_ExportLog_NotFound, item );
-                    UnityPackageExporterEditor.HelpBoxText += text;
-                    UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
+                    values._helpBoxText += text;
+                    values._helpBoxMessageType = MessageType.Error;
                     Debug.LogError( text );
                     result = false;
 
@@ -277,24 +282,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             if ( result ) {
                 var text = ExporterTexts.t_ExportLog_AllFileExists;
-                UnityPackageExporterEditor.HelpBoxText += text;
-                UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
+                values._helpBoxText += text;
+                values._helpBoxMessageType = MessageType.Info;
                 Debug.Log( text );
             }
-            UnityPackageExporterEditor.HelpBoxText += "----------\n" + string.Join( "\n", list_full ) + "\n----------\n";
+            values._helpBoxText += "----------\n" + string.Join( "\n", list_full ) + "\n----------\n";
 #endif
             return result;
         }
-        public void Export( ) {
+        public void Export( MizoresPackageExporterEditorValues values ) {
 #if UNITY_EDITOR
             UpdateExportVersion( );
             var list = GetAllPath_Full( );
             Debug.Log( "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
-            bool exists = AllFileExists( );
+            bool exists = AllFileExists( values );
             if ( exists == false ) {
-                UnityPackageExporterEditor.HelpBoxText += ExporterTexts.t_ExportLog_Failed;
-                UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Error;
+                values._helpBoxText += ExporterTexts.t_ExportLog_Failed;
+                values._helpBoxMessageType = MessageType.Error;
                 return;
             }
 
@@ -306,8 +311,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
             EditorUtility.RevealInFinder( exportPath );
 
-            UnityPackageExporterEditor.HelpBoxText += string.Format( ExporterTexts.t_ExportLog_Success, exportPath );
-            UnityPackageExporterEditor.HelpBoxMessageType = MessageType.Info;
+            values._helpBoxText += string.Format( ExporterTexts.t_ExportLog_Success, exportPath );
+            values._helpBoxMessageType = MessageType.Info;
             Debug.Log( exportPath + "をエクスポートしました。" );
 #endif
         }

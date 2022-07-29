@@ -15,7 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
         /// <summary>
         /// 複数オブジェクトの編集
         /// </summary>
-        public static void EditMultiple( UnityPackageExporterEditor ed ) {
+        public static void EditMultiple( MizoresPackageExporterEditor ed ) {
             var targets = ed.targets;
             var t = ed.t;
 
@@ -83,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
 
             // ExportPackage
-            MultipleGUI_ExportPackage.Draw( t, targetlist );
+            MultipleGUI_ExportPackage.Draw( ed, t, targetlist );
         }
     }
 #endif

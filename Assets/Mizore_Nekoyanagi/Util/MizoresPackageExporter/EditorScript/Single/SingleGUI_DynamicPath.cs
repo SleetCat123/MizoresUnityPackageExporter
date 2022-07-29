@@ -19,7 +19,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 );
             EditorUtility.SetDirty( t );
         }
-        public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,

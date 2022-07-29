@@ -10,21 +10,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleGUI_ExportPackage
     {
-        public static void Draw( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
+                ed.values._helpBoxText = string.Empty;
                 foreach ( var item in targetlist ) {
-                    item.AllFileExists( );
+                    item.AllFileExists( ed.values );
                 }
             }
 
             // Export Button
             if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
-                UnityPackageExporterEditor.HelpBoxText = string.Empty;
+                ed.values._helpBoxText = string.Empty;
                 foreach ( var item in targetlist ) {
-                    item.Export( );
+                    item.Export( ed.values );
                 }
             }
 

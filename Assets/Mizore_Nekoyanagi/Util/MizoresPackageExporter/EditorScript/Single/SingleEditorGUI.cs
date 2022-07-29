@@ -20,7 +20,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 );
             EditorUtility.SetDirty( t );
         }
-        public static void EditSingle( UnityPackageExporterEditor ed ) {
+        public static void EditSingle( MizoresPackageExporterEditor ed ) {
             var t = ed.t;
 
             if ( t.debugmode ) {
@@ -81,7 +81,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
 
             ExporterUtils.SeparateLine( );
             // ↓ Dynamic Path Variables
-            SingleGUI_DynamicPathVariables.Draw( t );
+            SingleGUI_DynamicPathVariables.Draw( ed, t );
             // ↑ Dynamic Path Variables
             ExporterUtils.SeparateLine( );
 
@@ -92,8 +92,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ExportPackage
-            SingleGUI_ExportPackage.Draw( t );
+            SingleGUI_ExportPackage.Draw( ed, t );
         }
     }
-#endif
 }
+#endif

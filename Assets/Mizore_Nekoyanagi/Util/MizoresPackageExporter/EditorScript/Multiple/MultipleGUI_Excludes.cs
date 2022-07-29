@@ -12,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleGUI_Excludes
     {
-        public static void Draw( UnityPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
