@@ -35,5 +35,5 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             }
         }
     }
-#endif
 }
+#endif

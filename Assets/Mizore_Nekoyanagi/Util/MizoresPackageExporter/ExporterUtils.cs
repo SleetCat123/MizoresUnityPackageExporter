@@ -49,9 +49,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public static bool Filter_HasPersistentObject( Object[] objectReferences ) {
+#if UNITY_EDITOR
             return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
+#else
+            return false;
+#endif
         }
         public static bool DragDrop( Rect rect, System.Func<Object[], bool> canDragDrop ) {
+#if UNITY_EDITOR
             if ( canDragDrop != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
                 var eventType = Event.current.type;
                 if ( eventType == EventType.DragUpdated || eventType == EventType.DragPerform ) {
@@ -63,6 +68,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     return true;
                 }
             }
+#endif
             return false;
         }
         public static bool EditorPrefFoldout( string key, string label ) {

@@ -1,13 +1,11 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
-
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
+﻿namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     public class MizoresPackageExporterEditorValues
     {
         public string _helpBoxText;
-        public MessageType _helpBoxMessageType;
+#if UNITY_EDITOR
+        public UnityEditor.MessageType _helpBoxMessageType;
+#endif
         public string _variableKeyTemp;
     }
 }
-#endif

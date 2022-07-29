@@ -95,5 +95,5 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             SingleGUI_ExportPackage.Draw( ed, t );
         }
     }
-#endif
 }
+#endif
