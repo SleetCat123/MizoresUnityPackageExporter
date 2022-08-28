@@ -43,8 +43,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public override void OnInspectorGUI( ) {
             if ( targets.Length != 1 ) {
+                foreach ( var item in targets ) {
+                    var exporter = item as MizoresPackageExporter;
+                    if ( !exporter.IsCompatible ) {
+                        EditorGUILayout.HelpBox( ExporterTexts.t_IncompatibleVersion, MessageType.Error );
+                        return;
+                    }
+                    if ( !exporter.IsCurrentVersion ) {
+                        exporter.ConvertToCurrentVersion( );
+                        EditorUtility.SetDirty( exporter );
+                    }
+                }
                 MultipleEditor.MultipleEditorGUI.EditMultiple( this );
             } else {
+                if ( !t.IsCompatible ) {
+                    EditorGUILayout.HelpBox( ExporterTexts.t_IncompatibleVersion,  MessageType.Error );
+                    return;
+                }
+                if ( !t.IsCurrentVersion ) {
+                    t.ConvertToCurrentVersion( );
+                    EditorUtility.SetDirty( t );
+                }
                 SingleEditor.SingleEditorGUI.EditSingle( this );
             }
 

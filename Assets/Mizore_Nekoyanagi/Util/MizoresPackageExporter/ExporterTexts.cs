@@ -36,6 +36,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS = "ファイル／フォルダの存在チェックが完了しました。\n";
         public const string EN_TEXT_EXPORT_LOG_SUCCESS = "[{0}] Export completed.\n";
         public const string JP_TEXT_EXPORT_LOG_SUCCESS = "[{0}]のエクスポートに成功しました。\n";
+        public const string TEXT_INCOMPATIBLE_VERSION = "This object is incompatible with the current version.\nこのオブジェクトは現在のバージョンとの互換性がありません。";
 
         public static string t_Undo => TEXT_UNDO;
         public static string t_Objects => TEXT_OBJECTS;
@@ -64,5 +65,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_ExportLog_Failed => EN_TEXT_EXPORT_LOG_FAILED + JP_TEXT_EXPORT_LOG_FAILED;
         public static string t_ExportLog_AllFileExists => EN_TEXT_EXPORT_LOG_ALL_FILE_EXISTS + JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS;
         public static string t_ExportLog_Success => EN_TEXT_EXPORT_LOG_SUCCESS + JP_TEXT_EXPORT_LOG_SUCCESS;
+        public static string t_IncompatibleVersion => TEXT_INCOMPATIBLE_VERSION;
     }
 }
