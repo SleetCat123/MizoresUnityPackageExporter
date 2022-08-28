@@ -24,8 +24,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
                 string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count ),
-                ExporterUtils.Filter_HasPersistentObject,
-                ( objectReferences ) => AddObjects( t, t.dynamicpath, objectReferences )
+                new ExporterUtils.FoldoutFuncs( ) {
+                    canDragDrop = ExporterUtils.Filter_HasPersistentObject,
+                    onDragPerform = ( objectReferences ) => AddObjects( t, t.dynamicpath, objectReferences )
+                }
                 ) ) {
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {

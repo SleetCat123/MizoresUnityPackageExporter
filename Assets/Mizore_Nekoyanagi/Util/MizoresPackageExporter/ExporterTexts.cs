@@ -36,6 +36,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS = "ファイル／フォルダの存在チェックが完了しました。\n";
         public const string EN_TEXT_EXPORT_LOG_SUCCESS = "[{0}] Export completed.\n";
         public const string JP_TEXT_EXPORT_LOG_SUCCESS = "[{0}]のエクスポートに成功しました。\n";
+        public const string TEXT_COPY_TARGET = "Copy {0}";
+        public const string TEXT_COPY_TARGET_WITH_VALUE = "Copy [{1}] ({0})";
+        public const string TEXT_PASTE_TARGET = "Paste {0}";
+        public const string TEXT_PASTE_TARGET_WITH_VALUE = "Paste [{1}] ({0})";
+        public const string TEXT_PASTE_TARGET_NO_VALUE = "Paste";
         public const string TEXT_INCOMPATIBLE_VERSION = "This object is incompatible with the current version.\nこのオブジェクトは現在のバージョンとの互換性がありません。";
 
         public static string t_Undo => TEXT_UNDO;
@@ -65,6 +70,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_ExportLog_Failed => EN_TEXT_EXPORT_LOG_FAILED + JP_TEXT_EXPORT_LOG_FAILED;
         public static string t_ExportLog_AllFileExists => EN_TEXT_EXPORT_LOG_ALL_FILE_EXISTS + JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS;
         public static string t_ExportLog_Success => EN_TEXT_EXPORT_LOG_SUCCESS + JP_TEXT_EXPORT_LOG_SUCCESS;
+        public static string t_CopyTarget => TEXT_COPY_TARGET;
+        public static string t_CopyTargetWithValue => TEXT_COPY_TARGET_WITH_VALUE;
+        public static string t_PasteTarget => TEXT_PASTE_TARGET;
+        public static string t_PasteTargetWithValue => TEXT_PASTE_TARGET_WITH_VALUE;
+        public static string t_PasteTargetNoValue => TEXT_PASTE_TARGET_NO_VALUE;
         public static string t_IncompatibleVersion => TEXT_INCOMPATIBLE_VERSION;
     }
 }

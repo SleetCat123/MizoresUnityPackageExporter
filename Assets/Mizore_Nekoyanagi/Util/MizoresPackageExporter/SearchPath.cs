@@ -7,7 +7,7 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     [System.Serializable]
-    public class SearchPath: System.IEquatable<SearchPath>
+    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable
     {
         public const SearchPathType DUMMY_TYPE = (SearchPathType)100;
 
@@ -21,6 +21,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public SearchPath( SearchPathType searchType, string value ) {
             this.searchType = searchType;
             this.value = value;
+        }
+        public SearchPath( SearchPath source ) {
+            this.searchType = source.searchType;
+            this.value = source.value;
+        }
+        public object Clone( ) {
+            return new SearchPath( this );
+        }
+
+        public override string ToString( ) {
+            return $"{value}({searchType.GetString( )})";
         }
 
         public override int GetHashCode( ) {
@@ -174,5 +185,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         /// 正規表現（大文字小文字を無視）
         /// </summary>
         Regex_IgnoreCase,
+    }
+    public static class SearchPathTypeExtensions
+    {
+        public static string GetString( this SearchPathType value ) {
+            switch ( value ) {
+                case SearchPathType.Disabled: return "Disabled";
+                case SearchPathType.Exact: return "Exact";
+                case SearchPathType.Partial: return "Partial";
+                case SearchPathType.Partial_IgnoreCase: return "Partial_IgnoreCase";
+                case SearchPathType.Regex: return "Regex";
+                case SearchPathType.Regex_IgnoreCase: return "Regex_IgnoreCase";
+                default: throw new System.ArgumentException( );
+            }
+        }
     }
 }

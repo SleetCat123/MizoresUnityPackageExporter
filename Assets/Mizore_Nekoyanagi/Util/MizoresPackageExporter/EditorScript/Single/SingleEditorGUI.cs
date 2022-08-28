@@ -38,8 +38,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_OBJECT,
                 string.Format( ExporterTexts.t_Objects, t.objects.Count ),
-                ( objectReferences ) => Filter<Object>( objectReferences ),
-                ( objectReferences ) => AddObjects<Object>( t, t.objects, objectReferences )
+                new ExporterUtils.FoldoutFuncs( ) {
+                    canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.objects, objectReferences )
+                }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.objects );
             }
@@ -55,8 +57,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
                 string.Format( ExporterTexts.t_References, t.references.Count ),
-                ( objectReferences ) => Filter<Object>( objectReferences ),
-                ( objectReferences ) => AddObjects<Object>( t, t.references, objectReferences )
+                new ExporterUtils.FoldoutFuncs( ) {
+                    canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.references, objectReferences )
+                }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.references );
             }
@@ -68,8 +72,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
                 string.Format( ExporterTexts.t_ExcludeObjects, t.excludeObjects.Count ),
-                ( objectReferences ) => Filter<Object>( objectReferences ),
-                ( objectReferences ) => AddObjects<Object>( t, t.excludeObjects, objectReferences )
+                 new ExporterUtils.FoldoutFuncs( ) {
+                     canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
+                     onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.excludeObjects, objectReferences )
+                 }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.excludeObjects );
             }

@@ -22,11 +22,32 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
                 string.Format( ExporterTexts.t_Excludes, t.excludes.Count ),
-                ExporterUtils.Filter_HasPersistentObject,
-                ( objectReferences ) => AddObjects( t, t.excludes, objectReferences )
+                new ExporterUtils.FoldoutFuncs( ) {
+                    canDragDrop = ExporterUtils.Filter_HasPersistentObject,
+                    onDragPerform = ( objectReferences ) => AddObjects( t, t.excludes, objectReferences ),
+                    onRightClick = ( ) => {
+                        GenericMenu menu = new GenericMenu( );
+                        {
+                            string label = string.Format( ExporterTexts.t_CopyTarget, string.Format( ExporterTexts.t_Excludes, t.excludes.Count ) );
+                            menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, t.excludes );
+                        }
+                        if ( CopyCache.CanPaste<List<SearchPath>>( ) ) {
+                            var cache = CopyCache.GetCache<List<SearchPath>>( clone: false );
+                            string label = string.Format( ExporterTexts.t_PasteTarget, string.Format( ExporterTexts.t_Excludes, cache.Count ) );
+                            menu.AddItem( new GUIContent( label ), false, ( ) => {
+                                t.excludes = CopyCache.GetCache<List<SearchPath>>( );
+                                EditorUtility.SetDirty( t );
+                            } );
+                        } else {
+                            menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
+                        }
+                        menu.ShowAsContext( );
+                    }
+                }
                 ) ) {
+                Event currentEvent = Event.current;
                 for ( int i = 0; i < t.excludes.Count; i++ ) {
-                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( var scope = new EditorGUILayout.HorizontalScope( ) ) {
                         SearchPath item = t.excludes[i];
                         ExporterUtils.Indent( 1 );
                         EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
@@ -43,6 +64,29 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                         }
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             EditorUtility.SetDirty( t );
+                        }
+
+                        // Copy&Paste
+                        if ( currentEvent.type == EventType.ContextClick && scope.rect.Contains( currentEvent.mousePosition ) ) {
+                            GenericMenu menu = new GenericMenu( );
+                            {
+                                string label = string.Format( ExporterTexts.t_CopyTargetWithValue, item.GetType( ).Name, item.ToString( ) );
+                                menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, item );
+                            }
+                            if ( CopyCache.CanPaste<SearchPath>( ) ) {
+                                string label = string.Format( ExporterTexts.t_PasteTargetWithValue, item.GetType( ).Name, item.ToString( ) );
+                                int index = i;
+                                menu.AddItem( new GUIContent( label ), false, ( ) => {
+                                    item = CopyCache.GetCache<SearchPath>( );
+                                    t.excludes[index] = item;
+                                    EditorUtility.SetDirty( t );
+                                } );
+                            } else {
+                                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
+                            }
+                            menu.ShowAsContext( );
+
+                            currentEvent.Use( );
                         }
 
                         // ボタン

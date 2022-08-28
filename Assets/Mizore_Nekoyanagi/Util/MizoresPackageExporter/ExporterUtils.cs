@@ -71,10 +71,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
             return false;
         }
-        public static bool EditorPrefFoldout( string key, string label ) {
-            return EditorPrefFoldout( key, label, null, null );
+        public class FoldoutFuncs
+        {
+            public System.Func<Object[], bool> canDragDrop;
+            public System.Action<Object[]> onDragPerform;
+            public System.Action onRightClick;
         }
-        public static bool EditorPrefFoldout( string key, string label, System.Func<Object[], bool> canDragDrop, System.Action<Object[]> onDragPerform ) {
+        public static bool EditorPrefFoldout( string key, string label ) {
+            return EditorPrefFoldout( key, label, null );
+        }
+        public static bool EditorPrefFoldout( string key, string label, FoldoutFuncs funcs ) {
             bool result = true;
 #if UNITY_EDITOR
             bool before = EditorPrefs.GetBool( key, true );
@@ -83,8 +89,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
 
-            if ( DragDrop( rect, canDragDrop ) ) {
-                onDragPerform( DragAndDrop.objectReferences );
+            if ( funcs != null && DragDrop( rect, funcs.canDragDrop ) ) {
+                funcs.onDragPerform( DragAndDrop.objectReferences );
                 result = true;
             }
 
@@ -92,6 +98,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 EditorPrefs.SetBool( key, result );
             }
             EditorGUI.EndFoldoutHeaderGroup( );
+
+            Event currentEvent = Event.current;
+            if ( funcs != null && funcs.onRightClick != null && currentEvent.type == EventType.ContextClick && rect.Contains( currentEvent.mousePosition ) ) {
+                funcs.onRightClick( );
+                currentEvent.Use( );
+            }
 #endif
             return result;
         }
