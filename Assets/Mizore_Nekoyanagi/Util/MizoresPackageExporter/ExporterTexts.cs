@@ -42,6 +42,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_PASTE_TARGET_WITH_VALUE = "Paste [{1}] ({0})";
         public const string TEXT_PASTE_TARGET_NO_VALUE = "Paste";
         public const string TEXT_INCOMPATIBLE_VERSION = "This object is incompatible with the current version.\nこのオブジェクトは現在のバージョンとの互換性がありません。";
+        public const string TEXT_FILELIST_VIEW_FULLPATH = "FullPath";
+        public const string TEXT_FILELIST_CLOSE = "Close";
 
         public static string t_Undo => TEXT_UNDO;
         public static string t_Objects => TEXT_OBJECTS;
@@ -76,5 +78,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_PasteTargetWithValue => TEXT_PASTE_TARGET_WITH_VALUE;
         public static string t_PasteTargetNoValue => TEXT_PASTE_TARGET_NO_VALUE;
         public static string t_IncompatibleVersion => TEXT_INCOMPATIBLE_VERSION;
+        public static string t_FileList_ViewFullPath => TEXT_FILELIST_VIEW_FULLPATH;
+        public static string t_FileList_Close => TEXT_FILELIST_CLOSE;
     }
 }

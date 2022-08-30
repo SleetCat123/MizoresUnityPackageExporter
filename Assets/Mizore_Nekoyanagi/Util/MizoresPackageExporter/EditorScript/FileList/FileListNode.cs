@@ -11,9 +11,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class FileListNode
     {
+        public FileListNode parent;
         public string path;
         public Dictionary<string, FileListNode> childrenTable = new Dictionary<string, FileListNode>( );
-        public bool foldout = true;
 
         public int ChildCount { get => childrenTable.Count; }
 
@@ -32,6 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 FileListNode child;
                 if ( !node.childrenTable.TryGetValue( item, out child ) ) {
                     child = new FileListNode( );
+                    child.parent = node;
                     child.path = string.Join( "/", tempPath );
                     node.childrenTable.Add( item, child );
                 }
@@ -45,49 +46,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 root.Add( item );
             }
             return root;
-        }
-
-        private static void DrawEditorGUIRecursive( FileListNode node, int indent ) {
-            foreach ( var kvp in node.childrenTable ) {
-                EditorGUI.indentLevel = indent;
-                var value = kvp.Value;
-                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    if ( value.ChildCount != 0 ) {
-                        EditorGUI.indentLevel--;
-                    var rect = EditorGUILayout.GetControlRect( GUILayout.Width( 10 ) );
-                        value.foldout = EditorGUI.Foldout( rect, value.foldout, string.Empty );
-                    }
-                    var path = value.path;
-                    var label = path;
-                    Texture icon;
-                    if ( Path.GetExtension( path ).Length != 0 ) {
-                        if ( File.Exists( path ) ) {
-                            icon = AssetDatabase.GetCachedIcon( path );
-                        } else {
-                            label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
-                            icon = EditorGUIUtility.IconContent( "Error" ).image;
-                        }
-                    } else if ( Directory.Exists( path ) ) {
-                        icon = AssetDatabase.GetCachedIcon( path );
-                    } else {
-                        label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
-                        icon = EditorGUIUtility.IconContent( "Error" ).image;
-                    }
-                    // var label = System.IO.Path.GetFileName( path );
-                    var content = new GUIContent( label, icon );
-                    EditorGUILayout.LabelField( content );
-                }
-                if ( value.ChildCount != 0 && value.foldout ) {
-                    DrawEditorGUIRecursive( kvp.Value, indent + 1 );
-                }
-            }
-        }
-        public void DrawEditorGUI( ) {
-#if UNITY_EDITOR
-            var indentTemp = EditorGUI.indentLevel;
-            DrawEditorGUIRecursive( this, EditorGUI.indentLevel );
-            EditorGUI.indentLevel = indentTemp;
-#endif
         }
     }
 }

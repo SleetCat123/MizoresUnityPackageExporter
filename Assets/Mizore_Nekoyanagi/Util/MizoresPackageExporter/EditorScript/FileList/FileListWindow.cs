@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
@@ -8,25 +10,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
     {
         MizoresPackageExporter _exporter;
         FileListNode _root;
+
+        TreeViewState _treeViewState;
+        FileListTreeView _treeView;
         public static void Show( MizoresPackageExporter exporter, FileListNode root ) {
             var window = CreateInstance<FileListWindow>( );
             window._exporter = exporter;
             window._root = root;
+
+            window._treeViewState = new TreeViewState( );
+            window._treeView = new FileListTreeView( window._treeViewState, exporter, window._root );
+            window._treeView.Reload( );
+            window._treeView.ExpandAll( );
+
             window.ShowModal( );
         }
         private void OnGUI( ) {
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                var rect = EditorGUILayout.GetControlRect( GUILayout.Width( 10 ) );
-                _root.foldout = EditorGUI.Foldout( rect, _root.foldout, string.Empty );
-                var path = _exporter.PackageName;
-                var icon = AssetDatabase.GetCachedIcon( AssetDatabase.GetAssetPath( _exporter ) );
-                EditorGUILayout.LabelField( new GUIContent( path, icon ) );
+            EditorGUI.BeginChangeCheck( );
+            bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.t_FileList_ViewFullPath, EditorPrefs.GetBool( Const.EDITOR_PREF_FILELIST_VIEW_FULLPATH, true ) );
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                EditorPrefs.SetBool( Const.EDITOR_PREF_FILELIST_VIEW_FULLPATH, viewFullPath );
             }
-            if ( _root.foldout ) {
-                EditorGUI.indentLevel++;
-                EditorGUI.indentLevel++;
-                _root.DrawEditorGUI( );
-                EditorGUI.indentLevel--;
+            var rect = EditorGUILayout.GetControlRect( false, 200 );
+            _treeView.viewFullPath = viewFullPath;
+            _treeView.OnGUI( rect );
+
+            if ( GUILayout.Button( ExporterTexts.t_FileList_Close ) ) {
+                this.Close( );
             }
         }
     }
