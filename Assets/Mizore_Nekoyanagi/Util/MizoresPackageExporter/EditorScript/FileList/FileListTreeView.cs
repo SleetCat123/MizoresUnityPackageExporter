@@ -99,6 +99,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         }
 
         protected override void RowGUI( RowGUIArgs args ) {
+            var temp_contentColor = GUI.contentColor;
             var path = args.item.displayName;
             string label;
             if ( viewFullPath ) {
@@ -116,12 +117,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                     } else {
                         label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
                         icon = EditorGUIUtility.IconContent( "Error" ).image;
+                        GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
                     }
                 } else if ( Directory.Exists( path ) ) {
                     icon = AssetDatabase.GetCachedIcon( path );
+                    GUI.contentColor = temp_contentColor * 0.85f;
                 } else {
                     label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
                     icon = EditorGUIUtility.IconContent( "Error" ).image;
+                    GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
                 }
             }
             args.label = label;
@@ -133,6 +137,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
             extraSpaceBeforeIconAndLabel = iconRect.width + 2f;
             base.RowGUI( args );
+            GUI.contentColor = temp_contentColor;
         }
     }
 }
