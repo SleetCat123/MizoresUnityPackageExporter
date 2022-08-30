@@ -26,7 +26,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string JP_TEXT_DIFF_TOOLTIP = "一部のオブジェクトの値が異なっています。";
         public const string TEXT_BUTTON_FOLDER = "Folder";
         public const string TEXT_BUTTON_FILE = "File";
-        public const string TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX = "[! Error !]";
+        public const string TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX = "[ ! Not Found ! ] ";
         public const string TEXT_EXPORT_LOG_DEPENDENCY_PATH_PREFIX = "[Dependency]";
         public const string EN_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}] is not exists.\n";
         public const string JP_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}]は存在しません。\n";

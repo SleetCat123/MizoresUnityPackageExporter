@@ -16,6 +16,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 t.AllFileExists( ed.values );
             }
 
+            // Check Button
+            if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
+                var list = t.GetAllPath_Full( );
+                Debug.Log( string.Join("\n", list ) );
+                var node = FileList.FileListNode.CreateList( list );
+                FileList.FileListWindow.Show( t, node );
+            }
+
             // Export Button
             if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
                 ed.values._helpBoxText = string.Empty;
