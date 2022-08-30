@@ -2,6 +2,7 @@
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -25,24 +26,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = ExporterUtils.Filter_HasPersistentObject,
                     onDragPerform = ( objectReferences ) => AddObjects( t, t.excludes, objectReferences ),
-                    onRightClick = ( ) => {
-                        GenericMenu menu = new GenericMenu( );
-                        {
-                            string label = string.Format( ExporterTexts.t_CopyTarget, string.Format( ExporterTexts.t_Excludes, t.excludes.Count ) );
-                            menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, t.excludes );
-                        }
-                        if ( CopyCache.CanPaste<List<SearchPath>>( ) ) {
-                            var cache = CopyCache.GetCache<List<SearchPath>>( clone: false );
-                            string label = string.Format( ExporterTexts.t_PasteTarget, string.Format( ExporterTexts.t_Excludes, cache.Count ) );
-                            menu.AddItem( new GUIContent( label ), false, ( ) => {
-                                t.excludes = CopyCache.GetCache<List<SearchPath>>( );
-                                EditorUtility.SetDirty( t );
-                            } );
-                        } else {
-                            menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
-                        }
-                        menu.ShowAsContext( );
-                    }
+                    onRightClick = ( ) => SingleGUIElement_CopyPaste.OnRightClickFoldout( t, ExporterTexts.t_Excludes, t.excludes, ( list ) => t.excludes = list )
                 }
                 ) ) {
                 Event currentEvent = Event.current;

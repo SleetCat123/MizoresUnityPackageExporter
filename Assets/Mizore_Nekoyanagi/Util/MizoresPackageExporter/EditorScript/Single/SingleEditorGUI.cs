@@ -40,7 +40,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 string.Format( ExporterTexts.t_Objects, t.objects.Count ),
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
-                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.objects, objectReferences )
+                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.objects, objectReferences ),
+                    onRightClick = ( ) => SingleGUIElement_CopyPaste.OnRightClickFoldout( t, ExporterTexts.t_Objects, t.objects, ( list ) => t.objects = list )
                 }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.objects );
@@ -59,7 +60,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 string.Format( ExporterTexts.t_References, t.references.Count ),
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
-                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.references, objectReferences )
+                    onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.references, objectReferences ),
+                    onRightClick = ( ) => SingleGUIElement_CopyPaste.OnRightClickFoldout( t, ExporterTexts.t_References, t.references, ( list ) => t.references = list )
                 }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.references );
@@ -74,7 +76,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 string.Format( ExporterTexts.t_ExcludeObjects, t.excludeObjects.Count ),
                  new ExporterUtils.FoldoutFuncs( ) {
                      canDragDrop = ( objectReferences ) => Filter<Object>( objectReferences ),
-                     onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.excludeObjects, objectReferences )
+                     onDragPerform = ( objectReferences ) => AddObjects<Object>( t, t.excludeObjects, objectReferences ),
+                     onRightClick = ( ) => SingleGUIElement_CopyPaste.OnRightClickFoldout( t, ExporterTexts.t_ExcludeObjects, t.excludeObjects, ( list ) => t.excludeObjects = list )
                  }
                 ) ) {
                 SingleGUIElement_PackagePrefsElementList.Draw<Object>( t, t.excludeObjects );

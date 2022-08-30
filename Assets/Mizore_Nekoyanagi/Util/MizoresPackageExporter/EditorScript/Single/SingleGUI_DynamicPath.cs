@@ -26,24 +26,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 string.Format( ExporterTexts.t_DynamicPath, t.dynamicpath.Count ),
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = ExporterUtils.Filter_HasPersistentObject,
-                    onDragPerform = ( objectReferences ) => AddObjects( t, t.dynamicpath, objectReferences )
+                    onDragPerform = ( objectReferences ) => AddObjects( t, t.dynamicpath, objectReferences ),
+                    onRightClick = ( ) => SingleGUIElement_CopyPaste.OnRightClickFoldout( t, ExporterTexts.t_DynamicPath, t.dynamicpath, ( list ) => t.dynamicpath = list )
                 }
                 ) ) {
+                Event currentEvent = Event.current;
                 for ( int i = 0; i < t.dynamicpath.Count; i++ ) {
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( var scope = new EditorGUILayout.HorizontalScope( ) ) {
                         ExporterUtils.Indent( 1 );
                         EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
                         // 値編集
                         EditorGUI.BeginChangeCheck( );
                         Rect textrect = EditorGUILayout.GetControlRect( );
-                        t.dynamicpath[i] = EditorGUI.TextField( textrect, t.dynamicpath[i] );
-                        t.dynamicpath[i] = ed.BrowseButtons( t.dynamicpath[i] );
+                        string item = t.dynamicpath[i];
+                        item = EditorGUI.TextField( textrect, item );
+                        item = ed.BrowseButtons( item );
                         if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                             GUI.changed = true;
-                            t.dynamicpath[i] = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                            item = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
                         }
                         if ( EditorGUI.EndChangeCheck( ) ) {
+                            t.dynamicpath[i] = item;
                             EditorUtility.SetDirty( t );
                         }
 
