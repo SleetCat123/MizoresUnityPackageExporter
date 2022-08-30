@@ -46,7 +46,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 foreach ( var item in targets ) {
                     var exporter = item as MizoresPackageExporter;
                     if ( !exporter.IsCompatible ) {
-                        EditorGUILayout.HelpBox( ExporterTexts.t_IncompatibleVersion, MessageType.Error );
+                        EditorGUILayout.HelpBox( string.Format( ExporterTexts.t_IncompatibleVersion, exporter.name ), MessageType.Error );
+                        if ( GUILayout.Button( ExporterTexts.t_IncompatibleVersion_ForceOpen ) ) {
+                            // SetDirtyはしない
+                            exporter.ConvertToCurrentVersion( force: true );
+                        }
                         return;
                     }
                     if ( !exporter.IsCurrentVersion ) {
@@ -57,7 +61,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 MultipleEditor.MultipleEditorGUI.EditMultiple( this );
             } else {
                 if ( !t.IsCompatible ) {
-                    EditorGUILayout.HelpBox( ExporterTexts.t_IncompatibleVersion,  MessageType.Error );
+                    EditorGUILayout.HelpBox( string.Format( ExporterTexts.t_IncompatibleVersion, t.name ), MessageType.Error );
+                    if ( GUILayout.Button( ExporterTexts.t_IncompatibleVersion_ForceOpen ) ) {
+                        // SetDirtyはしない
+                        t.ConvertToCurrentVersion( force: true );
+                    }
                     return;
                 }
                 if ( !t.IsCurrentVersion ) {

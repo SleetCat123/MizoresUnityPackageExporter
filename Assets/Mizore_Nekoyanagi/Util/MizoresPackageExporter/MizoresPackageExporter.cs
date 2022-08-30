@@ -21,11 +21,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public string version;
         }
 
-        public const int CURRENT_PACKAGE_EXPORTER_VERSION = 70000;
+        public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
+        [SerializeField]
         private int packageExporterVersion;
         public int PackageExporterVersion { get => packageExporterVersion; }
-        public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_VERSION; }
-        public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_VERSION; }
+        public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
+        public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
         public bool debugmode = false;
 
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
@@ -121,15 +122,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
 
-        public void ConvertToCurrentVersion( ) {
-            if ( !IsCompatible ) {
+        public void ConvertToCurrentVersion( bool force = false ) {
+            if ( !force && !IsCompatible ) {
                 throw new System.Exception( "互換性のないバージョンで作成されたオブジェクトです。\nThis object is not compatible." );
             }
             if ( IsCurrentVersion ) {
                 return;
             }
-            Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_VERSION}" );
-            packageExporterVersion = CURRENT_PACKAGE_EXPORTER_VERSION;
+            if ( !force ) {
+                Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
+            }
+            packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
         }
 
         public void DEBUGLOG( string value ) {

@@ -2,6 +2,7 @@
 {
     public static class MizoresPackageExporterConsts
     {
+        public const string ASSET_NAME = "MizoresPackageExporter";
         public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
 
         public const string EDITOR_PREF_PREFIX = "MizorePackageExporter_";
