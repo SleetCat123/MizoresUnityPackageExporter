@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -18,9 +19,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
 
-        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter exporter, FileListNode root ) : base( treeViewState ) {
+        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter exporter ) : base( treeViewState ) {
             _exporter = exporter;
-            _root = root;
+            _root = FileList.FileListNode.CreateList( _exporter.GetAllPath_Full( ) );
+        }
+        public void UpdateList( ) {
+            var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
+            _root = FileList.FileListNode.CreateList( _exporter.GetAllPath_Full( ) );
+            Reload( );
+            ExpandAll( );
+            foreach ( var item in closedPaths ) {
+                SetExpanded( item, false );
+            }
         }
         private void BuildIDRecursive( FileListNode node, ref int id ) {
             table_id_node.Add( id, node );
@@ -40,7 +50,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
         protected override TreeViewItem BuildRoot( ) {
             BuildID( START_NODE_ID );
-            return new TreeViewItem { id = ROOT_ID, depth = -1, displayName = _exporter.PackageName };
+            string name;
+            if ( viewFullPath ) {
+                name = _exporter.ExportPath;
+            } else {
+                name = _exporter.ExportFileName;
+            }
+            return new TreeViewItem { id = ROOT_ID, depth = -1, displayName = name };
         }
         protected override IList<TreeViewItem> BuildRows( TreeViewItem root ) {
             var rows = GetRows( );
@@ -111,21 +127,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             if ( args.item.id == 0 ) {
                 icon = AssetDatabase.GetCachedIcon( AssetDatabase.GetAssetPath( _exporter ) );
             } else {
-                if ( Path.GetExtension( path ).Length != 0 ) {
-                    if ( File.Exists( path ) ) {
-                        icon = AssetDatabase.GetCachedIcon( path );
-                    } else {
+                var result = ExporterUtils.TryGetIcon( path, out icon );
+                switch ( result ) {
+                    case ExporterUtils.GetIconResult.ExistsFile:
+                        break;
+                    case ExporterUtils.GetIconResult.ExistsFolder:
+                        GUI.contentColor = temp_contentColor * 0.85f;
+                        break;
+                    default:
+                    case ExporterUtils.GetIconResult.NotExistsFile:
+                    case ExporterUtils.GetIconResult.NotExistsFolder:
                         label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
-                        icon = EditorGUIUtility.IconContent( "Error" ).image;
                         GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
-                    }
-                } else if ( Directory.Exists( path ) ) {
-                    icon = AssetDatabase.GetCachedIcon( path );
-                    GUI.contentColor = temp_contentColor * 0.85f;
-                } else {
-                    label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
-                    icon = EditorGUIUtility.IconContent( "Error" ).image;
-                    GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
+                        break;
                 }
             }
             args.label = label;

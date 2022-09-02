@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -34,6 +35,71 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
 #endif
             return index;
+        }
+
+        static Texture _errorIcon;
+        public static Texture ErrorIcon {
+            get {
+                if ( _errorIcon == null ) {
+                    _errorIcon = EditorGUIUtility.IconContent( "console.erroricon.sml" ).image;
+                }
+                return _errorIcon;
+            }
+        }
+        static Texture _warningIcon;
+        public static Texture WarningIcon {
+            get {
+                if ( _warningIcon == null ) {
+                    _warningIcon = EditorGUIUtility.IconContent( "console.warnicon.sml" ).image;
+                }
+                return _warningIcon;
+            }
+        }
+        static Texture _infoIcon;
+        public static Texture InfoIcon {
+            get {
+                if ( _infoIcon == null ) {
+                    _infoIcon = EditorGUIUtility.IconContent( "console.infoicon.sml" ).image;
+                }
+                return _infoIcon;
+            }
+        }
+
+        public enum GetIconResult
+        {
+            ExistsFile, ExistsFolder, NotExistsFile, NotExistsFolder
+        }
+        public static bool IsExists( this GetIconResult value ) {
+            switch ( value ) {
+                case GetIconResult.ExistsFile:
+                case GetIconResult.ExistsFolder:
+                    return true;
+                case GetIconResult.NotExistsFile:
+                case GetIconResult.NotExistsFolder:
+                default:
+                    return false;
+            }
+        }
+        public static GetIconResult TryGetIcon( string path, out Texture icon ) {
+#if UNITY_EDITOR
+            if ( Path.GetExtension( path ).Length != 0 ) {
+                if ( File.Exists( path ) ) {
+                    icon = AssetDatabase.GetCachedIcon( path );
+                    return GetIconResult.ExistsFile;
+                } else {
+                    icon = ErrorIcon;
+                    return GetIconResult.NotExistsFile;
+                }
+            } else if ( Directory.Exists( path ) ) {
+                icon = AssetDatabase.GetCachedIcon( path );
+                return GetIconResult.ExistsFolder;
+            } else {
+                icon = ErrorIcon;
+                return GetIconResult.NotExistsFolder;
+            }
+#else
+            return false;
+#endif
         }
 
         public static void SeparateLine( ) {

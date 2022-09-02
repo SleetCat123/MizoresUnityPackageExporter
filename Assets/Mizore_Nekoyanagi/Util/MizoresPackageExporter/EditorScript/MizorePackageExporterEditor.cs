@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -9,7 +10,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     [CustomEditor( typeof( MizoresPackageExporter ) ), CanEditMultipleObjects]
     public class MizoresPackageExporterEditor : Editor
     {
-        public MizoresPackageExporterEditorValues values = new MizoresPackageExporterEditorValues( );
+        public ExporterEditorLogs logs = new ExporterEditorLogs( );
+        public string _variableKeyTemp;
         public MizoresPackageExporter t;
         private void OnEnable( ) {
             t = target as MizoresPackageExporter;
@@ -75,8 +77,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 SingleEditor.SingleEditorGUI.EditSingle( this );
             }
 
-            if ( string.IsNullOrEmpty( values._helpBoxText ) == false ) {
-                EditorGUILayout.HelpBox( values._helpBoxText.Trim( ), values._helpBoxMessageType );
+            logs.DrawUI( );
+        }
+        public void Export( ) {
+            logs.Clear( );
+            if ( targets.Length != 1 ) {
+                var targetlist = targets.Select( v => v as MizoresPackageExporter );
+                foreach ( var item in targetlist ) {
+                    item.Export( logs );
+                }
+            } else {
+                t.Export( logs );
             }
         }
     }

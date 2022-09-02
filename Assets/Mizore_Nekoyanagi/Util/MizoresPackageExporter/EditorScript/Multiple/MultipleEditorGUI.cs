@@ -83,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
 
             // ExportPackage
-            MultipleGUI_ExportPackage.Draw( ed, t, targetlist );
+            MultipleGUI_ExportPackage.Draw( ed, targetlist );
         }
     }
 #endif

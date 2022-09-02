@@ -12,29 +12,34 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
     public class FileListNode
     {
         public FileListNode parent;
+        public string id;
         public string path;
         public Dictionary<string, FileListNode> childrenTable = new Dictionary<string, FileListNode>( );
 
         public int ChildCount { get => childrenTable.Count; }
 
+        public void Add( string id, FileListNode node ) {
+            childrenTable.Add( node.id, node );
+        }
         public void Add( string path ) {
             path = path.Replace( '\\', '/' );
             var splittedPath = path.Split( '/' );
             FileListNode node = this;
             string tempPath = null;
             for ( int i = 0; i < splittedPath.Length; i++ ) {
-                var item = splittedPath[i];
+                var filename = splittedPath[i];
                 if ( tempPath == null ) {
-                    tempPath = item;
+                    tempPath = filename;
                 } else {
-                    tempPath = tempPath + "/" + item;
+                    tempPath = tempPath + "/" + filename;
                 }
                 FileListNode child;
-                if ( !node.childrenTable.TryGetValue( item, out child ) ) {
+                if ( !node.childrenTable.TryGetValue( filename, out child ) ) {
                     child = new FileListNode( );
                     child.parent = node;
                     child.path = string.Join( "/", tempPath );
-                    node.childrenTable.Add( item, child );
+                    child.id = filename;
+                    node.Add( filename, child );
                 }
                 node = child;
             }

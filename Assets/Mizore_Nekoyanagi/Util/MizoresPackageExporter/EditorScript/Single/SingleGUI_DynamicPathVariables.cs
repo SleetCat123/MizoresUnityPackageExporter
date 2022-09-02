@@ -74,16 +74,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                     // 新規キー追加
                     EditorGUILayout.LabelField( string.Empty, space_width );
                     EditorGUI.BeginChangeCheck( );
-                    ed.values._variableKeyTemp = EditorGUILayout.DelayedTextField( ed.values._variableKeyTemp );
+                    ed._variableKeyTemp = EditorGUILayout.DelayedTextField( ed._variableKeyTemp );
                     EditorGUILayout.LabelField( string.Empty );
-                    string temp = ed.values._variableKeyTemp;
+                    string temp = ed._variableKeyTemp;
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
-                            ed.values._variableKeyTemp = null;
+                            ed._variableKeyTemp = null;
                         } else {
                             // キー追加
                             t.variables.Add( temp, string.Empty );
-                            ed.values._variableKeyTemp = null;
+                            ed._variableKeyTemp = null;
                             EditorUtility.SetDirty( t );
                         }
                     }
