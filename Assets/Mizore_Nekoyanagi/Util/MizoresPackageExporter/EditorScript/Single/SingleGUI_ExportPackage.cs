@@ -16,14 +16,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 t.AllFileExists( ed.logs );
             }
 
-            // Check Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {
-                FileList.FileListWindow.Show( ed );
-            }
-
-            // Export Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
-                ed.Export( );
+            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                // Export Button
+                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
+                    ed.Export( );
+                }
+                // List Button
+                if ( GUILayout.Button( ExporterTexts.t_Button_FileList ) ) {
+                    FileList.FileListWindow.Show( ed );
+                }
             }
 
             // Open Button

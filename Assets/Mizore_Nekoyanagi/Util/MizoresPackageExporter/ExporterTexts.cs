@@ -18,6 +18,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_VERSION_FORMAT = "Format";
         public const string TEXT_PACKAGE_NAME = "Package Name";
         public const string TEXT_BUTTON_CHECK = "Check";
+        public const string TEXT_BUTTON_FILELIST = "List";
         public const string TEXT_BUTTON_EXPORT = "Export to unitypackage";
         public const string TEXT_BUTTON_EXPORT_M = "Export to unitypackages";
         public const string TEXT_BUTTON_OPEN = "Open";
@@ -60,6 +61,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_PackageName => TEXT_PACKAGE_NAME;
         public static string t_Label_ExportPackage => TEXT_BUTTON_EXPORT;
         public static string t_Button_Check => TEXT_BUTTON_CHECK;
+        public static string t_Button_FileList => TEXT_BUTTON_FILELIST;
         public static string t_Button_ExportPackage => TEXT_BUTTON_EXPORT;
         public static string t_Button_ExportPackages => TEXT_BUTTON_EXPORT_M;
         public static string t_Button_Open => TEXT_BUTTON_OPEN;
