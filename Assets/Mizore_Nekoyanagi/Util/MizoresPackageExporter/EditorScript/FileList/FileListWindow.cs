@@ -20,7 +20,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             window._exporterEditor = exporterEditor;
 
             window._treeViewState = new TreeViewState( );
-            window._treeView = new FileListTreeView( window._treeViewState, exporterEditor.t );
+            var targetlist = exporterEditor.targets.Select( v => v as MizoresPackageExporter );
+            window._treeView = new FileListTreeView( window._treeViewState, targetlist );
             window._treeView.Reload( );
             window._treeView.ExpandAll( );
 

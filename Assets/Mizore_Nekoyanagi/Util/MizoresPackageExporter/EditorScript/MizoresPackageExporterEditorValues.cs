@@ -33,13 +33,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 Texture logIcon = null;
                 switch ( type ) {
                     case LogType.Info:
-                        logIcon = ExporterUtils.InfoIcon;
+                        logIcon = IconCache.InfoIcon;
                         break;
                     case LogType.Warning:
-                        logIcon = ExporterUtils.WarningIcon;
+                        logIcon = IconCache.WarningIcon;
                         break;
                     case LogType.Error:
-                        logIcon = ExporterUtils.ErrorIcon;
+                        logIcon = IconCache.ErrorIcon;
                         break;
                 }
                 using ( new EditorGUILayout.HorizontalScope( ) ) {

@@ -10,22 +10,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class FileListTreeView : TreeView
     {
-        MizoresPackageExporter _exporter;
+        IEnumerable<MizoresPackageExporter> _exporters;
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
+        Dictionary<FileListNode, MizoresPackageExporter> table_root = new Dictionary<FileListNode, MizoresPackageExporter>( );
         public bool viewFullPath;
 
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
 
-        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter exporter ) : base( treeViewState ) {
-            _exporter = exporter;
-            _root = FileList.FileListNode.CreateList( _exporter.GetAllPath_Full( ) );
+        public FileListTreeView( TreeViewState treeViewState, IEnumerable<MizoresPackageExporter> exporters ) : base( treeViewState ) {
+            _exporters = exporters;
         }
         public void UpdateList( ) {
             var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
-            _root = FileList.FileListNode.CreateList( _exporter.GetAllPath_Full( ) );
             Reload( );
             ExpandAll( );
             foreach ( var item in closedPaths ) {
@@ -47,16 +46,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             BuildIDRecursive( _root, ref id );
         }
 
-
         protected override TreeViewItem BuildRoot( ) {
-            BuildID( START_NODE_ID );
-            string name;
-            if ( viewFullPath ) {
-                name = _exporter.ExportPath;
-            } else {
-                name = _exporter.ExportFileName;
+            _root = new FileListNode( );
+            foreach ( var item in _exporters ) {
+                var node = FileList.FileListNode.CreateList( item.GetAllPath_Full( ) );
+                node.id = AssetDatabase.GetAssetPath( item );
+                _root.Add( node );
+                table_root.Add( node, item );
             }
-            return new TreeViewItem { id = ROOT_ID, depth = -1, displayName = name };
+            BuildID( START_NODE_ID );
+
+            return new TreeViewItem { id = ROOT_ID, depth = -1 };
         }
         protected override IList<TreeViewItem> BuildRows( TreeViewItem root ) {
             var rows = GetRows( );
@@ -65,7 +65,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             } else {
                 rows.Clear( );
             }
-            rows.Add( root );
 
             AddChildrenRecursive( _root, root, rows );
 
@@ -117,16 +116,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         protected override void RowGUI( RowGUIArgs args ) {
             var temp_contentColor = GUI.contentColor;
             var path = args.item.displayName;
-            string label;
-            if ( viewFullPath ) {
-                label = path;
-            } else {
-                label = Path.GetFileName( path );
-            }
+            var node = table_id_node[args.item.id];
             Texture icon;
-            if ( args.item.id == 0 ) {
-                icon = AssetDatabase.GetCachedIcon( AssetDatabase.GetAssetPath( _exporter ) );
+            string label;
+            if ( node.parent == _root ) {
+                var exporter = table_root[node];
+                label = exporter.ExportFileName;
+                icon = IconCache.UnityLogoIcon;
             } else {
+                if ( viewFullPath ) {
+                    label = path;
+                } else {
+                    label = Path.GetFileName( path );
+                }
                 var result = ExporterUtils.TryGetIcon( path, out icon );
                 switch ( result ) {
                     case ExporterUtils.GetIconResult.ExistsFile:

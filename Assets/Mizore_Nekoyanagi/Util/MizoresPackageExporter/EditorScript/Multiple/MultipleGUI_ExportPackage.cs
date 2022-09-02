@@ -20,9 +20,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 }
             }
 
-            // Export Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
-                ed.Export( );
+            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                // Export Button
+                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
+                    ed.Export( );
+                }
+                // List Button
+                if ( GUILayout.Button( ExporterTexts.t_Button_FileList ) ) {
+                    FileList.FileListWindow.Show( ed );
+                }
             }
 
             // 出力先一覧

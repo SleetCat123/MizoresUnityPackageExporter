@@ -37,34 +37,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return index;
         }
 
-        static Texture _errorIcon;
-        public static Texture ErrorIcon {
-            get {
-                if ( _errorIcon == null ) {
-                    _errorIcon = EditorGUIUtility.IconContent( "console.erroricon.sml" ).image;
-                }
-                return _errorIcon;
-            }
-        }
-        static Texture _warningIcon;
-        public static Texture WarningIcon {
-            get {
-                if ( _warningIcon == null ) {
-                    _warningIcon = EditorGUIUtility.IconContent( "console.warnicon.sml" ).image;
-                }
-                return _warningIcon;
-            }
-        }
-        static Texture _infoIcon;
-        public static Texture InfoIcon {
-            get {
-                if ( _infoIcon == null ) {
-                    _infoIcon = EditorGUIUtility.IconContent( "console.infoicon.sml" ).image;
-                }
-                return _infoIcon;
-            }
-        }
-
         public enum GetIconResult
         {
             ExistsFile, ExistsFolder, NotExistsFile, NotExistsFolder
@@ -87,14 +59,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     icon = AssetDatabase.GetCachedIcon( path );
                     return GetIconResult.ExistsFile;
                 } else {
-                    icon = ErrorIcon;
+                    icon = IconCache.ErrorIcon;
                     return GetIconResult.NotExistsFile;
                 }
             } else if ( Directory.Exists( path ) ) {
                 icon = AssetDatabase.GetCachedIcon( path );
                 return GetIconResult.ExistsFolder;
             } else {
-                icon = ErrorIcon;
+                icon = IconCache.ErrorIcon;
                 return GetIconResult.NotExistsFolder;
             }
 #else

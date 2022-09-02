@@ -18,7 +18,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
         public int ChildCount { get => childrenTable.Count; }
 
-        public void Add( string id, FileListNode node ) {
+        public void Add( FileListNode node ) {
+            node.parent = this;
             childrenTable.Add( node.id, node );
         }
         public void Add( string path ) {
@@ -36,10 +37,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 FileListNode child;
                 if ( !node.childrenTable.TryGetValue( filename, out child ) ) {
                     child = new FileListNode( );
-                    child.parent = node;
                     child.path = string.Join( "/", tempPath );
                     child.id = filename;
-                    node.Add( filename, child );
+                    node.Add( child );
                 }
                 node = child;
             }
