@@ -9,8 +9,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     [System.Serializable]
     public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable
     {
-        public const SearchPathType DUMMY_TYPE = (SearchPathType)100;
-
         public SearchPathType searchType;
         public string value;
 
