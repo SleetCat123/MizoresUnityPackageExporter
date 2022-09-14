@@ -44,7 +44,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                             if ( samevalue_in_all_value ) {
                                 value = EditorGUI.TextField( textrect, t.excludes[i].value );
                             } else {
+                                EditorGUI.showMixedValue = true;
                                 value = EditorGUI.TextField( textrect, string.Empty );
+                                EditorGUI.showMixedValue = false;
                             }
                             if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                                 GUI.changed = true;
@@ -64,12 +66,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                             if ( samevalue_in_all_type ) {
                                 searchType = (SearchPathType)EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 70 ) );
                             } else {
-                                searchType = (SearchPathType)EditorGUILayout.EnumPopup( SearchPath.DUMMY_TYPE, GUILayout.Width( 70 ) );
+                                EditorGUI.showMixedValue = true;
+                                searchType = (SearchPathType)EditorGUILayout.EnumPopup( SearchPathType.Exact, GUILayout.Width( 70 ) );
+                                EditorGUI.showMixedValue = false;
                             }
                             if ( EditorGUI.EndChangeCheck( ) ) {
-                                if ( searchType == SearchPath.DUMMY_TYPE ) {
-                                    searchType = SearchPathType.Exact;
-                                }
                                 foreach ( var item in targetlist ) {
                                     ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
                                     item.excludes[i].searchType = searchType;

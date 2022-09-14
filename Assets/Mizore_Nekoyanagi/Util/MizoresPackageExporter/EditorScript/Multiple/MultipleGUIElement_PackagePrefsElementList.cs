@@ -28,7 +28,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     if ( samevalue_in_all ) {
                         obj = EditorGUILayout.ObjectField( getlist( t )[i].Object, typeof( T ), false );
                     } else {
+                        EditorGUI.showMixedValue = true;
                         obj = EditorGUILayout.ObjectField( null, typeof( T ), false );
+                        EditorGUI.showMixedValue = false;
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -47,7 +49,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     if ( samevalue_in_all ) {
                         path = EditorGUI.TextField( textrect, getlist( t )[i].Path );
                     } else {
+                        EditorGUI.showMixedValue = true;
                         path = EditorGUI.TextField( textrect, string.Empty );
+                        EditorGUI.showMixedValue = false;
                     }
                     if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                         GUI.changed = true;

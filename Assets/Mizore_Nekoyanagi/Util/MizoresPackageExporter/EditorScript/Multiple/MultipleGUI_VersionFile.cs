@@ -24,7 +24,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                         obj = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
                     } else {
                         ExporterUtils.DiffLabel( );
+                        EditorGUI.showMixedValue = true;
                         obj = EditorGUILayout.ObjectField( null, typeof( TextAsset ), false );
+                        EditorGUI.showMixedValue = false;
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -39,7 +41,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     if ( samevalue_in_all_obj ) {
                         path = EditorGUILayout.TextField( t.versionFile.Path );
                     } else {
+                        EditorGUI.showMixedValue = true;
                         path = EditorGUILayout.TextField( string.Empty );
+                        EditorGUI.showMixedValue = false;
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         // パスが変更されたらオブジェクトを置き換える
@@ -64,7 +68,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                         value = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, t.versionFormat );
                     } else {
                         ExporterUtils.DiffLabel( );
+                        EditorGUI.showMixedValue = true;
                         value = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, string.Empty );
+                        EditorGUI.showMixedValue = false;
                     }
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -84,7 +90,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, t.packageName );
                 } else {
                     ExporterUtils.DiffLabel( );
+                    EditorGUI.showMixedValue = true;
                     value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, string.Empty );
+                    EditorGUI.showMixedValue = false;
                 }
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     foreach ( var item in targetlist ) {

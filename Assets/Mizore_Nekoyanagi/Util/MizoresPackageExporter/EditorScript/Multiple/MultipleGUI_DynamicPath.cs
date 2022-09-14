@@ -42,7 +42,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                         if ( samevalue_in_all ) {
                             path = EditorGUI.TextField( textrect, t.dynamicpath[i] );
                         } else {
+                            EditorGUI.showMixedValue = true;
                             path = EditorGUI.TextField( textrect, string.Empty );
+                            EditorGUI.showMixedValue = false;
                         }
                         path = ed.BrowseButtons( path );
                         if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
