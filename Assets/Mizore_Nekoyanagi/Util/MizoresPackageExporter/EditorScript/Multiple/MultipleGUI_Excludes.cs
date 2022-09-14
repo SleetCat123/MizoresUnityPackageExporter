@@ -17,7 +17,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
-                string.Format( ExporterTexts.t_Excludes, minmax_count.GetRangeString( ) )
+                string.Format( ExporterTexts.t_Excludes, minmax_count.GetRangeString( ) ),
+                new FoldoutFuncs( ) {
+                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex, list ) => ex.excludes = list )
+                }
                 ) ) {
                 for ( int i = 0; i < minmax_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {

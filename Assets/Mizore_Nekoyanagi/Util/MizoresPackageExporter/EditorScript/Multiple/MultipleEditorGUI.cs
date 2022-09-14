@@ -37,7 +37,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout( 
                 Const.EDITOR_PREF_FOLDOUT_OBJECT,
-                string.Format( ExporterTexts.t_Objects, objects_count.GetRangeString( ) )
+                string.Format( ExporterTexts.t_Objects, objects_count.GetRangeString( ) ),
+                new FoldoutFuncs( ) {
+                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex, list ) => ex.objects = list )
+                }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
             }
@@ -52,7 +55,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( ExporterUtils.EditorPrefFoldout( 
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
-                string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) )
+                string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) ),
+                new FoldoutFuncs( ) {
+                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex, list ) => ex.references = list )
+                }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
             }
@@ -64,7 +70,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
-                string.Format( ExporterTexts.t_ExcludeObjects, excludeObjects_count.GetRangeString( ) )
+                string.Format( ExporterTexts.t_ExcludeObjects, excludeObjects_count.GetRangeString( ) ),
+                new FoldoutFuncs( ) {
+                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex, list ) => ex.excludeObjects = list )
+                }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
             }

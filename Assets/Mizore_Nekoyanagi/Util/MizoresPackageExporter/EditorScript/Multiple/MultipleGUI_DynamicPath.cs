@@ -18,7 +18,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
-                string.Format( ExporterTexts.t_DynamicPath, dpath_count.GetRangeString( ) )
+                string.Format( ExporterTexts.t_DynamicPath, dpath_count.GetRangeString( ) ),
+                new FoldoutFuncs( ) {
+                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_DynamicPath, ( ex, list ) => ex.dynamicpath = list )
+                }
                 ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
