@@ -13,50 +13,90 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
     {
         public static void Draw( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_VersionFile ) ) {
+                Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_Version ) ) {
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     ExporterUtils.Indent( 1 );
-                    var samevalue_in_all_obj = targetlist.All( v => t.versionFile.Object == v.versionFile.Object );
-
+                    var samevalue_in_all_obj = targetlist.All( v => t.versionSource == v.versionSource );
                     EditorGUI.BeginChangeCheck( );
-                    Object obj;
-                    if ( samevalue_in_all_obj ) {
-                        obj = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
-                    } else {
-                        ExporterUtils.DiffLabel( );
-                        EditorGUI.showMixedValue = true;
-                        obj = EditorGUILayout.ObjectField( null, typeof( TextAsset ), false );
-                        EditorGUI.showMixedValue = false;
-                    }
+                    MizoresPackageExporter.VersionSource versionSource;
+
+                    EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                    versionSource = (MizoresPackageExporter.VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.t_VersionSource, t.versionSource );
+                    EditorGUI.showMixedValue = false;
+
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
-                            item.versionFile.Object = obj;
+                            item.versionSource = versionSource;
                             item.UpdateExportVersion( );
                             EditorUtility.SetDirty( item );
                         }
                     }
+                }
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    switch ( t.versionSource ) {
+                        case MizoresPackageExporter.VersionSource.String: {
+                            var samevalue_in_all_obj = targetlist.All( v => t.versionString == v.versionString );
+                            EditorGUI.BeginChangeCheck( );
+                            string versionString;
 
-                    EditorGUI.BeginChangeCheck( );
-                    string path;
-                    if ( samevalue_in_all_obj ) {
-                        path = EditorGUILayout.TextField( t.versionFile.Path );
-                    } else {
-                        EditorGUI.showMixedValue = true;
-                        path = EditorGUILayout.TextField( string.Empty );
-                        EditorGUI.showMixedValue = false;
-                    }
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        // パスが変更されたらオブジェクトを置き換える
-                        Object o = AssetDatabase.LoadAssetAtPath<TextAsset>( path );
-                        if ( o != null ) {
-                            foreach ( var item in targetlist ) {
-                                item.versionFile.Object = o;
-                                item.UpdateExportVersion( );
-                                EditorUtility.SetDirty( item );
+                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                            versionString = EditorGUILayout.TextField( ExporterTexts.t_Version, t.versionString );
+                            EditorGUI.showMixedValue = false;
+
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var item in targetlist ) {
+                                    item.versionString = versionString;
+                                    item.UpdateExportVersion( );
+                                    EditorUtility.SetDirty( item );
+                                }
                             }
+                            break;
+                        }
+                        case MizoresPackageExporter.VersionSource.File: {
+                            var samevalue_in_all_obj = targetlist.All( v => t.versionFile.Object == v.versionFile.Object );
+
+                            EditorGUI.BeginChangeCheck( );
+                            Object obj;
+                            if ( samevalue_in_all_obj ) {
+                                obj = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
+                            } else {
+                                ExporterUtils.DiffLabel( );
+                                EditorGUI.showMixedValue = true;
+                                obj = EditorGUILayout.ObjectField( null, typeof( TextAsset ), false );
+                                EditorGUI.showMixedValue = false;
+                            }
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var item in targetlist ) {
+                                    item.versionFile.Object = obj;
+                                    item.UpdateExportVersion( );
+                                    EditorUtility.SetDirty( item );
+                                }
+                            }
+
+                            EditorGUI.BeginChangeCheck( );
+                            string path;
+                            if ( samevalue_in_all_obj ) {
+                                path = EditorGUILayout.TextField( t.versionFile.Path );
+                            } else {
+                                EditorGUI.showMixedValue = true;
+                                path = EditorGUILayout.TextField( string.Empty );
+                                EditorGUI.showMixedValue = false;
+                            }
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                // パスが変更されたらオブジェクトを置き換える
+                                Object o = AssetDatabase.LoadAssetAtPath<TextAsset>( path );
+                                if ( o != null ) {
+                                    foreach ( var item in targetlist ) {
+                                        item.versionFile.Object = o;
+                                        item.UpdateExportVersion( );
+                                        EditorUtility.SetDirty( item );
+                                    }
+                                }
+                            }
+                            break;
                         }
                     }
-
                 }
                 // Version Format
                 using ( new EditorGUILayout.HorizontalScope( ) ) {

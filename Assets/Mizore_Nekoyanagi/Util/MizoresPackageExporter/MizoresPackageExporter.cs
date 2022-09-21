@@ -20,6 +20,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         {
             public string version;
         }
+        public enum VersionSource
+        {
+            String, File
+        }
 
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
         [SerializeField]
@@ -40,7 +44,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
+        public VersionSource versionSource;
         public PackagePrefsElement versionFile;
+        public string versionString;
         public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
         public string packageName = $"{Const_Keys.KEY_NAME}{Const_Keys.KEY_FORMATTED_VERSION}";
 
@@ -98,6 +104,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public void UpdateExportVersion( ) {
+            if ( versionSource == VersionSource.String ) {
+                _exportVersion = versionString;
+                return;
+            }
             if ( versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ) {
                 _exportVersion = string.Empty;
             } else {
@@ -134,9 +144,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             if ( IsCurrentVersion ) {
                 return;
             }
-            if ( !force ) {
-                Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
+            if ( force ) {
+                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
+                return;
             }
+
+            switch ( packageExporterVersion ) {
+                case 0:
+                    versionSource = VersionSource.File;
+                    break;
+            }
+
+            Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
             packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
         }
 
