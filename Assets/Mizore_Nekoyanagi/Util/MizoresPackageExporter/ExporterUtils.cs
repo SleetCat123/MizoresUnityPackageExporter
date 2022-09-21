@@ -70,7 +70,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 return GetIconResult.NotExistsFolder;
             }
 #else
-            return false;
+            icon = null;
+            return GetIconResult.NotExistsFile;
 #endif
         }
 
