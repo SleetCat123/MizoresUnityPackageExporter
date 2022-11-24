@@ -122,7 +122,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static bool EditorPrefFoldout( string key, string label, FoldoutFuncs funcs ) {
             bool result = true;
 #if UNITY_EDITOR
-            bool before = EditorPrefs.GetBool( key, true );
+            bool before = EditorPrefsCache.GetBool( key, true );
             Rect rect = EditorGUILayout.GetControlRect( );
 
             result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
@@ -134,7 +134,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
 
             if ( before != result ) {
-                EditorPrefs.SetBool( key, result );
+                EditorPrefsCache.SetBool( key, result );
             }
             EditorGUI.EndFoldoutHeaderGroup( );
 
