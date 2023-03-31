@@ -27,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
         [SerializeField]
-        private int packageExporterVersion;
+        private int packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
         public int PackageExporterVersion { get => packageExporterVersion; }
         public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
         public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
