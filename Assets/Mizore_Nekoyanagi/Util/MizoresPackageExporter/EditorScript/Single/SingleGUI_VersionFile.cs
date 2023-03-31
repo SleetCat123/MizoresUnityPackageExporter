@@ -33,21 +33,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                         }
                         case MizoresPackageExporter.VersionSource.File: {
                             EditorGUI.BeginChangeCheck( );
-                            t.versionFile.Object = EditorGUILayout.ObjectField( t.versionFile.Object, typeof( TextAsset ), false );
+                            PackagePrefsElementInspector.Draw<TextAsset>( t.versionFile );
                             if ( EditorGUI.EndChangeCheck( ) ) {
                                 t.UpdateExportVersion( );
-                                EditorUtility.SetDirty( t );
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            string path = t.versionFile.Path;
-                            path = EditorGUILayout.TextField( path );
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                // パスが変更されたらオブジェクトを置き換える
-                                Object o = AssetDatabase.LoadAssetAtPath<TextAsset>( path );
-                                if ( o != null ) {
-                                    t.versionFile.Object = o;
-                                    t.UpdateExportVersion( );
-                                }
                                 EditorUtility.SetDirty( t );
                             }
                             break;

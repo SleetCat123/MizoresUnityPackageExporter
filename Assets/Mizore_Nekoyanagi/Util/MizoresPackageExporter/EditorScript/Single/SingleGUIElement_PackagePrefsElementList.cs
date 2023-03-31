@@ -15,26 +15,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                     EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
                     EditorGUI.BeginChangeCheck( );
-                    item.Object = EditorGUILayout.ObjectField( item.Object, typeof( T ), false );
+                    PackagePrefsElementInspector.Draw<T>( item );
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         EditorUtility.SetDirty( t );
-                    }
-
-                    EditorGUI.BeginChangeCheck( );
-                    string path = item.Path;
-                    Rect textrect = EditorGUILayout.GetControlRect( );
-                    path = EditorGUI.TextField( textrect, path );
-                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
-                        GUI.changed = true;
-                        path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
-                    }
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        // パスが変更されたらオブジェクトを置き換える
-                        Object o = AssetDatabase.LoadAssetAtPath<T>( path );
-                        if ( o != null ) {
-                            item.Object = o;
-                        }
-                        EditorUtility.SetDirty( t );
+                        Debug.Log("test" );
                     }
 
                     int index_after = ExporterUtils.UpDownButton( i, list.Count );
