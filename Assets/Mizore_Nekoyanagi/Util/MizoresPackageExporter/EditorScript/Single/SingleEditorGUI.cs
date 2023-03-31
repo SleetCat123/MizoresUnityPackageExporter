@@ -2,6 +2,7 @@
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using System.Linq;
 using System.Collections.Generic;
+using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -22,6 +23,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
         }
         public static void EditSingle( MizoresPackageExporterEditor ed ) {
             var t = ed.t;
+            var targetlist = ed.targets.Select( v => v as MizoresPackageExporter );
 
             if ( t.debugmode ) {
                 EditorGUILayout.LabelField( "[DEBUG]" );
@@ -95,7 +97,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Version File
-            SingleGUI_VersionFile.Draw( t );
+            GUI_VersionFile.Draw( t, targetlist );
             // ↑ Version File
 
             ExporterUtils.SeparateLine( );

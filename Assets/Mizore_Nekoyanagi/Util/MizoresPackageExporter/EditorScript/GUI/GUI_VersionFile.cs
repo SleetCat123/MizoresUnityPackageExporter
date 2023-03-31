@@ -6,10 +6,10 @@ using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporte
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
 #if UNITY_EDITOR
-    public static class MultipleGUI_VersionFile
+    public static class GUI_VersionFile
     {
         public static void Draw( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(

@@ -2,6 +2,7 @@
 using System.Linq;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
+using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -86,7 +87,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
 
             // ↓ Version File
-            MultipleGUI_VersionFile.Draw( t, targetlist );
+            GUI_VersionFile.Draw( t, targetlist );
             // ↑ Version File
 
             ExporterUtils.SeparateLine( );
