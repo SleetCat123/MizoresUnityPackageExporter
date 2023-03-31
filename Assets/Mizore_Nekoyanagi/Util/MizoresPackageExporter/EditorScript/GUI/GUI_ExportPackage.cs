@@ -2,14 +2,15 @@
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
 #if UNITY_EDITOR
-    public static class MultipleGUI_ExportPackage
+    public static class GUI_ExportPackage
     {
         public static void Draw( MizoresPackageExporterEditor ed, IEnumerable<MizoresPackageExporter> targetlist ) {
             EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
@@ -32,7 +33,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 EditorGUILayout.LabelField( new GUIContent( path, path ) );
             }
             if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_OPEN, GUILayout.Width( 60 ) ) ) {
-                EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
+                if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath ) ) {
+                    EditorUtility.RevealInFinder( ed.t.ExportPath );
+                } else {
+                    EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
+                }
             }
         }
     }

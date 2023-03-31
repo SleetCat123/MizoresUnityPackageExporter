@@ -103,7 +103,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             ExporterUtils.SeparateLine( );
 
             // ExportPackage
-            SingleGUI_ExportPackage.Draw( ed, t );
+            GUI_ExportPackage.Draw( ed, targetlist );
         }
     }
 }
