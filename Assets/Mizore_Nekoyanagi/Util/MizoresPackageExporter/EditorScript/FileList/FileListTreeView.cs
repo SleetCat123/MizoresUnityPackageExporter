@@ -10,7 +10,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class FileListTreeView : TreeView
     {
-        IEnumerable<MizoresPackageExporter> _exporters;
+        MizoresPackageExporter[] _exporters;
+        PrePostPostProcessing _action;
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
@@ -20,8 +21,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
 
-        public FileListTreeView( TreeViewState treeViewState, IEnumerable<MizoresPackageExporter> exporters ) : base( treeViewState ) {
+        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter[] exporters, PrePostPostProcessing action ) : base( treeViewState ) {
             _exporters = exporters;
+            _action = action;
         }
         public void UpdateList( ) {
             var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
@@ -48,13 +50,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
         protected override TreeViewItem BuildRoot( ) {
             _root = new FileListNode( );
-            foreach ( var item in _exporters ) {
+            for ( int i = 0; i < _exporters.Length; i++ ) {
+                var item = _exporters[i];
+                _action?.filelist_preprocessing?.Invoke( item, i );
+                var exportName = item.ExportFileName;
+                if ( _root.Contains( exportName ) ) {
+                    Debug.Log( "skip: " + exportName );
+                    //_action?.filelist_postprocessing?.Invoke( item, i );
+                    continue;
+                }
+                Debug.Log( exportName );
                 var node = FileList.FileListNode.CreateList( item.GetAllPath_Full( ) );
-                node.id = AssetDatabase.GetAssetPath( item );
+                node.id = exportName;
                 _root.Add( node );
                 table_root.Add( node, item );
             }
             BuildID( START_NODE_ID );
+            //if ( _action != null && _action.filelist_postprocessing != null ) {
+            //    for ( int i = 0; i < _exporters.Length; i++ ) {
+            //        _action.filelist_postprocessing.Invoke( _exporters[i], i );
+            //    }
+            //}
 
             return new TreeViewItem { id = ROOT_ID, depth = -1 };
         }

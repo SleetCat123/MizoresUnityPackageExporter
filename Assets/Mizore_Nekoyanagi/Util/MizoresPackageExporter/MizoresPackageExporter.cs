@@ -39,6 +39,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
+        [System.NonSerialized]
+        public Dictionary<string, string> variablesOverride;
 
         public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
@@ -175,6 +177,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             recursiveCount += 1;
             string key = null;
+            if ( variablesOverride != null ) {
+                foreach ( var kvp in variablesOverride ) {
+                    key = string.Format( "%{0}%", kvp.Key.Replace( "%", string.Empty ) );
+                    path = path.Replace( key, kvp.Value );
+                }
+            }
             foreach ( var kvp in variables ) {
                 key = string.Format( "%{0}%", kvp.Key );
                 path = path.Replace( key, kvp.Value );
@@ -287,7 +295,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 var exclude = new SearchPath( item.searchType, ConvertDynamicPath( item.value ) );
                 result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
             }
-            Debug.Log( "Excludes: \n" + string.Join( "\n", result.Except( result_enumerable ) ) );
+            var excludeResults = result.Except( result_enumerable );
+            if ( excludeResults.Any( ) ) {
+                Debug.Log( "Excludes: \n" + string.Join( "\n", excludeResults ) + "\n" );
+            } else {
+                Debug.Log( ExporterTexts.t_ExcludesWereEmpty );
+            }
             return result_enumerable;
 #else
             return new string[0];

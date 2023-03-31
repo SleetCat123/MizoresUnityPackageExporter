@@ -18,6 +18,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
         public int ChildCount { get => childrenTable.Count; }
 
+        public bool Contains( string path ) {
+            return childrenTable.ContainsKey( path );
+        }
         public void Add( FileListNode node ) {
             node.parent = this;
             childrenTable.Add( node.id, node );

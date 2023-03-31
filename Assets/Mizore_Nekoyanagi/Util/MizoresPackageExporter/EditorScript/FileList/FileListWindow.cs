@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -10,21 +11,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class FileListWindow : EditorWindow
     {
-        MizoresPackageExporterEditor _exporterEditor;
-
         TreeViewState _treeViewState;
         FileListTreeView _treeView;
+        MizoresPackageExporter[] _targets;
+        PrePostPostProcessing _action;
+        ExporterEditorLogs _logs;
 
-        public static void Show( MizoresPackageExporterEditor exporterEditor ) {
+        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets, PrePostPostProcessing action = null ) {
             var window = CreateInstance<FileListWindow>( );
-            window._exporterEditor = exporterEditor;
 
             window._treeViewState = new TreeViewState( );
-            var targetlist = exporterEditor.targets.Select( v => v as MizoresPackageExporter );
-            window._treeView = new FileListTreeView( window._treeViewState, targetlist );
+            window._targets = targets;
+            window._logs = logs;
+            window._action = action;
+            window._treeView = new FileListTreeView( window._treeViewState, targets, action );
             window._treeView.Reload( );
             window._treeView.ExpandAll( );
-
             window.ShowAuxWindow( );
         }
         private void OnGUI( ) {
@@ -40,7 +42,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 }
 
                 if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
-                    _exporterEditor.Export( );
+                    MizoresPackageExporterEditor.Export( _logs, _targets, _action );
                     this.Close( );
                 }
             }

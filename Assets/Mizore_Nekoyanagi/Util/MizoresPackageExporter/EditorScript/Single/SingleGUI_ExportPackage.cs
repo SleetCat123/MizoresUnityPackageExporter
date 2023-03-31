@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.IO;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -23,7 +24,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 }
                 // List Button
                 if ( GUILayout.Button( ExporterTexts.t_Button_FileList ) ) {
-                    FileList.FileListWindow.Show( ed );
+                    FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { t } );
                 }
             }
 

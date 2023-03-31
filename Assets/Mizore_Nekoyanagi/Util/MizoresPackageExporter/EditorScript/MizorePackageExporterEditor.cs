@@ -80,16 +80,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             logs.DrawUI( );
         }
-        public void Export( ) {
+        public static void Export( ExporterEditorLogs logs, Object[] targets, PrePostPostProcessing action ) {
+            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
+            Export( logs, targetlist, action );
+        }
+        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, PrePostPostProcessing action ) {
             logs.Clear( );
-            if ( targets.Length != 1 ) {
-                var targetlist = targets.Select( v => v as MizoresPackageExporter );
-                foreach ( var item in targetlist ) {
-                    item.Export( logs );
-                }
-            } else {
-                t.Export( logs );
+            for ( int i = 0; i < targets.Length; i++ ) {
+                var item = targets[i];
+                action?.export_preprocessing?.Invoke( item, i );
+                item.Export( logs );
+                action?.export_postprocessing?.Invoke( item, i );
             }
+        }
+        public void Export( ) {
+            Export( logs, targets, null );
         }
     }
 #endif
