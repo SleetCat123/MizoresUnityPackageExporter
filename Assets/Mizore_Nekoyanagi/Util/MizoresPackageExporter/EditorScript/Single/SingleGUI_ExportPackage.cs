@@ -17,15 +17,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
                 t.AllFileExists( ed.logs );
             }
 
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                // Export Button
-                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
-                    ed.Export( );
-                }
-                // List Button
-                if ( GUILayout.Button( ExporterTexts.t_Button_FileList ) ) {
-                    FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { t } );
-                }
+            if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
+                FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { t } );
             }
 
             // Open Button

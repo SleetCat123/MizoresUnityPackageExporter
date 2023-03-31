@@ -53,7 +53,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.BatchExport
                 EditorGUILayout.HelpBox( "error", MessageType.Error );
             }
             using ( new EditorGUI.DisabledGroupScope( error ) ) {
-                if ( GUILayout.Button( ExporterTexts.t_Button_FileList ) ) {
+                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
                     var action = new PrePostPostProcessing( );
                     var temp = _list.Clone( ) as string[];
                     action.export_preprocessing = ( v, index ) => {
