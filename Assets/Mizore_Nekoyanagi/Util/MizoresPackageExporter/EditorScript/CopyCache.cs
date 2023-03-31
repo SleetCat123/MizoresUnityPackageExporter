@@ -12,6 +12,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         private static bool IsList( Type type ) {
             return type.IsGenericType && type.GetGenericTypeDefinition( ) == typeof( List<> );
         }
+        private static bool IsDictionary( Type type ) {
+            return type.IsGenericType && type.GetGenericTypeDefinition( ) == typeof( Dictionary<,> );
+        }
         public static bool CanPaste<T>( ) {
             return cache is T;
         }
@@ -30,6 +33,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                 }
                 return list;
+            } else if ( IsDictionary( type ) ) {
+                var dictOriginal = value as IDictionary;
+                var dict = (IDictionary)Activator.CreateInstance( type );
+                foreach ( DictionaryEntry kvp in dictOriginal ) {
+                    var kvpKey = ( (ICloneable)kvp.Key ).Clone( );
+                    var kvpValue = kvp.Value;
+                    if ( kvpValue != null ) {
+                        kvpValue = ( (ICloneable)kvpValue ).Clone( );
+                    }
+                    dict[kvpKey] = kvpValue;
+                }
+                return dict;
             } else if ( type.IsArray ) {
                 var arrayOriginal = value as Array;
                 var arrayType = type.GetElementType( );

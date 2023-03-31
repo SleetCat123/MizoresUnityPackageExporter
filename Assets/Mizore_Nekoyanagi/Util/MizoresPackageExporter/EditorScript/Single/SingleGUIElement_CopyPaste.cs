@@ -25,6 +25,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             }
             menu.ShowAsContext( );
         }
+        public static void OnRightClickFoldout<TKey, TValue>( MizoresPackageExporter t, string labelFormat, Dictionary<TKey, TValue> table, System.Action<Dictionary<TKey, TValue>> setTable ) {
+            GenericMenu menu = new GenericMenu( );
+            {
+                string label = string.Format( ExporterTexts.t_CopyTarget, string.Format( labelFormat, table.Count ) );
+                menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, table );
+            }
+            if ( CopyCache.CanPaste<Dictionary<TKey, TValue>>( ) ) {
+                var cache = CopyCache.GetCache<Dictionary<TKey, TValue>>( clone: false );
+                string label = string.Format( ExporterTexts.t_PasteTarget, string.Format( labelFormat, cache.Count ) );
+                menu.AddItem( new GUIContent( label ), false, ( ) => {
+                    setTable( CopyCache.GetCache<Dictionary<TKey, TValue>>( ) );
+                    EditorUtility.SetDirty( t );
+                } );
+            } else {
+                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
+            }
+            menu.ShowAsContext( );
+        }
     }
 }
 #endif
