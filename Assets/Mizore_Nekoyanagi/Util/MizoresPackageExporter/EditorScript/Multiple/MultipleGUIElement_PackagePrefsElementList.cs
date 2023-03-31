@@ -99,7 +99,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 ExporterUtils.Indent( 1 );
                 if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
                     foreach ( var item in targetlist ) {
-                        ExporterUtils.ResizeList( getlist( item ), objects_count.max + 1 );
+                        ExporterUtils.ResizeList( getlist( item ), objects_count.max + 1, ( ) => new PackagePrefsElement( ) );
                         EditorUtility.SetDirty( item );
                     }
                 }
