@@ -13,6 +13,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public ExporterEditorLogs logs = new ExporterEditorLogs( );
         public string _variableKeyTemp;
         public MizoresPackageExporter t;
+
         private void OnEnable( ) {
             t = target as MizoresPackageExporter;
         }
