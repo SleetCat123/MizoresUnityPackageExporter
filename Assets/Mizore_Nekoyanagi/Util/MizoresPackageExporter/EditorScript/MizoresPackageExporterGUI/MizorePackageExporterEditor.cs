@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
 #if UNITY_EDITOR
     [CustomEditor( typeof( MizoresPackageExporter ) ), CanEditMultipleObjects]
