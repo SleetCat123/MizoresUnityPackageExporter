@@ -4,8 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
-using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts_Keys;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
+using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

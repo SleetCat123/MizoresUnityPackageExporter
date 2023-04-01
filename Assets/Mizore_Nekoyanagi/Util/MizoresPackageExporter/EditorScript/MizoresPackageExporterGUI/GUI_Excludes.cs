@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 using System.Collections.Generic;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR

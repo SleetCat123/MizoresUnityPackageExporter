@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {

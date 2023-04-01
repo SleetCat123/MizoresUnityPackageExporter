@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
+using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 using System.Collections.Generic;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR
@@ -63,7 +63,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             path = EditorGUI.TextField( textrect, string.Empty );
                             EditorGUI.showMixedValue = false;
                         }
-                        path = ed.BrowseButtons( path );
+                        path = GUIElement_Utils.BrowseButtons( t, path );
                         if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                             GUI.changed = true;
                             path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );

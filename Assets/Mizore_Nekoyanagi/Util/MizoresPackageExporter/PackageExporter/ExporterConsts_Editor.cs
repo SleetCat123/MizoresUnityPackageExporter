@@ -1,10 +1,7 @@
 ﻿namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
-    public static class MizoresPackageExporterConsts
+    public static class ExporterConsts_Editor
     {
-        public const string ASSET_NAME = "MizoresPackageExporter";
-        public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
-
         public const string EDITOR_PREF_PREFIX = "MizorePackageExporter_";
         public const string EDITOR_PREF_FOLDOUT_OBJECT = EDITOR_PREF_PREFIX + "Foldout_Object";
         public const string EDITOR_PREF_FOLDOUT_REFERENCES = EDITOR_PREF_PREFIX + "Foldout_References";
@@ -17,13 +14,5 @@
         public const string EDITOR_PREF_FOLDOUT_VERSIONFILE = EDITOR_PREF_PREFIX + "Foldout_VersionFile";
 
         public const string EDITOR_PREF_FILELIST_VIEW_FULLPATH = EDITOR_PREF_PREFIX + "FileList_FullPath";
-    }
-    public static class MizoresPackageExporterConsts_Keys
-    {
-        public const string KEY_NAME= "%name%";
-        public const string KEY_VERSION = "%version%";
-        public const string KEY_FORMATTED_VERSION = "%versionf%";
-        public const string KEY_PACKAGE_NAME= "%packagename%";
-        public const string KEY_BATCH_EXPORTER = "%batch%";
     }
 }

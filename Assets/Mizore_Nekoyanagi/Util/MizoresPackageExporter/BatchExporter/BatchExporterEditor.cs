@@ -48,7 +48,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.BatchExport
                 EditorGUILayout.LabelField( item );
             }
             bool error = false;
-            if ( !t.target.packageName.Contains( MizoresPackageExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
+            if ( !t.target.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
                 error = true;
                 EditorGUILayout.HelpBox( "error", MessageType.Error );
             }
@@ -58,7 +58,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.BatchExport
                     var temp = _list.Clone( ) as string[];
                     action.export_preprocessing = ( v, index ) => {
                         v.variablesOverride = new Dictionary<string, string>( ) {
-                        {  MizoresPackageExporterConsts_Keys.KEY_BATCH_EXPORTER, temp[index]}
+                        {  ExporterConsts_Keys.KEY_BATCH_EXPORTER, temp[index]}
                     };
                     };
                     action.filelist_preprocessing = action.export_preprocessing;

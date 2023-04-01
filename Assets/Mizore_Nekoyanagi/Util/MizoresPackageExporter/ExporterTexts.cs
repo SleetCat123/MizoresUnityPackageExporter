@@ -44,7 +44,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string TEXT_PASTE_TARGET = "Paste {0}";
         public const string TEXT_PASTE_TARGET_WITH_VALUE = "Paste [{1}] ({0})";
         public const string TEXT_PASTE_TARGET_NO_VALUE = "Paste";
-        public const string TEXT_INCOMPATIBLE_VERSION = "[{0}] is incompatible with current version of " + MizoresPackageExporterConsts.ASSET_NAME + ".\nIf you open it forcibly, some setting values may change or disappear.\n[{0}]は現在のバージョンの" + MizoresPackageExporterConsts.ASSET_NAME + "との互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。";
+        public const string TEXT_INCOMPATIBLE_VERSION = "[{0}] is incompatible with current version of " + ExporterConsts.ASSET_NAME + ".\nIf you open it forcibly, some setting values may change or disappear.\n[{0}]は現在のバージョンの" + ExporterConsts.ASSET_NAME + "との互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。";
         public const string TEXT_INCOMPATIBLE_VERSION_FORCE_OPEN = "Force Open";
         public const string TEXT_FILELIST_VIEW_FULLPATH = "FullPath";
         public const string TEXT_FILELIST_CLOSE = "Close";
