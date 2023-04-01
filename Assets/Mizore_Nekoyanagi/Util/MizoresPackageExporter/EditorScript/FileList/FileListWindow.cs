@@ -15,17 +15,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         TreeViewState _treeViewState;
         FileListTreeView _treeView;
         MizoresPackageExporter[] _targets;
-        PrePostPostProcessing _action;
         ExporterEditorLogs _logs;
 
-        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets, PrePostPostProcessing action = null ) {
+        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets ) {
             var window = CreateInstance<FileListWindow>( );
 
             window._treeViewState = new TreeViewState( );
             window._targets = targets;
             window._logs = logs;
-            window._action = action;
-            window._treeView = new FileListTreeView( window._treeViewState, targets, action );
+            window._treeView = new FileListTreeView( window._treeViewState, targets );
             window._treeView.Reload( );
             window._treeView.ExpandAll( );
             window.ShowAuxWindow( );
@@ -43,7 +41,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 }
 
                 if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
-                    MizoresPackageExporterEditor.Export( _logs, _targets, _action );
+                    MizoresPackageExporterEditor.Export( _logs, _targets );
                     this.Close( );
                 }
             }

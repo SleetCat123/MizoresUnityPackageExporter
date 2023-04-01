@@ -18,10 +18,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     ExporterUtils.Indent( 1 );
                     EditorGUI.BeginChangeCheck( );
-                    MizoresPackageExporter.VersionSource versionSource;
+                    VersionSource versionSource;
 
                     EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
-                    versionSource = (MizoresPackageExporter.VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.t_VersionSource, t.versionSource );
+                    versionSource = (VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.t_VersionSource, t.versionSource );
                     EditorGUI.showMixedValue = false;
 
                     if ( EditorGUI.EndChangeCheck( ) ) {
@@ -36,7 +36,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
                         ExporterUtils.Indent( 1 );
                         switch ( t.versionSource ) {
-                            case MizoresPackageExporter.VersionSource.String: {
+                            case VersionSource.String: {
                                 var samevalue_in_all_obj = targetlist.All( v => t.versionString == v.versionString );
                                 EditorGUI.BeginChangeCheck( );
                                 string versionString;
@@ -54,7 +54,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                                 }
                                 break;
                             }
-                            case MizoresPackageExporter.VersionSource.File: {
+                            case VersionSource.File: {
                                 var samevalue_in_all_obj = targetlist.All( v => t.versionFile.Object == v.versionFile.Object );
 
                                 if ( !samevalue_in_all_obj ) {
@@ -92,7 +92,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
                             item.versionFormat = value;
-                            item.UpdateExportVersion( );
+                            // item.UpdateExportVersion( );
                             EditorUtility.SetDirty( item );
                         }
                     }

@@ -15,14 +15,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     [CreateAssetMenu( menuName = "MizoreNekoyanagi/UnityPackageExporter" )]
     public class MizoresPackageExporter : ScriptableObject, ISerializationCallbackReceiver
     {
+        /// <summary>jsonのdeserialize用</summary>
         [System.Serializable]
         private class VersionJson
         {
             public string version;
-        }
-        public enum VersionSource
-        {
-            String, File
         }
 
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
@@ -39,13 +36,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
-        [System.NonSerialized]
-        public Dictionary<string, string> variablesOverride;
 
         public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
+        const float UPDATE_INTERVAL = 3f;
+        static bool CanUpdate( double lastUpdate ) {
+#if UNITY_EDITOR
+            return UPDATE_INTERVAL < EditorApplication.timeSinceStartup - lastUpdate;
+#else
+            return false;
+#endif
+        }
+
+        #region PackageName
         public VersionSource versionSource;
         public PackagePrefsElement versionFile;
         public string versionString;
@@ -67,6 +72,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 return Const.EXPORT_FOLDER_PATH + ExportFileName;
             }
         }
+        public string[] GetAllExportFileName( ) {
+            if ( batchExportMode == BatchExportMode.None ) {
+                temp_batchExportCurrentKey = string.Empty;
+                return new string[] { ExportFileName };
+            }
+            var texts = BatchExportKeys;
+            var result = new string[texts.Length];
+            for ( int i = 0; i < texts.Length; i++ ) {
+                temp_batchExportCurrentKey = texts[i];
+                result[i] = ExportFileName;
+            }
+            return result.Distinct( ).ToArray( );
+        }
         static Regex _invalidCharsRegex;
         /// <summary>
         /// ファイル名に使用できない文字の判定用
@@ -81,15 +99,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 return _invalidCharsRegex;
             }
         }
-        const float UPDATE_INTERVAL = 2.5f;
-        double lastUpdate;
+        [System.NonSerialized]
+        double lastUpdate_ExportVersion;
         string _exportVersion;
         public string ExportVersion {
             get {
 #if UNITY_EDITOR
                 // 短時間に連続してファイルを読めないようにする
-                if ( UPDATE_INTERVAL < EditorApplication.timeSinceStartup - lastUpdate ) {
-                    lastUpdate = EditorApplication.timeSinceStartup;
+                if ( CanUpdate( lastUpdate_ExportVersion ) ) {
                     UpdateExportVersion( );
                 }
 #endif
@@ -105,7 +122,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
             }
         }
+
         public void UpdateExportVersion( ) {
+            lastUpdate_ExportVersion = EditorApplication.timeSinceStartup;
             if ( versionSource == VersionSource.String ) {
                 _exportVersion = versionString;
                 return;
@@ -160,6 +179,57 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
             packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
         }
+        #endregion
+
+        #region BatchExport
+        public BatchExportMode batchExportMode;
+        public List<string> batchExportTexts;
+        public PackagePrefsElement batchExportFolderRoot;
+        public string batchExportFolderRegex;
+        [System.NonSerialized]
+        string[] temp_batchExportKeys;
+        [System.NonSerialized]
+        string temp_batchExportCurrentKey;
+
+        double lastUpdate_BatchExportKeys;
+        public string[] BatchExportKeys {
+            get {
+#if UNITY_EDITOR
+                // 短時間に連続してファイルを読めないようにする
+                if ( CanUpdate( lastUpdate_BatchExportKeys ) ) {
+                    UpdateBatchExportKeys( );
+                }
+#endif
+                return temp_batchExportKeys;
+            }
+        }
+        public void UpdateBatchExportKeys( ) {
+            lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
+            switch ( batchExportMode ) {
+                default:
+                case BatchExportMode.None:
+                    temp_batchExportKeys = new string[0];
+                    break;
+                case BatchExportMode.Texts:
+                    temp_batchExportKeys = batchExportTexts.Distinct( ).ToArray( );
+                    break;
+                case BatchExportMode.Folders:
+                    temp_batchExportKeys = new string[0];
+                    if ( batchExportFolderRoot == null || batchExportFolderRoot.Object == null ) {
+                        break;
+                    }
+                    string path = AssetDatabase.GetAssetPath( batchExportFolderRoot.Object );
+                    Regex regex;
+                    try {
+                        regex = new Regex( batchExportFolderRegex );
+                    } catch ( System.ArgumentException ) {
+                        regex = new Regex( string.Empty );
+                    }
+                    temp_batchExportKeys = Directory.GetDirectories( path ).Select( v => Path.GetFileName( v ) ).Where( v => regex.IsMatch( v ) ).Distinct( ).ToArray( );
+                    break;
+            }
+        }
+        #endregion
 
         public void DEBUGLOG( string value ) {
             if ( debugmode ) {
@@ -167,6 +237,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
 
+        #region DynamicPath
         public string ConvertDynamicPath( string path ) {
             return ConvertDynamicPath_Main( path, 0 );
         }
@@ -177,16 +248,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             recursiveCount += 1;
             string key = null;
-            if ( variablesOverride != null ) {
-                foreach ( var kvp in variablesOverride ) {
-                    key = string.Format( "%{0}%", kvp.Key.Replace( "%", string.Empty ) );
-                    path = path.Replace( key, kvp.Value );
-                }
-            }
             foreach ( var kvp in variables ) {
                 key = string.Format( "%{0}%", kvp.Key );
                 path = path.Replace( key, kvp.Value );
             }
+
+            key = Const_Keys.KEY_BATCH_EXPORTER;
+            path = path.Replace( key, temp_batchExportCurrentKey );
 
             key = Const_Keys.KEY_NAME;
             path = path.Replace( key, name );
@@ -213,13 +281,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             return path;
         }
-        public IEnumerable<string> GetAllPath( ) {
-            var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
-            var list2 = dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) );
-            var result = list1.Concat( list2 );
-            result = result.Select( v => v.Replace( '\\', '/' ) );
-            return result;
-        }
+        #endregion
         IEnumerable<string> GetReferencesPath( ) {
             List<string> result = new List<string>( );
             foreach ( var v in references ) {
@@ -233,13 +295,38 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
             return result.Select( v => v.Replace( '\\', '/' ) );
         }
-        public IEnumerable<string> GetAllPath_Full( ) {
+        public Dictionary<string, IEnumerable<string>> GetAllPath_Batch( ) {
+            var result = new Dictionary<string, IEnumerable<string>>( );
+            if ( batchExportMode == BatchExportMode.None ) {
+                temp_batchExportCurrentKey = string.Empty;
+                result.Add( ExportPath, GetAllPath( ) );
+                return result;
+            }
+
+            var texts = BatchExportKeys;
+            for ( int i = 0; i < texts.Length; i++ ) {
+                temp_batchExportCurrentKey = texts[i];
+                var path = ExportPath;
+                if ( !result.ContainsKey( path ) ) {
+                    result.Add( ExportPath, GetAllPath( ) );
+                }
+            }
+            return result;
+        }
+        public IEnumerable<string> GetAllPath( ) {
 #if UNITY_EDITOR
             var references_path = GetReferencesPath( );
             DEBUGLOG( "References: \n" + string.Join( "\n", references_path ) );
             bool useReference = references_path.Any( );
 
-            var list = GetAllPath( );
+            IEnumerable<string> list;
+            {
+                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
+                var list2 = dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) );
+                list = list1.Concat( list2 );
+                list = list.Select( v => v.Replace( '\\', '/' ) );
+            }
+
             var list_include_sub = new HashSet<string>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item ) ) {
@@ -310,7 +397,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
-            var list_full = GetAllPath_Full( ).ToList( );
+            var list_full = GetAllPath( ).ToList( );
             Debug.Log( string.Join( "\n", list_full ) );
             for ( int i = 0; i < list_full.Count; i++ ) {
                 var path = list_full[i];
@@ -351,11 +438,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
             return result;
         }
-        public void Export( ExporterEditorLogs logs ) {
-#if UNITY_EDITOR
-            logs.Clear( );
-            UpdateExportVersion( );
-            var list = GetAllPath_Full( );
+        void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
             Debug.Log( "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs );
@@ -365,7 +448,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
 
             string[] pathNames = list.ToArray( );
-            string exportPath = ExportPath;
             if ( Directory.Exists( exportPath ) == false ) {
                 Directory.CreateDirectory( Path.GetDirectoryName( exportPath ) );
             }
@@ -374,6 +456,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.t_ExportLog_Success );
             Debug.Log( exportPath + "をエクスポートしました。" );
+        }
+        public void Export( ExporterEditorLogs logs ) {
+#if UNITY_EDITOR
+            logs.Clear( );
+            UpdateExportVersion( );
+            UpdateBatchExportKeys( );
+
+            var table = GetAllPath_Batch( );
+            foreach ( var kvp in table ) {
+                string exportPath =  kvp.Key;
+                var list = kvp.Value;
+                Export_Internal( logs, exportPath, list );
+            }
 #endif
         }
 

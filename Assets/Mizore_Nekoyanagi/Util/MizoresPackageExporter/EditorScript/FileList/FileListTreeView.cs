@@ -11,7 +11,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
     public class FileListTreeView : TreeView
     {
         MizoresPackageExporter[] _exporters;
-        PrePostPostProcessing _action;
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
@@ -21,9 +20,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
 
-        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter[] exporters, PrePostPostProcessing action ) : base( treeViewState ) {
+        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter[] exporters ) : base( treeViewState ) {
             _exporters = exporters;
-            _action = action;
         }
         public void UpdateList( ) {
             var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
@@ -52,18 +50,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             _root = new FileListNode( );
             for ( int i = 0; i < _exporters.Length; i++ ) {
                 var item = _exporters[i];
-                _action?.filelist_preprocessing?.Invoke( item, i );
-                var exportName = item.ExportFileName;
-                if ( _root.Contains( exportName ) ) {
-                    Debug.Log( "skip: " + exportName );
-                    //_action?.filelist_postprocessing?.Invoke( item, i );
-                    continue;
+                var table = item.GetAllPath_Batch( );
+                foreach ( var kvp in table ) {
+                    string exportPath = kvp.Key;
+                    var list = kvp.Value;
+                    if ( _root.Contains( exportPath ) ) {
+                        Debug.Log( "skip: " + exportPath );
+                        //_action?.filelist_postprocessing?.Invoke( item, i );
+                        continue;
+                    }
+                    Debug.Log( exportPath );
+                    var node = FileList.FileListNode.CreateList( list );
+                    node.id = exportPath;
+                    node.path = exportPath;
+                    _root.Add( node );
+                    table_root.Add( node, item );
                 }
-                Debug.Log( exportName );
-                var node = FileList.FileListNode.CreateList( item.GetAllPath_Full( ) );
-                node.id = exportName;
-                _root.Add( node );
-                table_root.Add( node, item );
             }
             BuildID( START_NODE_ID );
             //if ( _action != null && _action.filelist_postprocessing != null ) {
@@ -136,8 +138,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             Texture icon;
             string label;
             if ( node.parent == _root ) {
-                var exporter = table_root[node];
-                label = exporter.ExportFileName;
+                label = args.item.displayName;
                 icon = IconCache.UnityLogoIcon;
             } else {
                 if ( viewFullPath ) {

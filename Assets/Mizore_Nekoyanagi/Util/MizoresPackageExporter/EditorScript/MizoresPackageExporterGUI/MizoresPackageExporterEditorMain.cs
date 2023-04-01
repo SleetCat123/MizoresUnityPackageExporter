@@ -35,6 +35,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
 
             MizoresPackageExporter.debugmode = EditorGUILayout.Toggle( "Debug Mode", MizoresPackageExporter.debugmode );
+            ExporterUtils.SeparateLine( );
 
             // Targets
             GUI.enabled = false;
@@ -106,6 +107,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 // ↓ Dynamic Path Variables
                 SingleGUI_DynamicPathVariables.Draw( ed, t );
                 // ↑ Dynamic Path Variables
+            }
+
+            if ( targets.Length == 1 ) {
+                ExporterUtils.SeparateLine( );
+                GUI_BatchExporter.Draw( ed, t, targetlist ); 
             }
 
             ExporterUtils.SeparateLine( );
