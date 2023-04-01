@@ -23,29 +23,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
             }
 
+            string[][] fileList = new string[targetlist.Length][];
+            bool any = false;
+            for ( int i = 0; i < targetlist.Length; i++ ) {
+                var files = targetlist[i].GetAllExportFileName( );
+                fileList[i] = files;
+                any |= files.Length != 0;
+            }
+
             // List Button
-            if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
-                FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
+            using ( new EditorGUI.DisabledGroupScope( !any ) ) {
+                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackages ) ) {
+                    FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
+                }
             }
 
             // 出力先一覧
-            foreach ( var item in targetlist ) {
-                var files = item.GetAllExportFileName( );
+            for ( int i = 0; i < targetlist.Length; i++ ) {
+                var obj = targetlist[i];
+                var files = fileList[i];
                 if ( multiple ) {
                     EditorGUI.BeginDisabledGroup( true );
-                    EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                    EditorGUILayout.ObjectField( obj, typeof( MizoresPackageExporter ), false );
                     EditorGUI.EndDisabledGroup( );
                 }
-                for ( int i = 0; i < files.Length; i++ ) {
+                for ( int j = 0; j < files.Length; j++ ) {
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
                         if ( multiple ) {
                             ExporterUtils.Indent( 1 );
-                            EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                            EditorGUILayout.LabelField( j.ToString( ), GUILayout.Width( 30 ) );
                         }
-                        var path = files[i];
+                        var path = files[j];
                         EditorGUILayout.LabelField( new GUIContent( path, path ) );
                     }
                 }
+            }
+            if ( !any ) {
+                EditorGUILayout.HelpBox( "Export List is empty.", MessageType.Error );
             }
             if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_OPEN, GUILayout.Width( 60 ) ) ) {
                 if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath ) ) {
