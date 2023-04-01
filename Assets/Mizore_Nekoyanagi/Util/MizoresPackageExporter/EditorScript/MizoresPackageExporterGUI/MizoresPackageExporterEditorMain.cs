@@ -4,7 +4,6 @@ using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporte
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 using System.Collections.Generic;
-using MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 {
 
 #if UNITY_EDITOR
-    public static class MultipleEditorGUI
+    public static class MizoresPackageExporterEditorMain
     {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getList, Object[] objectReferences ) {
             var add = objectReferences.
@@ -54,10 +53,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.objects, objectReferences ),
-                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
                 }
                 ) ) {
-                MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
+                GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
             }
             // ↑ Objects
 
@@ -74,10 +73,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.references, objectReferences ),
-                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
                 }
                 ) ) {
-                MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
+                GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
             }
             // ↑ References
 
@@ -91,10 +90,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludeObjects, objectReferences ),
-                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
                 }
                 ) ) {
-                MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
+                GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
             }
             // ↑ Exclude Objects
 

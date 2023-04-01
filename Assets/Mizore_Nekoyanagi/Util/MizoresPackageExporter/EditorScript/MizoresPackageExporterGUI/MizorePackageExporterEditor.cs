@@ -60,7 +60,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     EditorUtility.SetDirty( exporter );
                 }
             }
-            MultipleEditor.MultipleEditorGUI.EditMultiple( this );
+            MultipleEditor.MizoresPackageExporterEditorMain.EditMultiple( this );
 
             logs.DrawUI( );
         }

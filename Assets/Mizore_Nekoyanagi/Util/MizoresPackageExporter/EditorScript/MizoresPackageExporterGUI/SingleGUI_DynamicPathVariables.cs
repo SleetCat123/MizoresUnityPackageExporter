@@ -5,7 +5,7 @@ using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageEx
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
     public static class SingleGUI_DynamicPathVariables
     {

@@ -32,7 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),
-                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
                 }
                 ) ) {
                 Event currentEvent = Event.current;

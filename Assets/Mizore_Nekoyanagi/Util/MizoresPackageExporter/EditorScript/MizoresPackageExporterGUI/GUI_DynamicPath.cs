@@ -34,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
-                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_DynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_DynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
                 }
                 ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {

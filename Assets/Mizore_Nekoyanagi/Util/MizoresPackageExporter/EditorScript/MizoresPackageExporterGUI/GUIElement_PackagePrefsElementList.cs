@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 {
-    public static class MultipleGUIElement_PackagePrefsElementList
+    public static class GUIElement_PackagePrefsElementList
     {
         public static void Draw<T>( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getlist ) where T : UnityEngine.Object {
             MinMax objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );

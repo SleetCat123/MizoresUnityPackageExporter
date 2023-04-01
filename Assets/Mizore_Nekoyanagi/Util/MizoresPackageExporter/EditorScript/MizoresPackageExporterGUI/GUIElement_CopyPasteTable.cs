@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 {
-    public static class MultipleGUIElement_CopyPasteTable
+    public static class GUIElement_CopyPasteTable
     {
         static bool TableIsPerfectMatch<TKey, TValue>( IEnumerable<MizoresPackageExporter> targets, Func<MizoresPackageExporter, Dictionary<TKey, TValue>> getList ) {
             if ( targets.Count( ) == 1 ) {
