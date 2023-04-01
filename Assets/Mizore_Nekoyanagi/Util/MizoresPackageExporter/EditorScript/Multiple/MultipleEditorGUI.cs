@@ -97,7 +97,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↑ Exclude Objects
 
             // ↓ Excludes
-            MultipleGUI_Excludes.Draw( ed, t, targetlist );
+            GUI_Excludes.Draw( ed, t, targetlist );
             // ↑ Excludes
 
             ExporterUtils.SeparateLine( );

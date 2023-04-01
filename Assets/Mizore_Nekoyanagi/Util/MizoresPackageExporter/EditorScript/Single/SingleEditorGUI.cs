@@ -87,7 +87,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↑ Exclude Objects
 
             // ↓ Excludes
-            SingleGUI_Excludes.Draw( t );
+            GUI_Excludes.Draw( ed, t, targetlist );
             // ↑ Excludes
 
             ExporterUtils.SeparateLine( );
