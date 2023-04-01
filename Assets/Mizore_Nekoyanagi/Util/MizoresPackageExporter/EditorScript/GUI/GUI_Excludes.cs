@@ -161,18 +161,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Excludes Preview
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_ExcludesPreview ) ) {
                 bool first = true;
+                bool multiple = targetlist.Count( ) > 1;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        GUI.enabled = false;
-                        ExporterUtils.Indent( 1 );
-                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                        GUI.enabled = true;
+                    if ( multiple ) {
+                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                            GUI.enabled = false;
+                            ExporterUtils.Indent( 1 );
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                            GUI.enabled = true;
+                        }
                     }
                     for ( int i = 0; i < minmax_count.max; i++ ) {
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 2 );
+                            if ( multiple ) {
+                                ExporterUtils.Indent( 2 );
+                            } else {
+                                ExporterUtils.Indent( 1 );
+                            }
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
 
                             if ( i < item.excludes.Count ) {
