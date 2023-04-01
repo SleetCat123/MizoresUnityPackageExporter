@@ -51,7 +51,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor
             // ↑ Objects
 
             // ↓ Dynamic Path
-            SingleGUI_DynamicPath.Draw( ed, t );
+            GUI_DynamicPath.Draw( ed, t, targetlist );
             // ↑ Dynamic Path
 
             ExporterUtils.SeparateLine( );

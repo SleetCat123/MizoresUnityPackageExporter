@@ -3,15 +3,16 @@ using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using System.Collections.Generic;
+using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
 
 #if UNITY_EDITOR
-    public static class MultipleGUI_DynamicPath
+    public static class GUI_DynamicPath
     {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<string>> getList, Object[] objectReferences ) {
             var add = objectReferences.
@@ -111,18 +112,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Dynamic Path Preview
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
                 bool first = true;
+                bool multiple = targetlist.Count( ) > 1;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        GUI.enabled = false;
-                        ExporterUtils.Indent( 1 );
-                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                        GUI.enabled = true;
+                    if ( multiple ) {
+                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                            GUI.enabled = false;
+                            ExporterUtils.Indent( 1 );
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                            GUI.enabled = true;
+                        }
                     }
                     for ( int i = 0; i < dpath_count.max; i++ ) {
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 2 );
+                            if ( multiple ) {
+                                ExporterUtils.Indent( 2 );
+                            } else {
+                                ExporterUtils.Indent( 1 );
+                            }
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                             if ( i < item.dynamicpath.Count ) {
                                 string previewpath = item.ConvertDynamicPath( item.dynamicpath[i] );
