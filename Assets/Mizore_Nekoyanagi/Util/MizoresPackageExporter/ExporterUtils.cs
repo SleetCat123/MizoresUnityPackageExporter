@@ -150,6 +150,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public struct MinMax
         {
             public int min, max;
+            public bool SameValue => min == max;
 
             public MinMax( int min, int max ) {
                 this.min = min;
@@ -157,7 +158,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
 
             public string GetRangeString( ) {
-                if ( min == max ) {
+                if ( SameValue ) {
                     return min.ToString( );
                 } else {
                     return $"{min}-{max}";

@@ -12,6 +12,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleGUI_Excludes
     {
+        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<SearchPath>> getList, Object[] objectReferences ) {
+            var add = objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => new SearchPath( SearchPathType.Exact, AssetDatabase.GetAssetPath( v ) ) );
+            foreach ( var item in targetlist ) {
+                getList( item ).AddRange( add );
+                EditorUtility.SetDirty( item );
+            }
+        }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
             // ↓ Excludes
@@ -19,11 +28,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
                 string.Format( ExporterTexts.t_Excludes, minmax_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
-                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex, list ) => ex.excludes = list )
+                    canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),
+                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
                 }
                 ) ) {
+                Event currentEvent = Event.current;
                 for ( int i = 0; i < minmax_count.max; i++ ) {
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( var scope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか
                         bool samevalue_in_all_value = i < minmax_count.min && targetlist.All( v => t.excludes[i].value == v.excludes[i].value );
                         bool samevalue_in_all_type = i < minmax_count.min && targetlist.All( v => t.excludes[i].searchType == v.excludes[i].searchType );
@@ -35,7 +47,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                             DiffLabel( );
                         }
-
 
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             EditorGUI.BeginChangeCheck( );
@@ -78,6 +89,37 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                                     EditorUtility.SetDirty( item );
                                 }
                             }
+                        }
+
+                        // Copy&Paste
+                        if ( currentEvent.type == EventType.ContextClick && scope.rect.Contains( currentEvent.mousePosition ) ) {
+                            GenericMenu menu = new GenericMenu( );
+                            // Copy
+                            if ( samevalue_in_all_type && samevalue_in_all_value ) {
+                                var item = t.excludes[i];
+                                string label = string.Format( ExporterTexts.t_CopyTargetWithValue, item.GetType( ).Name, i.ToString( ) );
+                                menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, item );
+                            } else {
+                                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_CopyTargetWithValue ) );
+                            }
+                            // Paste
+                            if ( CopyCache.CanPaste<SearchPath>( ) ) {
+                                var item = t.excludes[i];
+                                string label = string.Format( ExporterTexts.t_PasteTargetWithValue, item.GetType( ).Name, item.ToString( ) );
+                                int index = i;
+                                menu.AddItem( new GUIContent( label ), false, ( ) => {
+                                    var paste = CopyCache.GetCache<SearchPath>( );
+                                    foreach ( var ex in targetlist ) {
+                                        ex.excludes[index] = paste;
+                                        EditorUtility.SetDirty( ex );
+                                    }
+                                } );
+                            } else {
+                                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
+                            }
+                            menu.ShowAsContext( );
+
+                            currentEvent.Use( );
                         }
 
                         // Button

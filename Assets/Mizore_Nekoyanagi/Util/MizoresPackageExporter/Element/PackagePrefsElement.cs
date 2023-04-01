@@ -6,7 +6,7 @@ using UnityEditor;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     [System.Serializable]
-    public class PackagePrefsElement : System.ICloneable
+    public class PackagePrefsElement : System.ICloneable, System.IEquatable<PackagePrefsElement>
     {
         [SerializeField]
         private Object obj;
@@ -58,6 +58,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public object Clone( ) {
             return new PackagePrefsElement( this );
+        }
+
+        public override bool Equals( object obj ) {
+            return Equals( obj as PackagePrefsElement );
+        }
+
+        public bool Equals( PackagePrefsElement other ) {
+            return this.obj == other.obj && this.path == other.path;
+        }
+
+        public override int GetHashCode( ) {
+            return obj.GetHashCode( ) ^ path.GetHashCode( );
         }
     }
 }

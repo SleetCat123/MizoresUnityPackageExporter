@@ -40,6 +40,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const string EN_TEXT_EXCLUDES_WERE_EMPTY = "No files were excluded.";
         public const string TEXT_COPY_TARGET = "Copy {0}";
         public const string TEXT_COPY_TARGET_WITH_VALUE = "Copy [{1}] ({0})";
+        public const string TEXT_COPY_TARGET_NO_VALUE = "Copy";
         public const string TEXT_PASTE_TARGET = "Paste {0}";
         public const string TEXT_PASTE_TARGET_WITH_VALUE = "Paste [{1}] ({0})";
         public const string TEXT_PASTE_TARGET_NO_VALUE = "Paste";
@@ -79,6 +80,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_ExcludesWereEmpty => EN_TEXT_EXCLUDES_WERE_EMPTY;
         public static string t_CopyTarget => TEXT_COPY_TARGET;
         public static string t_CopyTargetWithValue => TEXT_COPY_TARGET_WITH_VALUE;
+        public static string t_CopyTargetNoValue => TEXT_COPY_TARGET_NO_VALUE;
         public static string t_PasteTarget => TEXT_PASTE_TARGET;
         public static string t_PasteTargetWithValue => TEXT_PASTE_TARGET_WITH_VALUE;
         public static string t_PasteTargetNoValue => TEXT_PASTE_TARGET_NO_VALUE;

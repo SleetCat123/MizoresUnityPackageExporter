@@ -13,6 +13,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleGUI_DynamicPath
     {
+        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<string>> getList, Object[] objectReferences ) {
+            var add = objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => AssetDatabase.GetAssetPath( v ) );
+            foreach ( var item in targetlist ) {
+                getList( item ).AddRange( add );
+                EditorUtility.SetDirty( item );
+            }
+        }
+
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath.Count );
             // ↓ Dynamic Path
@@ -20,7 +30,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
                 string.Format( ExporterTexts.t_DynamicPath, dpath_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
-                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_DynamicPath, ( ex, list ) => ex.dynamicpath = list )
+                    canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
+                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_DynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
                 }
                 ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {

@@ -3,6 +3,7 @@ using System.Linq;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporterConsts;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,6 +14,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 #if UNITY_EDITOR
     public static class MultipleEditorGUI
     {
+        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getList, Object[] objectReferences ) {
+            var add = objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => new PackagePrefsElement( v ) );
+            foreach ( var item in targetlist ) {
+                getList( item ).AddRange( add );
+                EditorUtility.SetDirty( item );
+            }
+        }
         /// <summary>
         /// 複数オブジェクトの編集
         /// </summary>
@@ -36,11 +46,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 
             // ↓ Objects
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
-            if ( ExporterUtils.EditorPrefFoldout( 
+            if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_OBJECT,
                 string.Format( ExporterTexts.t_Objects, objects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
-                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex, list ) => ex.objects = list )
+                    canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.objects, objectReferences ),
+                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
                 }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
@@ -54,11 +66,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             ExporterUtils.SeparateLine( );
             // ↓ References
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
-            if ( ExporterUtils.EditorPrefFoldout( 
+            if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
                 string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
-                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex, list ) => ex.references = list )
+                    canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.references, objectReferences ),
+                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
                 }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
@@ -73,7 +87,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
                 string.Format( ExporterTexts.t_ExcludeObjects, excludeObjects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
-                    onRightClick = ( ) => MultipleGUIElement_CopyPaste.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex, list ) => ex.excludeObjects = list )
+                    canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludeObjects, objectReferences ),
+                    onRightClick = ( ) => MultipleGUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
                 }
                 ) ) {
                 MultipleGUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
