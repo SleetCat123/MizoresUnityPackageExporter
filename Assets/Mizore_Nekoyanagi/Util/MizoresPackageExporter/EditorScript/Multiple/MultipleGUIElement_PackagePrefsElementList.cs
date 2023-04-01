@@ -7,13 +7,18 @@ using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 {
-    public static class MultipleGUIElement_PackagePrefsElementList {
-        public static void Draw<T>( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getlist ) where T : UnityEngine.Object {
+    public static class MultipleGUIElement_PackagePrefsElementList
+    {
+        public static void Draw<T>( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getlist ) where T : UnityEngine.Object {
             MinMax objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );
+            bool multiple = targetlist.Length > 1;
             for ( int i = 0; i < objects_count.max; i++ ) {
                 using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                     // （複数インスタンス選択時）全てのオブジェクトの値が同じか
-                    bool samevalue_in_all = i < objects_count.min && targetlist.All( v => getlist( t )[i].Object == getlist( v )[i].Object );
+                    bool samevalue_in_all = true;
+                    if ( multiple ) {
+                        samevalue_in_all = i < objects_count.min && targetlist.All( v => getlist( t )[i].Object == getlist( v )[i].Object );
+                    }
 
                     ExporterUtils.Indent( 1 );
                     if ( samevalue_in_all ) {
@@ -23,16 +28,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                         DiffLabel( );
                     }
 
+                    EditorGUI.showMixedValue = !samevalue_in_all;
                     EditorGUI.BeginChangeCheck( );
-                    Object obj;
+                    PackagePrefsElement element;
                     if ( samevalue_in_all ) {
-                        obj = EditorGUILayout.ObjectField( getlist( t )[i].Object, typeof( T ), false );
+                        element = getlist( t )[i];
                     } else {
-                        EditorGUI.showMixedValue = true;
-                        obj = EditorGUILayout.ObjectField( null, typeof( T ), false );
-                        EditorGUI.showMixedValue = false;
+                        element = new PackagePrefsElement( );
                     }
+                    PackagePrefsElementInspector.Draw<T>( element );
+                    EditorGUI.showMixedValue = false;
                     if ( EditorGUI.EndChangeCheck( ) ) {
+                        var obj = element.Object;
                         foreach ( var item in targetlist ) {
                             // 全ての選択中インスタンスに対してオブジェクトを設定
                             // DynamicPathの要素数が足りなかったらリサイズ
@@ -40,35 +47,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                             getlist( item )[i].Object = obj;
                             objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );
                             EditorUtility.SetDirty( item );
-                        }
-                    }
-
-                    EditorGUI.BeginChangeCheck( );
-                    Rect textrect = EditorGUILayout.GetControlRect( );
-                    string path;
-                    if ( samevalue_in_all ) {
-                        path = EditorGUI.TextField( textrect, getlist( t )[i].Path );
-                    } else {
-                        EditorGUI.showMixedValue = true;
-                        path = EditorGUI.TextField( textrect, string.Empty );
-                        EditorGUI.showMixedValue = false;
-                    }
-                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
-                        GUI.changed = true;
-                        path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
-                    }
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        // パスが変更されたらオブジェクトを置き換える
-                        Object o = AssetDatabase.LoadAssetAtPath<T>( path );
-                        if ( o != null ) {
-                            foreach ( var item in targetlist ) {
-                                // 全ての選択中インスタンスに対してオブジェクトを設定
-                                // DynamicPathの要素数が足りなかったらリサイズ
-                                ExporterUtils.ResizeList( getlist( item ), Mathf.Max( i + 1, getlist( item ).Count ), ( ) => new PackagePrefsElement( ) );
-                                getlist( item )[i].Object = o;
-                                objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );
-                                EditorUtility.SetDirty( item );
-                            }
                         }
                     }
 

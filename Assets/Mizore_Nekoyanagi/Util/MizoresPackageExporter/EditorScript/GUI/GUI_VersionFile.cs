@@ -11,7 +11,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 #if UNITY_EDITOR
     public static class GUI_VersionFile
     {
-        public static void Draw( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_Version ) ) {
                 var same_versionSource_valueInAllObj = targetlist.All( v => t.versionSource == v.versionSource );

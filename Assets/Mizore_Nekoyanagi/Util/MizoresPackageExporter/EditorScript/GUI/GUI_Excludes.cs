@@ -22,8 +22,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 EditorUtility.SetDirty( item );
             }
         }
-        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
+            bool multiple = targetlist.Length > 1;
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
@@ -38,8 +39,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 for ( int i = 0; i < minmax_count.max; i++ ) {
                     using ( var scope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか
-                        bool samevalue_in_all_value = i < minmax_count.min && targetlist.All( v => t.excludes[i].value == v.excludes[i].value );
-                        bool samevalue_in_all_type = i < minmax_count.min && targetlist.All( v => t.excludes[i].searchType == v.excludes[i].searchType );
+                        bool samevalue_in_all_value = true;
+                        bool samevalue_in_all_type = true;
+                        if ( multiple ) {
+                            samevalue_in_all_value = i < minmax_count.min && targetlist.All( v => t.excludes[i].value == v.excludes[i].value );
+                            samevalue_in_all_type = i < minmax_count.min && targetlist.All( v => t.excludes[i].searchType == v.excludes[i].searchType );
+                        }
 
                         ExporterUtils.Indent( 1 );
                         if ( samevalue_in_all_value && samevalue_in_all_type ) {
@@ -161,7 +166,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Excludes Preview
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_ExcludesPreview ) ) {
                 bool first = true;
-                bool multiple = targetlist.Count( ) > 1;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;

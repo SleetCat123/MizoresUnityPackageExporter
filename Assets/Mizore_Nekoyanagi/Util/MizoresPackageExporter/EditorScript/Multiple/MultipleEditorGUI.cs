@@ -4,6 +4,7 @@ using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.MizoresPackageExporte
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 using System.Collections.Generic;
+using MizoreNekoyanagi.PublishUtil.PackageExporter.SingleEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,10 +31,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             var targets = ed.targets;
             var t = ed.t;
 
-            if ( targets.Length <= 1 ) return;
             Undo.RecordObjects( targets, ExporterTexts.t_Undo );
 
-            var targetlist = targets.Select( v => v as MizoresPackageExporter );
+            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
+
+            MizoresPackageExporter.debugmode = EditorGUILayout.Toggle( "Debug Mode", MizoresPackageExporter.debugmode );
 
             // Targets
             GUI.enabled = false;
@@ -99,6 +101,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Excludes
             GUI_Excludes.Draw( ed, t, targetlist );
             // ↑ Excludes
+
+            if ( targets.Length == 1 ) {
+                ExporterUtils.SeparateLine( );
+                // ↓ Dynamic Path Variables
+                SingleGUI_DynamicPathVariables.Draw( ed, t );
+                // ↑ Dynamic Path Variables
+            }
 
             ExporterUtils.SeparateLine( );
 

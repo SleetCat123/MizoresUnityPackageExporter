@@ -31,7 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public int PackageExporterVersion { get => packageExporterVersion; }
         public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
         public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
-        public bool debugmode = false;
+        public static bool debugmode = false;
 
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
         public List<string> dynamicpath = new List<string>( );

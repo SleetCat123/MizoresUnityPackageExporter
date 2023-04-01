@@ -12,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 #if UNITY_EDITOR
     public static class GUI_ExportPackage
     {
-        public static void Draw( MizoresPackageExporterEditor ed, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             EditorGUILayout.LabelField( ExporterTexts.t_Label_ExportPackage, EditorStyles.boldLabel );
             // Check Button
             if ( GUILayout.Button( ExporterTexts.t_Button_Check ) ) {

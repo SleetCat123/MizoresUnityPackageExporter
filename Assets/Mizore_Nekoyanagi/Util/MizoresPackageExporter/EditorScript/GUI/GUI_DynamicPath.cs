@@ -24,8 +24,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             }
         }
 
-        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist ) {
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath.Count );
+            bool multiple = targetlist.Length > 1;
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH,
@@ -39,7 +40,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか
-                        bool samevalue_in_all = i < dpath_count.min && targetlist.All( v => t.dynamicpath[i] == v.dynamicpath[i] );
+                        bool samevalue_in_all = true;
+                        if ( multiple ) {
+                            samevalue_in_all = i < dpath_count.min && targetlist.All( v => t.dynamicpath[i] == v.dynamicpath[i] );
+                        }
 
                         ExporterUtils.Indent( 1 );
                         if ( samevalue_in_all ) {
@@ -112,7 +116,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Dynamic Path Preview
             if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_DynamicPathPreview ) ) {
                 bool first = true;
-                bool multiple = targetlist.Count( ) > 1;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
