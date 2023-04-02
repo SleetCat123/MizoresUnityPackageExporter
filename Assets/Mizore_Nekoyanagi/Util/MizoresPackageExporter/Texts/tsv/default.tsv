@@ -1,0 +1,38 @@
+Undo	PackagePrefs
+Objects	Objects ({0})
+References	References ({0})
+Excludes	Excludes ({0})
+ExcludesPreview	Excludes preview
+ExcludeObjects	Exclude objects ({0})
+DynamicPath	Dynamic path ({0})
+DynamicPathPreview	Dynamic path preview
+DynamicPathVariables	Dynamic path variables ({0})
+Version	Version
+VersionSource	Source
+VersionFormat	Format
+PackageName	Package name
+ButtonCheck	Check
+ButtonExport	Export to unitypackage
+ButtonExportM	Export to unitypackages
+ButtonOpen	Open
+DiffLabel	?
+DiffTooltip	Some values are different.
+ButtonFolder	Folder
+ButtonFile	File
+ExportLogNotFoundPathPrefix	[ ! not found ! ] 
+ExportLogDependencyPathPrefix	[Dependency]
+ExportLogNotFound	[{0}] is not exists.\n
+ExportLogFailed	Export has been cancelled.\n
+ExportLogAllFileExists	All files or directories exist.\n
+ExportLogSuccess	[{0}] export completed.\n
+ExcludesWereEmpty	No files were excluded.
+CopyTarget	Copy {0}
+CopyTargetWithValue	Copy [{1}] ({0})
+CopyTargetNoValue	Copy
+PasteTarget	Paste {0}
+PasteTargetWithValue	Paste [{1}] ({0})
+PasteTargetNoValue	Paste
+IncompatibleVersion	[{0}] is incompatible with current version of " + exporterConsts.ASSETName + ".\nIf you open it forcibly, some setting values may change or disappear.\n[{0}]は現在のバージョンの" + exporterConsts.ASSETName + "との互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。
+IncompatibleVersionForceOpen	Force open
+FileListViewFullpath	FullPath
+FileListClose	Close

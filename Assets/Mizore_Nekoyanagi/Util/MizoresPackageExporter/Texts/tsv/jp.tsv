@@ -1,0 +1,5 @@
+DiffTooltip	一部のオブジェクトの値が異なっています。
+ExportLogNotFound	[{0}]は存在しません。\n
+ExportLogFailed	エクスポートは中断されました。\n
+ExportLogAllFileExists	ファイル／フォルダの存在チェックが完了しました。\n
+ExportLogSuccess	[{0}]のエクスポートに成功しました。\n
