@@ -7,5 +7,8 @@
         public const string KEY_FORMATTED_VERSION = "%versionf%";
         public const string KEY_PACKAGE_NAME= "%packagename%";
         public const string KEY_BATCH_EXPORTER = "%batch%";
+
+        public const string KEY_SAMPLE_DATE = "%date:yyyyMMdd%";
+
     }
 }

@@ -12,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     public class MizoresPackageExporterEditor : Editor
     {
         public ExporterEditorLogs logs = new ExporterEditorLogs( );
-        public string _variableKeyTemp;
+        public string _variableKeyTemp = string.Empty;
         public MizoresPackageExporter t;
 
         private void OnEnable( ) {

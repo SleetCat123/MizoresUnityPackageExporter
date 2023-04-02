@@ -238,6 +238,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         #region DynamicPath
+        static Regex dateFormatRegex = new Regex( "%date:([^%]+)%" );
+        public static string ReplaceDate( string key ) {
+            var date = System.DateTime.Now;
+            return dateFormatRegex.Replace( key, m => date.ToString( m.Groups[1].Value ) );
+        }
         public string ConvertDynamicPath( string path ) {
             return ConvertDynamicPath_Main( path, 0 );
         }
@@ -255,6 +260,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             key = Const_Keys.KEY_BATCH_EXPORTER;
             path = path.Replace( key, temp_batchExportCurrentKey );
+
+            path = ReplaceDate( path );
 
             key = Const_Keys.KEY_NAME;
             path = path.Replace( key, name );
