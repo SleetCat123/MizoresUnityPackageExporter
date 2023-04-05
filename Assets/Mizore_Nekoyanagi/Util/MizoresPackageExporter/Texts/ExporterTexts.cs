@@ -49,7 +49,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             } else if ( language != DEFAULT_KEY ) {
                 return Get( DEFAULT_KEY, key );
             } else {
-                return "{" + key + "}";
+                return "[NotFound: " + key + "]";
             }
         }
 
