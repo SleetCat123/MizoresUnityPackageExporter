@@ -34,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             string line = reader.ReadLine( );
                             string[] values = line.Split( ',' );
                             if ( values.Length >= 2 ) {
-                                t[values[0]] = values[1];
+                                t[values[0]] = values[1].Replace( "\\n", "\n" );
                                 ExporterUtils.DebugLog( $"[{values[0]}] = {values[1]}" );
                             }
                         }
