@@ -5,3 +5,6 @@ dynamicpathvariablesにbatch変数を表示
 複数編集で編集できない項目があることを表示する（variablesとかbatchexportとか）
 batchexportのfoldout
 パッケージ名に%batch%が含まれていないときの動作
+エクスポート実行前後に独自処理を挟める機能
+　ScriptableObjectを継承？
+各項目のtooltip

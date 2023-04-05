@@ -34,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES,
-                string.Format( ExporterTexts.t_DynamicPath_Variables, t.variables.Count )
+                string.Format( ExporterTexts.t_DynamicPathVariables, t.variables.Count )
                 ) ) {
                 var space_width = GUILayout.Width( SPACE_WIDTH );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );

@@ -34,9 +34,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
 
             var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
 
-            MizoresPackageExporter.debugmode = EditorGUILayout.Toggle( "Debug Mode", MizoresPackageExporter.debugmode );
-            ExporterUtils.SeparateLine( );
-
             // Targets
             GUI.enabled = false;
             foreach ( var item in targetlist ) {

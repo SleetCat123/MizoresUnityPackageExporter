@@ -34,13 +34,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
             using ( new EditorGUILayout.VerticalScope( EditorStyles.helpBox ) ) {
                 EditorGUI.BeginChangeCheck( );
-                bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.t_FileList_ViewFullPath, EditorPrefs.GetBool( Const.EDITOR_PREF_FILELIST_VIEW_FULLPATH, true ) );
+                bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewFullPath, EditorPrefs.GetBool( Const.EDITOR_PREF_FILELIST_VIEW_FULLPATH, true ) );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     _treeView.viewFullPath = viewFullPath;
                     EditorPrefs.SetBool( Const.EDITOR_PREF_FILELIST_VIEW_FULLPATH, viewFullPath );
                 }
 
-                if ( GUILayout.Button( ExporterTexts.t_Button_ExportPackage ) ) {
+                if ( GUILayout.Button( ExporterTexts.t_ButtonExportPackage ) ) {
                     MizoresPackageExporterEditor.Export( _logs, _targets );
                     this.Close( );
                 }

@@ -1,92 +1,96 @@
 ﻿#if UNITY_EDITOR
 #endif
 
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
-    public class ExporterTexts
+    public static class ExporterTexts
     {
-        public const string TEXT_UNDO = "PackagePrefs";
-        public const string TEXT_OBJECTS = "Objects ({0})";
-        public const string TEXT_REFERENCES = "References ({0})";
-        public const string TEXT_EXCLUDES = "Excludes ({0})";
-        public const string TEXT_EXCLUDES_PREVIEW = "Excludes Preview";
-        public const string TEXT_EXCLUDE_OBJECTS = "Exclude Objects ({0})";
-        public const string TEXT_DYNAMIC_PATH = "Dynamic Path ({0})";
-        public const string TEXT_DYNAMIC_PATH_PREVIEW = "Dynamic Path Preview";
-        public const string TEXT_DYNAMIC_PATH_VARIABLES = "Dynamic Path Variables ({0})";
-        public const string TEXT_VERSION = "Version";
-        public const string TEXT_VERSION_SOURCE = "Source";
-        public const string TEXT_VERSION_FORMAT = "Format";
-        public const string TEXT_PACKAGE_NAME = "Package Name";
-        public const string TEXT_BUTTON_CHECK = "Check";
-        public const string TEXT_BUTTON_EXPORT = "Export to unitypackage";
-        public const string TEXT_BUTTON_EXPORT_M = "Export to unitypackages";
-        public const string TEXT_BUTTON_OPEN = "Open";
-        public const string TEXT_DIFF_LABEL = "?";
-        public const string EN_TEXT_DIFF_TOOLTIP = "Some values are different.";
-        public const string JP_TEXT_DIFF_TOOLTIP = "一部のオブジェクトの値が異なっています。";
-        public const string TEXT_BUTTON_FOLDER = "Folder";
-        public const string TEXT_BUTTON_FILE = "File";
-        public const string TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX = "[ ! Not Found ! ] ";
-        public const string TEXT_EXPORT_LOG_DEPENDENCY_PATH_PREFIX = "[Dependency]";
-        public const string EN_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}] is not exists.\n";
-        public const string JP_TEXT_EXPORT_LOG_NOT_FOUND = "[{0}]は存在しません。\n";
-        public const string EN_TEXT_EXPORT_LOG_FAILED = "Export has been cancelled.\n";
-        public const string JP_TEXT_EXPORT_LOG_FAILED = "エクスポートは中断されました。\n";
-        public const string EN_TEXT_EXPORT_LOG_ALL_FILE_EXISTS = "All files or directories exist.\n";
-        public const string JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS = "ファイル／フォルダの存在チェックが完了しました。\n";
-        public const string EN_TEXT_EXPORT_LOG_SUCCESS = "[{0}] Export completed.\n";
-        public const string JP_TEXT_EXPORT_LOG_SUCCESS = "[{0}]のエクスポートに成功しました。\n";
-        public const string EN_TEXT_EXCLUDES_WERE_EMPTY = "No files were excluded.";
-        public const string TEXT_COPY_TARGET = "Copy {0}";
-        public const string TEXT_COPY_TARGET_WITH_VALUE = "Copy [{1}] ({0})";
-        public const string TEXT_COPY_TARGET_NO_VALUE = "Copy";
-        public const string TEXT_PASTE_TARGET = "Paste {0}";
-        public const string TEXT_PASTE_TARGET_WITH_VALUE = "Paste [{1}] ({0})";
-        public const string TEXT_PASTE_TARGET_NO_VALUE = "Paste";
-        public const string TEXT_INCOMPATIBLE_VERSION = "[{0}] is incompatible with current version of " + ExporterConsts.ASSET_NAME + ".\nIf you open it forcibly, some setting values may change or disappear.\n[{0}]は現在のバージョンの" + ExporterConsts.ASSET_NAME + "との互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。";
-        public const string TEXT_INCOMPATIBLE_VERSION_FORCE_OPEN = "Force Open";
-        public const string TEXT_FILELIST_VIEW_FULLPATH = "FullPath";
-        public const string TEXT_FILELIST_CLOSE = "Close";
+        public const string DEFAULT_KEY = "en";
+        static Dictionary<string, Dictionary<string, string>> _table = new Dictionary<string, Dictionary<string, string>>( );
+        static string[] languageList = new string[] { DEFAULT_KEY, "jp" };
+        public static string[] LanguageList => languageList;
+        public static void Clear( ) {
+            _table.Clear( );
+        }
+        static string Get( string key ) {
+            return Get( EditorPrefsCache.GetString( ExporterConsts_Editor.EDITOR_PREF_LANGUAGE, DEFAULT_KEY ), key );
+        }
+        static string Get( string language, string key ) {
+            Dictionary<string, string> t;
+            if ( !_table.TryGetValue( language, out t ) ) {
+                var path = "MizoresPackageExporter/" + language;
+                ExporterUtils.DebugLog( "LoadText: " + path );
+                var text = Resources.Load<TextAsset>( path );
+                if ( text == null ) {
+                    ExporterUtils.DebugLogWarning( "Load failed: " + path );
+                } else {
+                    t = new Dictionary<string, string>( );
+                    using ( var reader = new StringReader( text.text ) ) {
+                        while ( reader.Peek( ) > -1 ) {
+                            string line = reader.ReadLine( );
+                            string[] values = line.Split( ',' );
+                            if ( values.Length >= 2 ) {
+                                t[values[0]] = values[1];
+                                ExporterUtils.DebugLog( $"[{values[0]}] = {values[1]}" );
+                            }
+                        }
+                    }
+                    _table.Add( language, t );
+                    ExporterUtils.DebugLog( "Load finish: " + path );
+                }
+            }
+            string result;
+            if ( t != null && t.TryGetValue( key, out result ) ) {
+                return result;
+            } else if ( language != DEFAULT_KEY ) {
+                return Get( DEFAULT_KEY, key );
+            } else {
+                return "{" + key + "}";
+            }
+        }
 
-        public static string t_Undo => TEXT_UNDO;
-        public static string t_Objects => TEXT_OBJECTS;
-        public static string t_References => TEXT_REFERENCES;
-        public static string t_Excludes => TEXT_EXCLUDES;
-        public static string t_ExcludesPreview => TEXT_EXCLUDES_PREVIEW;
-        public static string t_ExcludeObjects => TEXT_EXCLUDE_OBJECTS;
-        public static string t_DynamicPath => TEXT_DYNAMIC_PATH;
-        public static string t_DynamicPathPreview => TEXT_DYNAMIC_PATH_PREVIEW;
-        public static string t_DynamicPath_Variables => TEXT_DYNAMIC_PATH_VARIABLES;
-        public static string t_Version => TEXT_VERSION;
-        public static string t_VersionSource => TEXT_VERSION_SOURCE;
-        public static string t_VersionFormat => TEXT_VERSION_FORMAT;
-        public static string t_PackageName => TEXT_PACKAGE_NAME;
-        public static string t_Label_ExportPackage => TEXT_BUTTON_EXPORT;
-        public static string t_Button_Check => TEXT_BUTTON_CHECK;
-        public static string t_Button_ExportPackage => TEXT_BUTTON_EXPORT;
-        public static string t_Button_ExportPackages => TEXT_BUTTON_EXPORT_M;
-        public static string t_Button_Open => TEXT_BUTTON_OPEN;
-        public static string t_Diff_Label => TEXT_DIFF_LABEL;
-        public static string t_Diff_Tooltip => EN_TEXT_DIFF_TOOLTIP + JP_TEXT_DIFF_TOOLTIP;
-        public static string t_Button_Folder => TEXT_BUTTON_FOLDER;
-        public static string t_Button_File => TEXT_BUTTON_FILE;
-        public static string t_ExportLog_NotFound => EN_TEXT_EXPORT_LOG_NOT_FOUND + JP_TEXT_EXPORT_LOG_NOT_FOUND;
-        public static string t_ExportLog_NotFoundPathPrefix => TEXT_EXPORT_LOG_NOT_FOUND_PATH_PREFIX;
-        public static string t_ExportLog_DependencyPathPrefix => TEXT_EXPORT_LOG_DEPENDENCY_PATH_PREFIX;
-        public static string t_ExportLog_Failed => EN_TEXT_EXPORT_LOG_FAILED + JP_TEXT_EXPORT_LOG_FAILED;
-        public static string t_ExportLog_AllFileExists => EN_TEXT_EXPORT_LOG_ALL_FILE_EXISTS + JP_TEXT_EXPORT_LOG_ALL_FILE_EXISTS;
-        public static string t_ExportLog_Success => EN_TEXT_EXPORT_LOG_SUCCESS + JP_TEXT_EXPORT_LOG_SUCCESS;
-        public static string t_ExcludesWereEmpty => EN_TEXT_EXCLUDES_WERE_EMPTY;
-        public static string t_CopyTarget => TEXT_COPY_TARGET;
-        public static string t_CopyTargetWithValue => TEXT_COPY_TARGET_WITH_VALUE;
-        public static string t_CopyTargetNoValue => TEXT_COPY_TARGET_NO_VALUE;
-        public static string t_PasteTarget => TEXT_PASTE_TARGET;
-        public static string t_PasteTargetWithValue => TEXT_PASTE_TARGET_WITH_VALUE;
-        public static string t_PasteTargetNoValue => TEXT_PASTE_TARGET_NO_VALUE;
-        public static string t_IncompatibleVersion => TEXT_INCOMPATIBLE_VERSION;
-        public static string t_IncompatibleVersion_ForceOpen => TEXT_INCOMPATIBLE_VERSION_FORCE_OPEN;
-        public static string t_FileList_ViewFullPath => TEXT_FILELIST_VIEW_FULLPATH;
-        public static string t_FileList_Close => TEXT_FILELIST_CLOSE;
+        public static string t_Undo => Get( "Undo" );
+        public static string t_Objects => Get( "Objects" );
+        public static string t_References => Get( "References" );
+        public static string t_Excludes => Get( "Excludes" );
+        public static string t_ExcludesPreview => Get( "ExcludesPreview" );
+        public static string t_ExcludeObjects => Get( "ExcludeObjects" );
+        public static string t_DynamicPath => Get( "DynamicPath" );
+        public static string t_DynamicPathPreview => Get( "DynamicPathPreview" );
+        public static string t_DynamicPathVariables => Get( "DynamicPathVariables" );
+        public static string t_Version => Get( "Version" );
+        public static string t_VersionSource => Get( "VersionSource" );
+        public static string t_VersionFormat => Get( "VersionFormat" );
+        public static string t_PackageName => Get( "PackageName" );
+        public static string t_LabelExportPackage => Get( "LabelExportPackage" );
+        public static string t_ButtonCheck => Get( "ButtonCheck" );
+        public static string t_ButtonExportPackage => Get( "ButtonExportPackage" );
+        public static string t_ButtonExportPackages => Get( "ButtonExportPackages" );
+        public static string t_ButtonOpen => Get( "ButtonOpen" );
+        public static string t_DiffLabel => Get( "DiffLabel" );
+        public static string t_DiffTooltip => Get( "DiffTooltip" );
+        public static string t_ButtonFolder => Get( "ButtonFolder" );
+        public static string t_ButtonFile => Get( "ButtonFile" );
+        public static string t_ExportLogNotFound => Get( "ExportLogNotFound" );
+        public static string t_ExportLogNotFoundPathPrefix => Get( "ExportLogNotFoundPathPrefix" );
+        public static string t_ExportLogDependencyPathPrefix => Get( "ExportLogDependencyPathPrefix" );
+        public static string t_ExportLogFailed => Get( "ExportLogFailed" );
+        public static string t_ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
+        public static string t_ExportLogSuccess => Get( "ExportLogSuccess" );
+        public static string t_ExcludesWereEmpty => Get( "ExcludesWereEmpty" );
+        public static string t_CopyTarget => Get( "CopyTarget" );
+        public static string t_CopyTargetWithValue => Get( "CopyTargetWithValue" );
+        public static string t_CopyTargetNoValue => Get( "CopyTargetNoValue" );
+        public static string t_PasteTarget => Get( "PasteTarget" );
+        public static string t_PasteTargetWithValue => Get( "PasteTargetWithValue" );
+        public static string t_PasteTargetNoValue => Get( "PasteTargetNoValue" );
+        public static string t_IncompatibleVersion => Get( "IncompatibleVersion" );
+        public static string t_IncompatibleVersionForceOpen => Get( "IncompatibleVersionForceOpen" );
+        public static string t_FileListViewFullPath => Get( "FileListViewFullPath" );
+        public static string t_FileListClose => Get( "FileListClose" );
     }
 }

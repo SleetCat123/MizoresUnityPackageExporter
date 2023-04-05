@@ -83,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public static void DiffLabel( ) {
 #if UNITY_EDITOR
-            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_Diff_Label, ExporterTexts.t_Diff_Tooltip ), GUILayout.Width( 30 ) );
+            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_DiffLabel, ExporterTexts.t_DiffTooltip ), GUILayout.Width( 30 ) );
 #endif
         }
 
@@ -146,31 +146,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
             return result;
         }
-
-        public struct MinMax
-        {
-            public int min, max;
-            public bool SameValue => min == max;
-
-            public MinMax( int min, int max ) {
-                this.min = min;
-                this.max = max;
-            }
-
-            public string GetRangeString( ) {
-                if ( SameValue ) {
-                    return min.ToString( );
-                } else {
-                    return $"{min}-{max}";
-                }
-            }
-
-            public static MinMax Create<T>( IEnumerable<T> list, System.Func<T, int> func ) {
-                int min = list.Min( func );
-                int max = list.Max( func );
-                return new MinMax( min, max );
-            }
-        }
         public static void Swap<T>( this List<T> list, int indexA, int indexB ) {
             T temp = list[indexA];
             list[indexA] = list[indexB];
@@ -199,6 +174,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             } else {
                 list.RemoveRange( newSize, list.Count - newSize );
             }
+        }
+
+        public static void DebugLog( string value ) {
+#if UNITY_EDITOR
+            if ( EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, false ) ) {
+                Debug.Log( "[DEBUG] " + value );
+            }
+#endif
+        }
+        public static void DebugLogWarning( string value ) {
+#if UNITY_EDITOR
+            if ( EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, false ) ) {
+                Debug.LogWarning( "[DEBUG] " + value );
+            }
+#endif
         }
     }
 }

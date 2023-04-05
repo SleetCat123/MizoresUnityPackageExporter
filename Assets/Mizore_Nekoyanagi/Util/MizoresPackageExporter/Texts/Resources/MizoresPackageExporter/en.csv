@@ -1,0 +1,39 @@
+Undo,PackagePrefs
+Objects,Objects to export ({0})
+References,References ({0})
+Excludes,Excludes path ({0})
+ExcludesPreview,Excludes path preview
+ExcludeObjects,Exclude objects ({0})
+DynamicPath,Dynamic export path ({0})
+DynamicPathPreview,Dynamic export path preview
+DynamicPathVariables,Variables ({0})
+Version,Version
+VersionSource,Source
+VersionFormat,Format
+PackageName,unitypackage name
+ButtonCheck,Check
+LabelExportPackage,Export to unitypackage
+ButtonExportPackage,Export to unitypackage
+ButtonExportPackages,Export to unitypackages
+ButtonOpen,Open
+DiffLabel,?
+DiffTooltip,Some values are different.
+ButtonFolder,Folder
+ButtonFile,File
+ExportLogNotFoundPathPrefix,[ ! not found ! ] 
+ExportLogDependencyPathPrefix,[Dependency]
+ExportLogNotFound,[{0}] is not exists.\n
+ExportLogFailed,Export has been cancelled.\n
+ExportLogAllFileExists,All files or directories exist.\n
+ExportLogSuccess,[{0}] export completed.\n
+ExcludesWereEmpty,No files were excluded.
+CopyTarget,Copy {0}
+CopyTargetWithValue,Copy [{1}] ({0})
+CopyTargetNoValue,Copy
+PasteTarget,Paste {0}
+PasteTargetWithValue,Paste [{1}] ({0})
+PasteTargetNoValue,Paste
+IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
+IncompatibleVersionForceOpen,Force open
+FileListViewFullpath,FullPath
+FileListClose,Close

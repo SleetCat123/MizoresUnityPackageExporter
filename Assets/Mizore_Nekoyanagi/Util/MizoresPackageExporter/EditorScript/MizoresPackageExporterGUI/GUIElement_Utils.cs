@@ -17,7 +17,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         }
         public static string BrowseButtons( MizoresPackageExporter t, string text ) {
             string result = text;
-            if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_FOLDER, GUILayout.Width( 50 ) ) ) {
+            if ( GUILayout.Button( ExporterTexts.t_ButtonFolder, GUILayout.Width( 50 ) ) ) {
                 text = EditorUtility.OpenFolderPanel( null, t.ConvertDynamicPath( text ), null );
                 text = ToAssetsPath( text );
                 if ( string.IsNullOrEmpty( text ) == false ) {
@@ -25,7 +25,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     result = text;
                 }
             }
-            if ( GUILayout.Button( ExporterTexts.TEXT_BUTTON_FILE, GUILayout.Width( 50 ) ) ) {
+            if ( GUILayout.Button( ExporterTexts.t_ButtonFile, GUILayout.Width( 50 ) ) ) {
                 text = EditorUtility.OpenFilePanel( null, t.ConvertDynamicPath( text ), null );
                 text = ToAssetsPath( text );
                 if ( string.IsNullOrEmpty( text ) == false ) {

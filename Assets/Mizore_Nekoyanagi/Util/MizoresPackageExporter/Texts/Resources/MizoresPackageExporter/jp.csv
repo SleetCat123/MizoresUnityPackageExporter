@@ -1,0 +1,14 @@
+References,参照されているときだけエクスポート ({0})
+ExcludeObjects,除外するオブジェクト ({0})
+Excludes,除外する場所 ({0})
+ExcludesPreview,除外する場所のプレビュー
+Version,バージョン
+VersionSource,バージョン参照元
+DiffTooltip,一部のオブジェクトの値が異なっています。
+ExportLogNotFound,[{0}]は存在しません。\n
+ExportLogFailed,エクスポートは中断されました。\n
+ExportLogAllFileExists,ファイル／フォルダの存在チェックが完了しました。\n
+ExportLogSuccess,[{0}]のエクスポートに成功しました。\n
+IncompatibleVersion,[{0}]は現在のバージョンのMizoresPackageExporterとの互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。
+ButtonCheck,エクスポートするファイルの有無を確認
+PackageName,unitypackage名

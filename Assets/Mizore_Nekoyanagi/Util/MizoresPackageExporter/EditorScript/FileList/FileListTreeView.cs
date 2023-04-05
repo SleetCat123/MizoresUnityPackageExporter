@@ -156,7 +156,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                     default:
                     case ExporterUtils.GetIconResult.NotExistsFile:
                     case ExporterUtils.GetIconResult.NotExistsFolder:
-                        label = ExporterTexts.t_ExportLog_NotFoundPathPrefix + label;
+                        label = ExporterTexts.t_ExportLogNotFoundPathPrefix + label;
                         GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
                         break;
                 }

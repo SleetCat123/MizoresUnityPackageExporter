@@ -3,6 +3,8 @@
     public static class ExporterConsts_Editor
     {
         public const string EDITOR_PREF_PREFIX = "MizorePackageExporter_";
+        public const string EDITOR_PREF_DEBUG = EDITOR_PREF_PREFIX + "DebugMode";
+        public const string EDITOR_PREF_LANGUAGE = EDITOR_PREF_PREFIX + "Language";
         public const string EDITOR_PREF_FOLDOUT_OBJECT = EDITOR_PREF_PREFIX + "Foldout_Object";
         public const string EDITOR_PREF_FOLDOUT_REFERENCES = EDITOR_PREF_PREFIX + "Foldout_References";
         public const string EDITOR_PREF_FOLDOUT_EXCLUDES = EDITOR_PREF_PREFIX + "Foldout_Excludes";
