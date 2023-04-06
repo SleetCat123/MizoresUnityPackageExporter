@@ -1,12 +1,20 @@
 Undo,PackagePrefs
-Objects,Objects to export ({0})
-References,References ({0})
-Excludes,Excludes path ({0})
-ExcludesPreview,Excludes path preview
-ExcludeObjects,Exclude objects ({0})
-DynamicPath,Dynamic export path ({0})
-DynamicPathPreview,Dynamic export path preview
-DynamicPathVariables,Variables ({0})
+
+FoldoutObjects,Objects to export ({0})
+FoldoutReferences,References ({0})
+FoldoutExcludes,Excludes Path ({0})
+FoldoutExcludesPreview,Excludes Path Preview
+FoldoutExcludeObjects,Exclude Objects ({0})
+FoldoutDynamicPath,Dynamic Export Path ({0})
+FoldoutDynamicPathPreview,Dynamic Export Path Preview
+FoldoutVariables,Variables ({0})
+FoldoutVersion,Version
+
+FoldoutBatchExportEnabled,Batch Export (Enable)
+FoldoutBatchExportDisabled,Batch Export
+BatchExportMode,Mode
+BatchExportRegex,Regex
+
 Version,Version
 VersionSource,Source
 VersionFormat,Format
@@ -35,5 +43,6 @@ PasteTargetWithValue,Paste [{1}] ({0})
 PasteTargetNoValue,Paste
 IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
 IncompatibleVersionForceOpen,Force open
-FileListViewFullpath,FullPath
+FileListViewFullPath,FullPath
 FileListClose,Close
+ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.

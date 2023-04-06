@@ -47,11 +47,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_OBJECT,
-                string.Format( ExporterTexts.t_Objects, objects_count.GetRangeString( ) ),
+                string.Format( ExporterTexts.t_FoldoutObjects, objects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.objects, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_Objects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_FoldoutObjects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
                 }
                 ) ) {
                 GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
@@ -67,11 +67,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_REFERENCES,
-                string.Format( ExporterTexts.t_References, references_count.GetRangeString( ) ),
+                string.Format( ExporterTexts.t_FoldoutReferences, references_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.references, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_References, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_FoldoutReferences, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
                 }
                 ) ) {
                 GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.references );
@@ -84,11 +84,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
-                string.Format( ExporterTexts.t_ExcludeObjects, excludeObjects_count.GetRangeString( ) ),
+                string.Format( ExporterTexts.t_FoldoutExcludeObjects, excludeObjects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludeObjects, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_ExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.t_FoldoutExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
                 }
                 ) ) {
                 GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.excludeObjects );
@@ -106,20 +106,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                 // ↑ Dynamic Path Variables
             }
 
-            if ( targets.Length == 1 ) {
-                ExporterUtils.SeparateLine( );
-                GUI_BatchExporter.Draw( ed, t, targetlist ); 
-            }
-
-            ExporterUtils.SeparateLine( );
-
             // ↓ Version File
+            ExporterUtils.SeparateLine( );
             GUI_VersionFile.Draw( t, targetlist );
             // ↑ Version File
 
-            ExporterUtils.SeparateLine( );
+            if ( targets.Length == 1 ) {
+                ExporterUtils.SeparateLine( );
+                GUI_BatchExporter.Draw( ed, t, targetlist );
+            }
 
             // ExportPackage
+            ExporterUtils.SeparateLine( );
             GUI_ExportPackage.Draw( ed, targetlist );
         }
     }

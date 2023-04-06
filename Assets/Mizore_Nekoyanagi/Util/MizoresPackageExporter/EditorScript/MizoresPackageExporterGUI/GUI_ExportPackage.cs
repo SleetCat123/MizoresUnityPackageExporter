@@ -59,7 +59,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
             }
             if ( !any ) {
-                EditorGUILayout.HelpBox( "Export List is empty.", MessageType.Error );
+                EditorGUILayout.HelpBox( ExporterTexts.t_ExportListEmpty, MessageType.Error );
             }
             if ( GUILayout.Button( ExporterTexts.t_ButtonOpen, GUILayout.Width( 60 ) ) ) {
                 if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath ) ) {

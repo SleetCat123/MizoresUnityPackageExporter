@@ -8,3 +8,5 @@ batchexportのfoldout
 エクスポート実行前後に独自処理を挟める機能
 　ScriptableObjectを継承？
 各項目のtooltip
+エクスポートファイルチェックのbatchexport対応
+階層表示せずにエクスポート対象を表示

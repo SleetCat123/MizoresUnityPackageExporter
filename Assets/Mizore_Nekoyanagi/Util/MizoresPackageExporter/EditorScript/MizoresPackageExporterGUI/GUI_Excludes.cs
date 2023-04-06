@@ -28,11 +28,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
                 Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
-                string.Format( ExporterTexts.t_Excludes, minmax_count.GetRangeString( ) ),
+                string.Format( ExporterTexts.t_FoldoutExcludes, minmax_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_Excludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.t_FoldoutExcludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
                 }
                 ) ) {
                 Event currentEvent = Event.current;
@@ -164,7 +164,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↑ Excludes
 
             // ↓ Excludes Preview
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_ExcludesPreview ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_FoldoutExcludesPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );

@@ -13,7 +13,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     {
         public static void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_Version ) ) {
+                Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_FoldoutVersion ) ) {
                 var same_versionSource_valueInAllObj = targetlist.All( v => t.versionSource == v.versionSource );
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     ExporterUtils.Indent( 1 );

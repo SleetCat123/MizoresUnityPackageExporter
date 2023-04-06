@@ -13,6 +13,7 @@
         public const string EDITOR_PREF_FOLDOUT_DYNAMICPATH = EDITOR_PREF_PREFIX + "Foldout_DynamicPath";
         public const string EDITOR_PREF_FOLDOUT_DYNAMICPATH_PREVIEW = EDITOR_PREF_PREFIX + "Foldout_DynamicPathPreview";
         public const string EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES = EDITOR_PREF_PREFIX + "Foldout_DynamicPathVariables";
+        public const string EDITOR_PREF_FOLDOUT_BATCHEXPORT = EDITOR_PREF_PREFIX + "Foldout_BatchExport";
         public const string EDITOR_PREF_FOLDOUT_VERSIONFILE = EDITOR_PREF_PREFIX + "Foldout_VersionFile";
 
         public const string EDITOR_PREF_FILELIST_VIEW_FULLPATH = EDITOR_PREF_PREFIX + "FileList_FullPath";

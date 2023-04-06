@@ -54,14 +54,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public static string t_Undo => Get( "Undo" );
-        public static string t_Objects => Get( "Objects" );
-        public static string t_References => Get( "References" );
-        public static string t_Excludes => Get( "Excludes" );
-        public static string t_ExcludesPreview => Get( "ExcludesPreview" );
-        public static string t_ExcludeObjects => Get( "ExcludeObjects" );
-        public static string t_DynamicPath => Get( "DynamicPath" );
-        public static string t_DynamicPathPreview => Get( "DynamicPathPreview" );
-        public static string t_DynamicPathVariables => Get( "DynamicPathVariables" );
+        public static string t_BatchExportRegex => Get( "BatchExportRegex" );
+        public static string t_BatchExportMode => Get( "BatchExportMode" );
+
+        public static string t_FoldoutObjects => Get( "FoldoutObjects" );
+        public static string t_FoldoutReferences => Get( "FoldoutReferences" );
+        public static string t_FoldoutExcludes => Get( "FoldoutExcludes" );
+        public static string t_FoldoutExcludesPreview => Get( "FoldoutExcludesPreview" );
+        public static string t_FoldoutExcludeObjects => Get( "FoldoutExcludeObjects" );
+        public static string t_FoldoutDynamicPath => Get( "FoldoutDynamicPath" );
+        public static string t_FoldoutDynamicPathPreview => Get( "FoldoutDynamicPathPreview" );
+        public static string t_FoldoutVariables => Get( "FoldoutVariables" );
+        public static string t_FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
+        public static string t_FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
+        public static string t_FoldoutVersion => Get( "FoldoutVersion" );
         public static string t_Version => Get( "Version" );
         public static string t_VersionSource => Get( "VersionSource" );
         public static string t_VersionFormat => Get( "VersionFormat" );
@@ -92,5 +98,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_IncompatibleVersionForceOpen => Get( "IncompatibleVersionForceOpen" );
         public static string t_FileListViewFullPath => Get( "FileListViewFullPath" );
         public static string t_FileListClose => Get( "FileListClose" );
+        public static string t_ExportListEmpty => Get( "ExportListEmpty" );
     }
 }
