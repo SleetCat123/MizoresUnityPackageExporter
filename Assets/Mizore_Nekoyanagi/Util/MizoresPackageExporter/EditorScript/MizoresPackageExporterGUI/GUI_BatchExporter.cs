@@ -30,6 +30,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 t.batchExportMode = (BatchExportMode)EditorGUILayout.EnumPopup( ExporterTexts.t_BatchExportMode, t.batchExportMode );
             }
             if ( EditorGUI.EndChangeCheck( ) ) {
+                t.UpdateBatchExportKeys( );
                 EditorUtility.SetDirty( t );
             }
 
@@ -40,7 +41,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 case BatchExportMode.Texts:
                     break;
                 case BatchExportMode.Folders: {
-
                     EditorGUI.BeginChangeCheck( );
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
                         ExporterUtils.Indent( 1 );
@@ -63,8 +63,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             EditorGUILayout.HelpBox( "Regex Error:\n" + e.Message, MessageType.Error );
                         }
                     }
-
-                    var list = t.BatchExportKeys;
+                    break;
+                }
+                case BatchExportMode.ListFile:
+                    EditorGUI.BeginChangeCheck( );
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                        ExporterUtils.Indent( 1 );
+                        EditorGUILayout.LabelField( "File", GUILayout.Width( 60 ) );
+                        PackagePrefsElementInspector.Draw<TextAsset>( t.batchExportListFile );
+                    }
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        t.UpdateBatchExportKeys( );
+                        EditorUtility.SetDirty( t );
+                    }
+                    break;
+            }
+            switch ( t.batchExportMode ) {
+                case BatchExportMode.Folders:
+                case BatchExportMode.ListFile:
+                    var list = t.BatchExportKeysConverted;
                     for ( int i = 0; i < list.Length; i++ ) {
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( 2 );
@@ -74,7 +91,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         }
                     }
                     break;
-                }
             }
         }
     }

@@ -76,7 +76,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 temp_batchExportCurrentKey = string.Empty;
                 return new string[] { ExportFileName };
             }
-            var texts = BatchExportKeys;
+            var texts = BatchExportKeysConverted;
             var result = new string[texts.Length];
             for ( int i = 0; i < texts.Length; i++ ) {
                 temp_batchExportCurrentKey = texts[i];
@@ -184,6 +184,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public BatchExportMode batchExportMode;
         public List<string> batchExportTexts;
         public PackagePrefsElement batchExportFolderRoot;
+        public PackagePrefsElement batchExportListFile;
         public string batchExportFolderRegex;
         [System.NonSerialized]
         string[] temp_batchExportKeys;
@@ -191,6 +192,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         string temp_batchExportCurrentKey;
 
         double lastUpdate_BatchExportKeys;
+        public string[] BatchExportKeysConverted {
+            get {
+                var list = BatchExportKeys;
+                for ( int i = 0; i < list.Length; i++ ) {
+                    list[i] = ConvertDynamicPath( list[i] );
+                }
+                return list;
+            }
+        }
         public string[] BatchExportKeys {
             get {
 #if UNITY_EDITOR
@@ -213,8 +223,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     temp_batchExportKeys = batchExportTexts.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.Folders:
-                    temp_batchExportKeys = new string[0];
                     if ( batchExportFolderRoot == null || batchExportFolderRoot.Object == null ) {
+                        temp_batchExportKeys = new string[0];
                         break;
                     }
                     string path = AssetDatabase.GetAssetPath( batchExportFolderRoot.Object );
@@ -225,6 +235,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         regex = new Regex( string.Empty );
                     }
                     temp_batchExportKeys = Directory.GetDirectories( path ).Select( v => Path.GetFileName( v ) ).Where( v => regex.IsMatch( v ) ).Distinct( ).ToArray( );
+                    break;
+                case BatchExportMode.ListFile:
+                    if ( batchExportFolderRoot == null || batchExportFolderRoot.Object == null ) {
+                        temp_batchExportKeys = new string[0];
+                        break;
+                    }
+                    var list = new List<string>( );
+                    var file = batchExportListFile.Object as TextAsset;
+                    using ( var reader = new StringReader( file.text ) ) {
+                        while ( reader.Peek( ) > -1 ) {
+                            string line = reader.ReadLine( );
+                            if ( string.IsNullOrWhiteSpace( line ) ) {
+                                continue;
+                            }
+                            list.Add( line );
+                        }
+                    }
+                    temp_batchExportKeys = list.ToArray( );
                     break;
             }
         }
@@ -303,7 +331,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 return result;
             }
 
-            var texts = BatchExportKeys;
+            var texts = BatchExportKeysConverted;
             for ( int i = 0; i < texts.Length; i++ ) {
                 temp_batchExportCurrentKey = texts[i];
                 var path = ExportPath;
