@@ -246,13 +246,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     using ( var reader = new StringReader( file.text ) ) {
                         while ( reader.Peek( ) > -1 ) {
                             string line = reader.ReadLine( );
-                            if ( string.IsNullOrWhiteSpace( line ) ) {
-                                continue;
-                            }
+                            //if ( string.IsNullOrWhiteSpace( line ) ) {
+                            //    continue;
+                            //}
                             list.Add( line );
                         }
                     }
-                    temp_batchExportKeys = list.ToArray( );
+                    temp_batchExportKeys = list.Distinct( ).ToArray( );
                     break;
             }
         }

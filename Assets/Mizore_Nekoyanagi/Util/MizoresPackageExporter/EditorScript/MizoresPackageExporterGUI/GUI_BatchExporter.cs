@@ -22,6 +22,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     Const.EDITOR_PREF_FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
                 return;
             }
+            bool multiple = targetlist.Length > 1;
             // var samevalue_in_all_mode = targetlist.All( v => t.batchExportMode == v.batchExportMode );
 
             EditorGUI.BeginChangeCheck( );
@@ -38,8 +39,82 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 default:
                 case BatchExportMode.None:
                     break;
-                case BatchExportMode.Texts:
+                case BatchExportMode.Texts: {
+                    var texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
+                    for ( int i = 0; i < texts_count.max; i++ ) {
+                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                            // 全てのオブジェクトの値が同じか
+                            bool samevalue_in_all = true;
+                            if ( multiple ) {
+                                samevalue_in_all = i < texts_count.min && targetlist.All( v => t.batchExportTexts[i] == v.batchExportTexts[i] );
+                            }
+
+                            ExporterUtils.Indent( 2 );
+                            if ( samevalue_in_all ) {
+                                EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                            } else {
+                                // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
+                                ExporterUtils.DiffLabel( );
+                            }
+
+                            EditorGUI.BeginChangeCheck( );
+                            Rect textrect = EditorGUILayout.GetControlRect( );
+                            string path;
+                            if ( samevalue_in_all ) {
+                                path = EditorGUI.TextField( textrect, t.batchExportTexts[i] );
+                            } else {
+                                EditorGUI.showMixedValue = true;
+                                path = EditorGUI.TextField( textrect, string.Empty );
+                                EditorGUI.showMixedValue = false;
+                            }
+
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var item in targetlist ) {
+                                    ExporterUtils.ResizeList( item.batchExportTexts, Mathf.Max( i + 1, item.batchExportTexts.Count ) );
+                                    item.batchExportTexts[i] = path;
+                                    texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
+                                    t.UpdateBatchExportKeys( );
+                                    EditorUtility.SetDirty( item );
+                                }
+                            }
+
+                            // Button
+                            int index_after = ExporterUtils.UpDownButton( i, texts_count.max );
+                            if ( i != index_after ) {
+                                foreach ( var item in targetlist ) {
+                                    if ( item.batchExportTexts.Count <= index_after ) {
+                                        ExporterUtils.ResizeList( item.batchExportTexts, index_after + 1 );
+                                    }
+                                    item.batchExportTexts.Swap( i, index_after );
+                                    t.UpdateBatchExportKeys( );
+                                    EditorUtility.SetDirty( item );
+                                }
+                            }
+                            EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                            if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                                foreach ( var item in targetlist ) {
+                                    ExporterUtils.ResizeList( item.batchExportTexts, Mathf.Max( i + 1, item.batchExportTexts.Count ) );
+                                    item.batchExportTexts.RemoveAt( i );
+                                    texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
+                                    t.UpdateBatchExportKeys( );
+                                    EditorUtility.SetDirty( item );
+                                }
+                                i--;
+                            }
+                        }
+                    }
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                        ExporterUtils.Indent( 1 );
+                        if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                            foreach ( var item in targetlist ) {
+                                ExporterUtils.ResizeList( item.batchExportTexts, texts_count.max + 1, ( ) => string.Empty );
+                                t.UpdateBatchExportKeys( );
+                                EditorUtility.SetDirty( item );
+                            }
+                        }
+                    }
                     break;
+                }
                 case BatchExportMode.Folders: {
                     EditorGUI.BeginChangeCheck( );
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
@@ -79,6 +154,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     break;
             }
             switch ( t.batchExportMode ) {
+                case BatchExportMode.Texts:
                 case BatchExportMode.Folders:
                 case BatchExportMode.ListFile:
                     var list = t.BatchExportKeysConverted;
