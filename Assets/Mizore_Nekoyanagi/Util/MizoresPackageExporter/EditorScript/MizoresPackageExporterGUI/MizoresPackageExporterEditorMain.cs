@@ -111,10 +111,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             GUI_VersionFile.Draw( t, targetlist );
             // ↑ Version File
 
-            if ( targets.Length == 1 ) {
-                ExporterUtils.SeparateLine( );
-                GUI_BatchExporter.Draw( ed, t, targetlist );
-            }
+            ExporterUtils.SeparateLine( );
+            GUI_BatchExporter.Draw( ed, t, targetlist );
 
             // ExportPackage
             ExporterUtils.SeparateLine( );

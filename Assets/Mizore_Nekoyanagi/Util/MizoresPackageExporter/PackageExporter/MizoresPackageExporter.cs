@@ -40,7 +40,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
 
-        const float UPDATE_INTERVAL = 3f;
+        const float UPDATE_INTERVAL = 5f;
         static bool CanUpdate( double lastUpdate ) {
 #if UNITY_EDITOR
             return UPDATE_INTERVAL < EditorApplication.timeSinceStartup - lastUpdate;
@@ -72,7 +72,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public string[] GetAllExportFileName( ) {
-            if ( batchExportMode == BatchExportMode.None ) {
+            if ( batchExportMode == BatchExportMode.Disable ) {
                 temp_batchExportCurrentKey = string.Empty;
                 return new string[] { ExportFileName };
             }
@@ -213,10 +213,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public void UpdateBatchExportKeys( ) {
+            ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
             switch ( batchExportMode ) {
                 default:
-                case BatchExportMode.None:
+                case BatchExportMode.Disable:
                     temp_batchExportKeys = new string[0];
                     break;
                 case BatchExportMode.Texts:
@@ -325,7 +326,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public Dictionary<string, IEnumerable<string>> GetAllPath_Batch( ) {
             var result = new Dictionary<string, IEnumerable<string>>( );
-            if ( batchExportMode == BatchExportMode.None ) {
+            if ( batchExportMode == BatchExportMode.Disable ) {
                 temp_batchExportCurrentKey = string.Empty;
                 result.Add( ExportPath, GetAllPath( ) );
                 return result;
