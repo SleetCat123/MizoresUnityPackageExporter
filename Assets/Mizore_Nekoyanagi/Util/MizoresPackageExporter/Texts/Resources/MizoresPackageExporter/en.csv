@@ -14,6 +14,8 @@ FoldoutBatchExportEnabled,Batch Export (Enable)
 FoldoutBatchExportDisabled,Batch Export
 BatchExportMode,Mode
 BatchExportRegex,Regex
+BatchExportRegexError,{0}\nRegex Error:\n{1}
+BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1}
 
 Version,Version
 VersionSource,Source

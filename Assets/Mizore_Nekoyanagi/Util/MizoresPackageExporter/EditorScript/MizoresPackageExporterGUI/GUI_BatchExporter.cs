@@ -11,22 +11,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 #if UNITY_EDITOR
     public static class GUI_BatchExporter
     {
-        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
-            var samevalue_in_all_mode = targetlist.All( v => t.batchExportMode == v.batchExportMode );
-            string foldoutLabel;
-            if ( samevalue_in_all_mode ) {
-                if ( t.batchExportMode == BatchExportMode.Disable ) {
-                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportDisabled;
-                } else {
-                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
-                }
-            } else {
-                foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
-            }
-            if ( !ExporterUtils.EditorPrefFoldout(
-    Const.EDITOR_PREF_FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
-                return;
-            }
+        static void Main( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, bool samevalue_in_all_mode ) {
             bool multiple = targetlist.Length > 1;
 
             EditorGUI.BeginChangeCheck( );
@@ -165,17 +150,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                                 EditorUtility.SetDirty( item );
                             }
                         }
-
-                        foreach ( var item in targetlist ) {
-                            try {
-                                Regex.Match( string.Empty, item.batchExportFolderRegex );
-                            } catch ( System.ArgumentException e ) {
-                                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                    ExporterUtils.Indent( 1 );
-                                    EditorGUILayout.HelpBox( item.name + "\n" + "Regex Error:\n" + e.Message, MessageType.Error );
-                                }
-                            }
-                        }
                         break;
                     }
                     case BatchExportMode.ListFile: {
@@ -204,7 +178,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     }
                 }
             }
-
+        }
+        static void Preview( MizoresPackageExporter[] targetlist ) {
+            bool multiple = targetlist.Length > 1;
             bool first = true;
             foreach ( var item in targetlist ) {
                 if ( item.batchExportMode == BatchExportMode.Disable ) {
@@ -233,6 +209,41 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         EditorGUILayout.LabelField( list[i] );
                     }
+                }
+            }
+        }
+        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
+            var samevalue_in_all_mode = targetlist.All( v => t.batchExportMode == v.batchExportMode );
+            string foldoutLabel;
+            if ( samevalue_in_all_mode ) {
+                if ( t.batchExportMode == BatchExportMode.Disable ) {
+                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportDisabled;
+                } else {
+                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
+                }
+            } else {
+                foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
+            }
+            if ( ExporterUtils.EditorPrefFoldout(
+    Const.EDITOR_PREF_FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
+                Main( t, targetlist, samevalue_in_all_mode );
+                Preview( targetlist );
+            }
+
+            foreach ( var item in targetlist ) {
+                if ( item.batchExportMode == BatchExportMode.Folders ) {
+                    try {
+                        Regex.Match( string.Empty, item.batchExportFolderRegex );
+                    } catch ( System.ArgumentException e ) {
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            var error = string.Format( ExporterTexts.t_BatchExportRegexError, item.name, e.Message );
+                            EditorGUILayout.HelpBox( error, MessageType.Error );
+                        }
+                    }
+                }
+                if ( item.batchExportMode != BatchExportMode.Disable && !item.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
+                    var error = string.Format( ExporterTexts.t_BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
+                    EditorGUILayout.HelpBox( error, MessageType.Error );
                 }
             }
         }

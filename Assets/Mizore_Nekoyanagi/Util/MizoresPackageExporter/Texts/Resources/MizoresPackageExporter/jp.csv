@@ -8,6 +8,7 @@ FoldoutBatchExportEnabled,一括エクスポート（有効）
 FoldoutBatchExportDisabled,一括エクスポート
 BatchExportMode,モード
 BatchExportRegex,正規表現
+BatchExportNoTagError,{0}\n\n一括エクスポートの使用時、unitypackage名には {1} を含める必要があります。
 
 Version,バージョン
 VersionSource,バージョン参照元

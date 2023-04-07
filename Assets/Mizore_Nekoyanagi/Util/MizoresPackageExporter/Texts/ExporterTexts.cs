@@ -34,8 +34,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             string line = reader.ReadLine( );
                             string[] values = line.Split( ',' );
                             if ( values.Length >= 2 ) {
-                                t[values[0]] = values[1].Replace( "\\n", "\n" );
-                                ExporterUtils.DebugLog( $"[{values[0]}] = {values[1]}" );
+                                var registerText = values[1].Replace( "\\.", "," );
+                                t[values[0]] = registerText.Replace( "\\n", "\n" );
+                                ExporterUtils.DebugLog( $"[{values[0]}] = {registerText}" );
                             }
                         }
                     }
@@ -55,7 +56,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public static string t_Undo => Get( "Undo" );
         public static string t_BatchExportRegex => Get( "BatchExportRegex" );
+        public static string t_BatchExportRegexError => Get( "BatchExportRegexError" );
         public static string t_BatchExportMode => Get( "BatchExportMode" );
+        public static string t_BatchExportNoTagError => Get( "BatchExportNoTagError" );
 
         public static string t_FoldoutObjects => Get( "FoldoutObjects" );
         public static string t_FoldoutReferences => Get( "FoldoutReferences" );
