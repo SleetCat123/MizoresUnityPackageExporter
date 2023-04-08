@@ -59,6 +59,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_BatchExportRegexError => Get( "BatchExportRegexError" );
         public static string t_BatchExportMode => Get( "BatchExportMode" );
         public static string t_BatchExportNoTagError => Get( "BatchExportNoTagError" );
+        public static string t_BatchVariableTooltip => Get( "BatchVariableTooltip" );
+
+        public static string t_DateVariableTooltip => Get( "DateVariableTooltip" );
 
         public static string t_FoldoutObjects => Get( "FoldoutObjects" );
         public static string t_FoldoutReferences => Get( "FoldoutReferences" );

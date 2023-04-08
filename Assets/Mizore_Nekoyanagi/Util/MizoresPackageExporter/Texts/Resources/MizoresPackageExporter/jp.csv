@@ -9,6 +9,9 @@ FoldoutBatchExportDisabled,一括エクスポート
 BatchExportMode,モード
 BatchExportRegex,正規表現
 BatchExportNoTagError,{0}\n\n一括エクスポートの使用時、unitypackage名には {1} を含める必要があります。
+BatchVariableTooltip,注：Batch Exportの文字列と置き換わります。
+
+DateVariableTooltip,注：現在の日時と置き換わります。(ex: {0})
 
 Version,バージョン
 VersionSource,バージョン参照元

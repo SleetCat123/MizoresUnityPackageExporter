@@ -16,6 +16,9 @@ BatchExportMode,Mode
 BatchExportRegex,Regex
 BatchExportRegexError,{0}\nRegex Error:\n{1}
 BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1}
+BatchVariableTooltip,[Note] Replaced by Batch Export strings.
+
+DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
 
 Version,Version
 VersionSource,Source

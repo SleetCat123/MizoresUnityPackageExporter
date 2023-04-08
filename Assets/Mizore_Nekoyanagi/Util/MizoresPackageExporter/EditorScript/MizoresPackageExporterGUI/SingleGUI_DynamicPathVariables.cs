@@ -43,7 +43,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.ExportVersion );
                 DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.FormattedVersion );
                 DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.PackageName );
-                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) );
+                if ( t.batchExportMode != BatchExportMode.Disable ) {
+                    DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.t_BatchVariableTooltip );
+                }
+                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, string.Format( ExporterTexts.t_DateVariableTooltip, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
                 GUI.enabled = true;
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {
