@@ -10,18 +10,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class FileListTreeView : TreeView
     {
-        MizoresPackageExporter[] _exporters;
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
-        Dictionary<FileListNode, MizoresPackageExporter> table_root = new Dictionary<FileListNode, MizoresPackageExporter>( );
         public bool viewFullPath;
 
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
 
-        public FileListTreeView( TreeViewState treeViewState, MizoresPackageExporter[] exporters ) : base( treeViewState ) {
-            _exporters = exporters;
+        public FileListTreeView( TreeViewState treeViewState, FileListNode root ) : base( treeViewState ) {
+            _root = root;
         }
         public void UpdateList( ) {
             var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
@@ -47,33 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         }
 
         protected override TreeViewItem BuildRoot( ) {
-            _root = new FileListNode( );
-            for ( int i = 0; i < _exporters.Length; i++ ) {
-                var item = _exporters[i];
-                var table = item.GetAllPath_Batch( );
-                foreach ( var kvp in table ) {
-                    string exportPath = kvp.Key;
-                    var list = kvp.Value;
-                    if ( _root.Contains( exportPath ) ) {
-                        Debug.Log( "skip: " + exportPath );
-                        //_action?.filelist_postprocessing?.Invoke( item, i );
-                        continue;
-                    }
-                    Debug.Log( exportPath );
-                    var node = FileList.FileListNode.CreateList( list );
-                    node.id = exportPath;
-                    node.path = exportPath;
-                    _root.Add( node );
-                    table_root.Add( node, item );
-                }
-            }
             BuildID( START_NODE_ID );
-            //if ( _action != null && _action.filelist_postprocessing != null ) {
-            //    for ( int i = 0; i < _exporters.Length; i++ ) {
-            //        _action.filelist_postprocessing.Invoke( _exporters[i], i );
-            //    }
-            //}
-
             return new TreeViewItem { id = ROOT_ID, depth = -1 };
         }
         protected override IList<TreeViewItem> BuildRows( TreeViewItem root ) {

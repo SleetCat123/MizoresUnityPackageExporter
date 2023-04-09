@@ -23,7 +23,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             window._treeViewState = new TreeViewState( );
             window._targets = targets;
             window._logs = logs;
-            window._treeView = new FileListTreeView( window._treeViewState, targets );
+            var root = CreateFileList.Create( targets );
+            window._treeView = new FileListTreeView( window._treeViewState, root );
             window._treeView.Reload( );
             window._treeView.ExpandAll( );
             window.ShowAuxWindow( );
