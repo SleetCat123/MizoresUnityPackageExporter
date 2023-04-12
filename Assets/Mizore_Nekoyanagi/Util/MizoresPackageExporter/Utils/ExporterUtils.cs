@@ -117,9 +117,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public System.Action onRightClick;
         }
         public static bool EditorPrefFoldout( string key, string label ) {
-            return EditorPrefFoldout( key, label, null );
+            return EditorPrefFoldout( key, new GUIContent( label ), null );
         }
         public static bool EditorPrefFoldout( string key, string label, FoldoutFuncs funcs ) {
+            return EditorPrefFoldout( key, new GUIContent( label ), null );
+        }
+        public static bool EditorPrefFoldout( string key, GUIContent label ) {
+            return EditorPrefFoldout( key, label, null );
+        }
+        public static bool EditorPrefFoldout( string key, GUIContent label, FoldoutFuncs funcs ) {
             bool result = true;
 #if UNITY_EDITOR
             bool before = EditorPrefsCache.GetBool( key, true );

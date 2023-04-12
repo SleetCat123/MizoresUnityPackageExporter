@@ -6,3 +6,7 @@ variablesのコピペ対応
 各項目のtooltip
 エクスポートファイルチェックのbatchexport対応
 階層表示せずにエクスポート対象を表示
+　Treeviewの実装変更でできるかも
+　フォルダ非表示処理ができるか試す
+
+Readme書く

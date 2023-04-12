@@ -17,5 +17,7 @@
         public const string EDITOR_PREF_FOLDOUT_VERSIONFILE = EDITOR_PREF_PREFIX + "Foldout_VersionFile";
 
         public const string EDITOR_PREF_FILELIST_VIEW_FULLPATH = EDITOR_PREF_PREFIX + "FileList_FullPath";
+        public const string EDITOR_PREF_FILELIST_TREEVIEW = EDITOR_PREF_PREFIX + "FileList_TreeView";
+        public const string EDITOR_PREF_FILELIST_DRAW_FOLDER = EDITOR_PREF_PREFIX + "FileList_DrawFolder";
     }
 }
