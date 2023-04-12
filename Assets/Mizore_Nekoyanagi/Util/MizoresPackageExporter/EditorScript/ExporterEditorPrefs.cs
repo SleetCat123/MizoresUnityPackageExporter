@@ -1,4 +1,5 @@
-﻿namespace MizoreNekoyanagi.PublishUtil.PackageExporter
+﻿#if UNITY_EDITOR
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 {
     public static class ExporterEditorPrefs
     {
@@ -95,3 +96,4 @@
         }
     }
 }
+#endif

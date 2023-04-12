@@ -123,6 +123,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         public void UpdateExportVersion( ) {
+#if UNITY_EDITOR
             lastUpdate_ExportVersion = EditorApplication.timeSinceStartup;
             if ( versionSource == VersionSource.String ) {
                 _exportVersion = versionString;
@@ -155,6 +156,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     throw e;
                 }
             }
+#endif
         }
 
         public void ConvertToCurrentVersion( bool force = false ) {
@@ -213,6 +215,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public void UpdateBatchExportKeys( ) {
+#if UNITY_EDITOR
             ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
             switch ( batchExportMode ) {
@@ -256,6 +259,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     temp_batchExportKeys = list.Distinct( ).ToArray( );
                     break;
             }
+#endif
         }
         #endregion
 
@@ -468,6 +472,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return result;
         }
         void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
+#if UNITY_EDITOR
             Debug.Log( "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs );
@@ -485,6 +490,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.t_ExportLogSuccess );
             Debug.Log( exportPath + "をエクスポートしました。" );
+#endif
         }
         public void Export( ExporterEditorLogs logs ) {
 #if UNITY_EDITOR

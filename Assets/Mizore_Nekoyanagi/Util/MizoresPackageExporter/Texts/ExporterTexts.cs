@@ -17,7 +17,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             _table.Clear( );
         }
         static string Get( string key ) {
+#if UNITY_EDITOR
             return Get( ExporterEditorPrefs.Language, key );
+#else
+            return Get( DEFAULT_KEY, key );
+#endif
         }
         static string Get( string language, string key ) {
             Dictionary<string, string> t;
