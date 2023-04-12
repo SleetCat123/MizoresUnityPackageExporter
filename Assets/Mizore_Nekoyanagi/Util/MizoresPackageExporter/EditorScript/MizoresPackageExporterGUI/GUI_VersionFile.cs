@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     {
         public static void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_VERSIONFILE, ExporterTexts.t_FoldoutVersion ) ) {
+                ExporterEditorPrefs.FOLDOUT_VERSIONFILE, ExporterTexts.t_FoldoutVersion ) ) {
                 var same_versionSource_valueInAllObj = targetlist.All( v => t.versionSource == v.versionSource );
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     ExporterUtils.Indent( 1 );

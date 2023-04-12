@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Linq;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 using System.Collections.Generic;
@@ -46,7 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Objects
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_OBJECT,
+                ExporterEditorPrefs.FOLDOUT_OBJECT,
                 string.Format( ExporterTexts.t_FoldoutObjects, objects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
@@ -66,7 +65,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ References
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_REFERENCES,
+                ExporterEditorPrefs.FOLDOUT_REFERENCES,
                 string.Format( ExporterTexts.t_FoldoutReferences, references_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
@@ -83,7 +82,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             // ↓ Exclude Objects
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_EXCLUDE_OBJECTS,
+                ExporterEditorPrefs.FOLDOUT_EXCLUDE_OBJECTS,
                 string.Format( ExporterTexts.t_FoldoutExcludeObjects, excludeObjects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),

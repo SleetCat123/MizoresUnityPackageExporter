@@ -16,12 +16,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             bool multiple = targetlist.Length > 1;
             EditorGUILayout.LabelField( ExporterTexts.t_LabelExportPackage, EditorStyles.boldLabel );
             // Check Button
-            if ( GUILayout.Button( ExporterTexts.t_ButtonCheck ) ) {
-                ed.logs.Clear( );
-                foreach ( var item in targetlist ) {
-                    item.AllFileExists( ed.logs );
-                }
-            }
+            //if ( GUILayout.Button( ExporterTexts.t_ButtonCheck ) ) {
+            //    ed.logs.Clear( );
+            //    foreach ( var item in targetlist ) {
+            //        item.AllFileExists( ed.logs );
+            //    }
+            //}
 
             string[][] fileList = new string[targetlist.Length][];
             bool any = false;

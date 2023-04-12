@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 using System.Collections.Generic;
 using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR
@@ -27,7 +26,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             bool multiple = targetlist.Length > 1;
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_EXCLUDES,
+                ExporterEditorPrefs.FOLDOUT_EXCLUDES,
                 string.Format( ExporterTexts.t_FoldoutExcludes, minmax_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
@@ -164,7 +163,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↑ Excludes
 
             // ↓ Excludes Preview
-            if ( ExporterUtils.EditorPrefFoldout( Const.EDITOR_PREF_FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_FoldoutExcludesPreview ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.t_FoldoutExcludesPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );

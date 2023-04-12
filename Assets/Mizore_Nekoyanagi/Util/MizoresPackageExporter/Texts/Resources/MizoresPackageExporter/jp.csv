@@ -25,3 +25,5 @@ ButtonCheck,エクスポートするファイルの有無を確認
 PackageName,unitypackage名
 
 ExportListEmpty,エクスポートできるunitypackageがありません。\n一括エクスポートの設定を確認してください。
+
+FileListTreeView,階層表示

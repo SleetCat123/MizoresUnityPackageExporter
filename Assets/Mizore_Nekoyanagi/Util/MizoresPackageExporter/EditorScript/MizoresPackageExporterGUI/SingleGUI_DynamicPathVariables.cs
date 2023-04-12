@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -33,7 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
-                Const.EDITOR_PREF_FOLDOUT_DYNAMICPATH_VARIABLES,
+                ExporterEditorPrefs.FOLDOUT_VARIABLES,
                 string.Format( ExporterTexts.t_FoldoutVariables, t.variables.Count )
                 ) ) {
                 var space_width = GUILayout.Width( SPACE_WIDTH );

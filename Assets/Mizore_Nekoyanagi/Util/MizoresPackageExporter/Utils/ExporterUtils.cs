@@ -184,15 +184,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public static void DebugLog( string value ) {
 #if UNITY_EDITOR
-            if ( EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, false ) ) {
+            if ( ExporterEditorPrefs.DebugMode ) {
                 Debug.Log( "[DEBUG] " + value );
             }
 #endif
         }
         public static void DebugLogWarning( string value ) {
 #if UNITY_EDITOR
-            if ( EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, false ) ) {
+            if ( ExporterEditorPrefs.DebugMode ) {
                 Debug.LogWarning( "[DEBUG] " + value );
+            }
+#endif
+        }
+
+        public static void DebugLogError( string value ) {
+#if UNITY_EDITOR
+            if ( ExporterEditorPrefs.DebugMode ) {
+                Debug.LogError( "[DEBUG] " + value );
             }
 #endif
         }

@@ -21,30 +21,30 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         public override void OnInspectorGUI( ) {
             // デバッグモード
             EditorGUI.BeginChangeCheck( );
-            bool debugmode = EditorGUILayout.Toggle( "Debug Mode", EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, false ) );
+            bool debugmode = EditorGUILayout.Toggle( "Debug Mode", ExporterEditorPrefs.DebugMode );
             if ( EditorGUI.EndChangeCheck( ) ) {
-                EditorPrefsCache.SetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG, debugmode );
+                ExporterEditorPrefs.DebugMode = debugmode;
             }
 
             ExporterUtils.SeparateLine( );
 
             // 言語選択
             EditorGUI.BeginChangeCheck( );
-            int languageIndex = System.Array.IndexOf( ExporterTexts.LanguageList, EditorPrefsCache.GetString( ExporterConsts_Editor.EDITOR_PREF_LANGUAGE, ExporterTexts.DEFAULT_KEY ) );
+            int languageIndex = System.Array.IndexOf( ExporterTexts.LanguageList, ExporterEditorPrefs.Language );
             if ( languageIndex == -1 ) {
                 languageIndex = 0;
-                EditorPrefsCache.SetString( ExporterConsts_Editor.EDITOR_PREF_LANGUAGE, ExporterTexts.DEFAULT_KEY );
+                ExporterEditorPrefs.Language = ExporterTexts.DEFAULT_KEY;
             }
             using ( new GUILayout.HorizontalScope( ) ) {
                 languageIndex = EditorGUILayout.Popup( "Language", languageIndex, ExporterTexts.LanguageList );
-                if ( EditorPrefsCache.GetBool( ExporterConsts_Editor.EDITOR_PREF_DEBUG ) ) {
+                if ( ExporterEditorPrefs.DebugMode ) {
                     if ( GUILayout.Button( "Reload", GUILayout.Width( 60 ) ) ) {
                         ExporterTexts.Clear( );
                     }
                 }
             }
             if ( EditorGUI.EndChangeCheck( ) ) {
-                EditorPrefsCache.SetString( ExporterConsts_Editor.EDITOR_PREF_LANGUAGE, ExporterTexts.LanguageList[languageIndex] );
+                ExporterEditorPrefs.Language = ExporterTexts.LanguageList[languageIndex];
             }
 
             ExporterUtils.SeparateLine( );

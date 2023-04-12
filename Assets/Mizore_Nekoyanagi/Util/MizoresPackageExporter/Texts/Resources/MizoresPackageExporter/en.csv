@@ -49,5 +49,6 @@ PasteTargetNoValue,Paste
 IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
 IncompatibleVersionForceOpen,Force open
 FileListViewFullPath,FullPath
+FileListTreeView,TreeView
 FileListClose,Close
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.

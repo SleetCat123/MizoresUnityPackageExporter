@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Editor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 {
@@ -225,7 +224,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
             }
             if ( ExporterUtils.EditorPrefFoldout(
-    Const.EDITOR_PREF_FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
+    ExporterEditorPrefs.FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
                 Main( t, targetlist, samevalue_in_all_mode );
                 Preview( targetlist );
             }

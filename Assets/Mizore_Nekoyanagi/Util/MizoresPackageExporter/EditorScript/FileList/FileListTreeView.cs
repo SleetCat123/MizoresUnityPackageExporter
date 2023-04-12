@@ -14,12 +14,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
         public bool viewFullPath;
+        public bool hierarchyView;
+
+        GUIStyle _style;
+        GUIStyle _boldStyle;
 
         const int ROOT_ID = 0;
         const int START_NODE_ID = ROOT_ID + 1;
+        const float ICON_MARGIN = 2;
+        const float ICON_MARGIN_HALF = ICON_MARGIN * 0.5f;
 
         public FileListTreeView( TreeViewState treeViewState, FileListNode root ) : base( treeViewState ) {
             _root = root;
+            useScrollView = true;
+            int height = 20;
+            rowHeight = height;
+
+            _style = new GUIStyle( EditorStyles.label );
+            _style.fontSize = 12;
+
+            _boldStyle = new GUIStyle( EditorStyles.boldLabel );
+            _boldStyle.fontSize = 12;
         }
         public void UpdateList( ) {
             var closedPaths = table_id_node.Keys.Where( v => !IsExpanded( v ) );
@@ -65,14 +80,34 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         private void AddChildrenRecursive( FileListNode node, TreeViewItem item, IList<TreeViewItem> rows ) {
             foreach ( var child in node.childrenTable.Values ) {
                 int id = table_node_id[child];
-                var childItem = new TreeViewItem { id = id, displayName = child.path };
-                item.AddChild( childItem );
-                rows.Add( childItem );
-                if ( child.ChildCount >= 1 ) {
-                    if ( IsExpanded( id ) ) {
-                        AddChildrenRecursive( child, childItem, rows );
-                    } else {
-                        childItem.children = CreateChildListForCollapsedParent( );
+                if ( hierarchyView ) {
+                    var childItem = new TreeViewItem { id = id, displayName = child.path };
+                    item.AddChild( childItem );
+                    rows.Add( childItem );
+                    if ( child.ChildCount >= 1 ) {
+                        if ( IsExpanded( id ) ) {
+                            AddChildrenRecursive( child, childItem, rows );
+                        } else {
+                            childItem.children = CreateChildListForCollapsedParent( );
+                        }
+                    }
+                } else {
+                    TreeViewItem currentItem = item;
+                    if ( child.ChildCount == 0 || child.parent == _root ) {
+                        currentItem = new TreeViewItem { id = id, displayName = child.path };
+                        item.AddChild( currentItem );
+                        rows.Add( currentItem );
+                    }
+                    if ( child.ChildCount >= 1 ) {
+                        if ( IsExpanded( id ) ) {
+                            if ( child.parent == _root ) {
+                                AddChildrenRecursive( child, currentItem, rows );
+                            } else {
+                                AddChildrenRecursive( child, item, rows );
+                            }
+                        } else {
+                            currentItem.children = CreateChildListForCollapsedParent( );
+                        }
                     }
                 }
             }
@@ -108,41 +143,73 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             var path = args.item.displayName;
             var node = table_id_node[args.item.id];
             Texture icon;
-            string label;
-            if ( node.parent == _root ) {
-                label = args.item.displayName;
+            bool isRoot = node.parent == _root;
+            string errorLabel = null;
+            if ( isRoot ) {
                 icon = IconCache.UnityLogoIcon;
             } else {
-                if ( viewFullPath ) {
-                    label = path;
-                } else {
-                    label = Path.GetFileName( path );
-                }
                 var result = ExporterUtils.TryGetIcon( path, out icon );
                 switch ( result ) {
                     case ExporterUtils.GetIconResult.ExistsFile:
                         break;
                     case ExporterUtils.GetIconResult.ExistsFolder:
-                        GUI.contentColor = temp_contentColor * 0.85f;
+                        GUI.contentColor = temp_contentColor * 0.9f;
                         break;
                     default:
                     case ExporterUtils.GetIconResult.NotExistsFile:
                     case ExporterUtils.GetIconResult.NotExistsFolder:
-                        label = ExporterTexts.t_ExportLogNotFoundPathPrefix + label;
+                        errorLabel = ExporterTexts.t_ExportLogNotFoundPathPrefix;
                         GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
                         break;
                 }
             }
-            args.label = label;
-
             Rect iconRect = args.rowRect;
             iconRect.x += GetContentIndent( args.item );
-            iconRect.width = 16f;
+            iconRect.y += ICON_MARGIN_HALF;
+            iconRect.width = rowHeight - ICON_MARGIN;
+            iconRect.height -= ICON_MARGIN;
             GUI.DrawTexture( iconRect, icon );
 
-            extraSpaceBeforeIconAndLabel = iconRect.width + 2f;
-            base.RowGUI( args );
+            Rect spaceRect = args.rowRect;
+            spaceRect.x = iconRect.x;
+            spaceRect.width = iconRect.width + 2;
+
+            Rect labelRect1 = spaceRect;
+            if ( errorLabel != null ) {
+                var c = GUI.contentColor;
+                GUI.contentColor = new Color( 1, 0.25f, 0.25f );
+                labelRect1 = DrawLabel( labelRect1, errorLabel, _boldStyle );
+                GUI.contentColor = c;
+            }
+
+            Rect labelRect2 = labelRect1;
+            if ( viewFullPath || isRoot || args.selected || errorLabel != null ) {
+                var c = GUI.contentColor;
+                if ( !isRoot ) {
+                    GUI.contentColor = GUI.contentColor * 0.9f;
+                }
+                var directoryName = Path.GetDirectoryName( path );
+                if ( directoryName.Length != 0 ) {
+                    directoryName = directoryName + "\\";
+                }
+                labelRect2 = DrawLabel( labelRect2, directoryName, _style );
+                GUI.contentColor = c;
+            }
+
+            Rect labelRect3 = DrawLabel( labelRect2, Path.GetFileName( path ), _style );
+
             GUI.contentColor = temp_contentColor;
+        }
+        static Rect DrawLabel( Rect prevRect, string label, GUIStyle style ) {
+            Rect result = prevRect;
+            result.x = prevRect.x + prevRect.width;
+            //if ( width > 0 ) {
+            //    result.width = width;
+            //} else {
+            result.width = style.CalcSize( new GUIContent( label ) ).x;
+            //}
+            EditorGUI.LabelField( result, label, style );
+            return result;
         }
     }
 }
