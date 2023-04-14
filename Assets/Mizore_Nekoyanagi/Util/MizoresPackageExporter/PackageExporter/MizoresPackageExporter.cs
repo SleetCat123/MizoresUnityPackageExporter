@@ -173,7 +173,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
             switch ( packageExporterVersion ) {
                 case 0:
-                    versionSource = VersionSource.File;
+                    // versionSource = VersionSource.File;
                     break;
             }
 
