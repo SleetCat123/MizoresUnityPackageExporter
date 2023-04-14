@@ -17,6 +17,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             return table_id_node[id];
         }
         public bool viewFullPath;
+        public bool viewExcludeFiles;
+        public bool viewReferencedFiles;
         public bool hierarchyView;
 
         GUIStyle _style;
@@ -82,6 +84,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
         private void AddChildrenRecursive( FileListNode node, TreeViewItem item, IList<TreeViewItem> rows ) {
             foreach ( var child in node.childrenTable.Values ) {
+                switch ( child.type ) {
+                    case NodeType.Excludes:
+                        if ( !viewExcludeFiles ) {
+                            continue;
+                        }
+                        break;
+                    case NodeType.References:
+                        if ( !viewReferencedFiles ) {
+                            continue;
+                        }
+                        break;
+                }
                 int id = table_node_id[child];
                 bool hierarchyView = this.hierarchyView;
                 if ( child.type == NodeType.NotFound && child.path != ExporterConsts.PATH_PREFIX_NOTFOUND ) {
@@ -153,6 +167,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             bool isRoot = node.parent == _root;
             string subLabel = null;
             Color subLabelColor = Color.white;
+            if ( !hierarchyView && node.type == NodeType.Excludes ) {
+                subLabelColor = Color.white * 0.7f;
+                GUI.contentColor = temp_contentColor * 0.8f;
+            }
             if ( isRoot ) {
                 icon = IconCache.UnityLogoIcon;
             } else if ( path[0] == '[' ) {

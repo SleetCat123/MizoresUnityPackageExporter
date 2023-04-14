@@ -108,6 +108,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_IncompatibleVersionForceOpen => Get( "IncompatibleVersionForceOpen" );
         public static string t_FileListViewFullPath => Get( "FileListViewFullPath" );
         public static string t_FileListTreeView => Get( "FileListTreeView" );
+        public static string t_FileListViewReferencedFiles => Get( "FileListViewReferencedFiles" );
+        public static string t_FileListViewExcludeFiles => Get( "FileListViewExcludeFiles" );
         public static string t_FileListClose => Get( "FileListClose" );
         public static string t_FileListNotFoundPathPrefix => Get( "FileListNotFoundPathPrefix" );
         public static string t_FileListExcludesPathPrefix => Get( "FileListExcludesPathPrefix" );

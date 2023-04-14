@@ -51,6 +51,8 @@ IncompatibleVersionForceOpen,Force open
 
 FileListViewFullPath,FullPath
 FileListTreeView,TreeView
+FileListViewReferencedFiles,View Referenced Files
+FileListViewExcludeFiles,View Excludes Files
 FileListClose,Close
 
 FileListNotFoundPathPrefix,[ ! not found ! ] 

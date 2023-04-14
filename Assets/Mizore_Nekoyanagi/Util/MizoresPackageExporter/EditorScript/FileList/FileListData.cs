@@ -17,7 +17,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                         //_action?.filelist_postprocessing?.Invoke( item, i );
                         continue;
                     }
-                    Debug.Log( exportPath );
+                    ExporterUtils.DebugLog( exportPath );
                     var list = kvp.Value;
 
                     FileListNode node = new FileListNode( );

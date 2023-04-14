@@ -89,6 +89,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             set => EditorPrefsCache.SetBool( FILELIST_FLATVIEW_FULLPATH, value );
         }
 
+        private const string FILELIST_VIEW_EXCLUDE_FILES = PREFIX + "FileList_View_ExcludeFiles";
+        public static bool FileListViewExcludeFiles {
+            get => EditorPrefsCache.GetBool( FILELIST_VIEW_EXCLUDE_FILES, true );
+            set => EditorPrefsCache.SetBool( FILELIST_VIEW_EXCLUDE_FILES, value );
+        }
+
+        private const string FILELIST_VIEW_REFERENCED_FILES = PREFIX + "FileList_View_ReferencedFiles";
+        public static bool FileListViewReferencedFiles {
+            get => EditorPrefsCache.GetBool( FILELIST_VIEW_REFERENCED_FILES, true );
+            set => EditorPrefsCache.SetBool( FILELIST_VIEW_REFERENCED_FILES, value );
+        }
+
         private const string FILELIST_TREEVIEW = PREFIX + "FileList_TreeView";
         public static bool FileListTreeView {
             get => EditorPrefsCache.GetBool( FILELIST_TREEVIEW, true );

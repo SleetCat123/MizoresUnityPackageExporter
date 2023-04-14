@@ -42,6 +42,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             } else {
                 _treeView.viewFullPath = ExporterEditorPrefs.FileListFlatViewFullPath;
             }
+            _treeView.viewReferencedFiles = ExporterEditorPrefs.FileListViewReferencedFiles;
+            _treeView.viewExcludeFiles = ExporterEditorPrefs.FileListViewExcludeFiles;
             _treeView.Reload( );
         }
         private void OnGUI( ) {
@@ -50,7 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 tooltipHeight = 0;
             }
 
-            var height = position.height - ( 50 * 2f ) - tooltipHeight;
+            var height = position.height - ( 50 * 4f ) - tooltipHeight;
             var rect = EditorGUILayout.GetControlRect( false, height );
             _treeView.OnGUI( rect );
 
@@ -128,6 +130,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                         ExporterEditorPrefs.FileListFlatViewFullPath = viewFullPath;
                         ReloadTreeView( );
                     }
+                }
+
+                EditorGUI.BeginChangeCheck( );
+                bool referencedFiles = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewReferencedFiles, ExporterEditorPrefs.FileListViewReferencedFiles );
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    ExporterEditorPrefs.FileListViewReferencedFiles = referencedFiles;
+                    ReloadTreeView( );
+                }
+
+                EditorGUI.BeginChangeCheck( );
+                bool excludeFiles = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewExcludeFiles, ExporterEditorPrefs.FileListViewExcludeFiles );
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    ExporterEditorPrefs.FileListViewExcludeFiles = excludeFiles;
+                    ReloadTreeView( );
                 }
 
                 if ( GUILayout.Button( ExporterTexts.t_ButtonExportPackage ) ) {
