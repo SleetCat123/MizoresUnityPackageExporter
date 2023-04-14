@@ -18,8 +18,8 @@ DateVariableTooltip,注：現在の日時と置き換わります。(ex: {0})
 Version,バージョン
 VersionSource,バージョン参照元
 DiffTooltip,一部のオブジェクトの値が異なっています。
-ExportLogNotFound,[{0}]は存在しません。\n
-ExportLogFailed,エクスポートは中断されました。\n
+ExportLogNotFound,[{0}]は存在しません。
+ExportLogFailed,{0}\nエクスポートは中断されました。
 ExportLogAllFileExists,ファイル／フォルダの存在チェックが完了しました。
 ExportLogSuccess,[{0}]のエクスポートに成功しました。\n
 IncompatibleVersion,[{0}]は現在のバージョンのMizoresPackageExporterとの互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。

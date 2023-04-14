@@ -35,8 +35,8 @@ DiffLabel,?
 DiffTooltip,Some values are different.
 ButtonFolder,Folder
 ButtonFile,File
-ExportLogNotFound,[{0}] is not exists.\n
-ExportLogFailed,Export has been cancelled.\n
+ExportLogNotFound,[{0}] is not exists.
+ExportLogFailed,{0}\nExport has been cancelled.
 ExportLogAllFileExists,All files or directories exist.\n
 ExportLogSuccess,[{0}] export completed.\n
 ExcludesWereEmpty,No files were excluded.

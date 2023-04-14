@@ -401,7 +401,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                                 result.Add( dp );
 
                                 HashSet<string> referenceFrom;
-                                if ( !referencesResults .TryGetValue(dp, out referenceFrom ) ) {
+                                if ( !referencesResults.TryGetValue( dp, out referenceFrom ) ) {
                                     referenceFrom = new HashSet<string>( );
                                     referencesResults.Add( dp, referenceFrom );
                                 }
@@ -496,11 +496,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         static void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
 #if UNITY_EDITOR
-            Debug.Log( "Start Export: " + string.Join( "/n", list ) );
+            Debug.Log( exportPath + "\n" + "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs, list );
             if ( exists == false ) {
-                logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.ExportLogFailed );
+                string failedText = string.Format( ExporterTexts.ExportLogFailed, exportPath );
+                Debug.LogError( failedText );
+                logs.Add( ExporterEditorLogs.LogType.Error, failedText );
                 return;
             }
 

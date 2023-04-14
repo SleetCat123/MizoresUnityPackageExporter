@@ -42,12 +42,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         logIcon = IconCache.ErrorIcon;
                         break;
                 }
-                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    if ( logIcon != null ) {
-                        var rect = EditorGUILayout.GetControlRect( GUILayout.Width( 16 ) );
-                        GUI.DrawTexture( rect, logIcon );
+
+                var texts = text.Split( '\n' );
+                for ( int i = 0; i < texts.Length; i++ ) {
+                    var rect = EditorGUILayout.GetControlRect( );
+                    var labelRect = rect;
+                    var iconSize = 16;
+                    if ( i == 0 && logIcon != null ) {
+                        var iconRect = rect;
+                        iconRect.width = 16;
+                        iconRect.height = 16;
+                        GUI.DrawTexture( iconRect, logIcon );
                     }
-                    EditorGUILayout.LabelField( new GUIContent(text, icon) );
+                    labelRect.x += iconSize;
+                    labelRect.width -= iconSize;
+                    EditorGUI.LabelField( labelRect, new GUIContent( texts[i], icon ) );
                 }
 #endif
             }
