@@ -33,7 +33,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_VARIABLES,
-                string.Format( ExporterTexts.t_FoldoutVariables, t.variables.Count )
+                string.Format( ExporterTexts.FoldoutVariables, t.variables.Count )
                 ) ) {
                 var space_width = GUILayout.Width( SPACE_WIDTH );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
@@ -43,9 +43,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.FormattedVersion );
                 DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.PackageName );
                 if ( t.batchExportMode != BatchExportMode.Disable ) {
-                    DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.t_BatchVariableTooltip );
+                    DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
                 }
-                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, string.Format( ExporterTexts.t_DateVariableTooltip, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
+                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, string.Format( ExporterTexts.DateVariableTooltip, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
                 GUI.enabled = true;
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {

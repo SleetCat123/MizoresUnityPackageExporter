@@ -12,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     {
         public static void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             if ( ExporterUtils.EditorPrefFoldout(
-                ExporterEditorPrefs.FOLDOUT_VERSIONFILE, ExporterTexts.t_FoldoutVersion ) ) {
+                ExporterEditorPrefs.FOLDOUT_VERSIONFILE, ExporterTexts.FoldoutVersion ) ) {
                 var same_versionSource_valueInAllObj = targetlist.All( v => t.versionSource == v.versionSource );
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     ExporterUtils.Indent( 1 );
@@ -20,7 +20,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     VersionSource versionSource;
 
                     EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
-                    versionSource = (VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.t_VersionSource, t.versionSource );
+                    versionSource = (VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, t.versionSource );
                     EditorGUI.showMixedValue = false;
 
                     if ( EditorGUI.EndChangeCheck( ) ) {
@@ -41,7 +41,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                                 string versionString;
 
                                 EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                                versionString = EditorGUILayout.TextField( ExporterTexts.t_Version, t.versionString );
+                                versionString = EditorGUILayout.TextField( ExporterTexts.Version, t.versionString );
                                 EditorGUI.showMixedValue = false;
 
                                 if ( EditorGUI.EndChangeCheck( ) ) {
@@ -86,7 +86,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         ExporterUtils.DiffLabel( );
                         EditorGUI.showMixedValue = true;
                     }
-                    value = EditorGUILayout.TextField( ExporterTexts.t_VersionFormat, t.versionFormat );
+                    value = EditorGUILayout.TextField( ExporterTexts.VersionFormat, t.versionFormat );
                     EditorGUI.showMixedValue = false;
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -103,11 +103,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 EditorGUI.BeginChangeCheck( );
                 string value;
                 if ( samevalue_in_all ) {
-                    value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, t.packageName );
+                    value = EditorGUILayout.TextField( ExporterTexts.PackageName, t.packageName );
                 } else {
                     ExporterUtils.DiffLabel( );
                     EditorGUI.showMixedValue = true;
-                    value = EditorGUILayout.TextField( ExporterTexts.t_PackageName, string.Empty );
+                    value = EditorGUILayout.TextField( ExporterTexts.PackageName, string.Empty );
                     EditorGUI.showMixedValue = false;
                 }
                 if ( EditorGUI.EndChangeCheck( ) ) {

@@ -30,14 +30,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             var firstList = getTable( targets.First( ) );
             bool perfectMatch = TableIsPerfectMatch( targets, getTable );
             if ( perfectMatch ) {
-                var copyLabel = string.Format( ExporterTexts.t_CopyTarget, string.Format( labelFormat, firstList.Count ) );
+                var copyLabel = string.Format( ExporterTexts.CopyTarget, string.Format( labelFormat, firstList.Count ) );
                 menu.AddItem( new GUIContent( copyLabel ), false, CopyCache.Copy, firstList );
             } else {
-                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_CopyTargetNoValue ) );
+                menu.AddDisabledItem( new GUIContent( ExporterTexts.CopyTargetNoValue ) );
             }
             if ( CopyCache.CanPaste<Dictionary<TKey, TValue>>( ) ) {
                 var cache = CopyCache.GetCache<Dictionary<TKey, TValue>>( clone: false );
-                string label = string.Format( ExporterTexts.t_PasteTarget, string.Format( labelFormat, cache.Count ) );
+                string label = string.Format( ExporterTexts.PasteTarget, string.Format( labelFormat, cache.Count ) );
                 menu.AddItem( new GUIContent( label ), false, ( ) => {
                     foreach ( var t in targets ) {
                         setTable( t, CopyCache.GetCache<Dictionary<TKey, TValue>>( ) );
@@ -45,7 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     }
                 } );
             } else {
-                menu.AddDisabledItem( new GUIContent( ExporterTexts.t_PasteTargetNoValue ) );
+                menu.AddDisabledItem( new GUIContent( ExporterTexts.PasteTargetNoValue ) );
             }
             menu.ShowAsContext( );
         }

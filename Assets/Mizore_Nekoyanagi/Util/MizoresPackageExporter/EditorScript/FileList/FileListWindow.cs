@@ -72,24 +72,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                                 break;
                             case NodeType.NotFound:
                                 if ( node.ChildCount == 0 ) {
-                                    EditorGUILayout.LabelField( ExporterTexts.t_FileListNotFoundPathPrefix + node.path );
+                                    EditorGUILayout.LabelField( ExporterTexts.FileListNotFoundPathPrefix + node.path );
                                 } else {
                                     EditorGUILayout.LabelField( node.path );
                                 }
                                 break;
                             case NodeType.Excludes:
                                 if ( node.ChildCount == 0 ) {
-                                    EditorGUILayout.LabelField( ExporterTexts.t_FileListExcludesPathPrefix + node.path );
+                                    EditorGUILayout.LabelField( ExporterTexts.FileListExcludesPathPrefix + node.path );
                                 } else {
                                     EditorGUILayout.LabelField( node.path );
                                 }
                                 break;
                             case NodeType.References:
                                 if ( node.args != null && node.args.Count != 0 ) {
-                                    EditorGUILayout.LabelField( ExporterTexts.t_FileListReferencesPathPrefix + node.path );
+                                    EditorGUILayout.LabelField( ExporterTexts.FileListReferencesPathPrefix + node.path );
                                     using ( new EditorGUILayout.HorizontalScope( ) ) {
                                         ExporterUtils.Indent( 1 );
-                                        EditorGUILayout.LabelField( ExporterTexts.t_FileListTooltipReferencedBy );
+                                        EditorGUILayout.LabelField( ExporterTexts.FileListTooltipReferencedBy );
                                     }
                                     foreach ( var arg in node.args ) {
                                         using ( new EditorGUILayout.HorizontalScope( ) ) {
@@ -110,7 +110,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
             using ( new EditorGUILayout.VerticalScope( EditorStyles.helpBox ) ) {
                 EditorGUI.BeginChangeCheck( );
-                bool treeView = EditorGUILayout.Toggle( ExporterTexts.t_FileListTreeView, ExporterEditorPrefs.FileListTreeView );
+                bool treeView = EditorGUILayout.Toggle( ExporterTexts.FileListTreeView, ExporterEditorPrefs.FileListTreeView );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     ExporterEditorPrefs.FileListTreeView = treeView;
                     ReloadTreeView( );
@@ -118,14 +118,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 
                 if ( ExporterEditorPrefs.FileListTreeView ) {
                     EditorGUI.BeginChangeCheck( );
-                    bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewFullPath, ExporterEditorPrefs.FileListTreeViewFullPath );
+                    bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.FileListViewFullPath, ExporterEditorPrefs.FileListTreeViewFullPath );
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         ExporterEditorPrefs.FileListTreeViewFullPath = viewFullPath;
                         ReloadTreeView( );
                     }
                 } else {
                     EditorGUI.BeginChangeCheck( );
-                    bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewFullPath, ExporterEditorPrefs.FileListFlatViewFullPath );
+                    bool viewFullPath = EditorGUILayout.Toggle( ExporterTexts.FileListViewFullPath, ExporterEditorPrefs.FileListFlatViewFullPath );
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         ExporterEditorPrefs.FileListFlatViewFullPath = viewFullPath;
                         ReloadTreeView( );
@@ -133,20 +133,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 }
 
                 EditorGUI.BeginChangeCheck( );
-                bool referencedFiles = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewReferencedFiles, ExporterEditorPrefs.FileListViewReferencedFiles );
+                bool referencedFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewReferencedFiles, ExporterEditorPrefs.FileListViewReferencedFiles );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     ExporterEditorPrefs.FileListViewReferencedFiles = referencedFiles;
                     ReloadTreeView( );
                 }
 
                 EditorGUI.BeginChangeCheck( );
-                bool excludeFiles = EditorGUILayout.Toggle( ExporterTexts.t_FileListViewExcludeFiles, ExporterEditorPrefs.FileListViewExcludeFiles );
+                bool excludeFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewExcludeFiles, ExporterEditorPrefs.FileListViewExcludeFiles );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     ExporterEditorPrefs.FileListViewExcludeFiles = excludeFiles;
                     ReloadTreeView( );
                 }
 
-                if ( GUILayout.Button( ExporterTexts.t_ButtonExportPackage ) ) {
+                if ( GUILayout.Button( ExporterTexts.ButtonExportPackage ) ) {
                     MizoresPackageExporterEditor.Export( _logs, _targets );
                     this.Close( );
                 }

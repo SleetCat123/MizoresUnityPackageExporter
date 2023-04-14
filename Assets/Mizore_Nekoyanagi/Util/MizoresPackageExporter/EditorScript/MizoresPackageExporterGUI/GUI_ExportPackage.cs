@@ -14,7 +14,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
     {
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             bool multiple = targetlist.Length > 1;
-            EditorGUILayout.LabelField( ExporterTexts.t_LabelExportPackage, EditorStyles.boldLabel );
+            EditorGUILayout.LabelField( ExporterTexts.LabelExportPackage, EditorStyles.boldLabel );
             // Check Button
             //if ( GUILayout.Button( ExporterTexts.t_ButtonCheck ) ) {
             //    ed.logs.Clear( );
@@ -33,7 +33,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 
             // List Button
             using ( new EditorGUI.DisabledGroupScope( !any ) ) {
-                if ( GUILayout.Button( ExporterTexts.t_ButtonExportPackages ) ) {
+                if ( GUILayout.Button( ExporterTexts.ButtonExportPackages ) ) {
                     FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
                 }
             }
@@ -59,9 +59,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
             }
             if ( !any ) {
-                EditorGUILayout.HelpBox( ExporterTexts.t_ExportListEmpty, MessageType.Error );
+                EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );
             }
-            if ( GUILayout.Button( ExporterTexts.t_ButtonOpen, GUILayout.Width( 60 ) ) ) {
+            if ( GUILayout.Button( ExporterTexts.ButtonOpen, GUILayout.Width( 60 ) ) ) {
                 if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath ) ) {
                     EditorUtility.RevealInFinder( ed.t.ExportPath );
                 } else {

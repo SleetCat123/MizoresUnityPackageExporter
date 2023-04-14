@@ -438,7 +438,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             if ( excludeResults.Any( ) ) {
                 ExporterUtils.DebugLog( "Excludes: \n" + string.Join( "\n", excludeResults ) + "\n" );
             } else {
-                ExporterUtils.DebugLog( ExporterTexts.t_ExcludesWereEmpty );
+                ExporterUtils.DebugLog( ExporterTexts.ExcludesWereEmpty );
             }
             return new FilePathList( ) {
                 paths = result_enumerable,
@@ -459,24 +459,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 var path = list_full[i];
                 if ( Path.GetExtension( path ).Length != 0 ) {
                     if ( File.Exists( path ) == false ) {
-                        var text = string.Format( ExporterTexts.t_ExportLogNotFound, path );
+                        var text = string.Format( ExporterTexts.ExportLogNotFound, path );
                         logs.Add( ExporterEditorLogs.LogType.Error, text );
                         Debug.LogError( text );
                         result = false;
 
-                        list_full[i] = ExporterTexts.t_FileListNotFoundPathPrefix + path;
+                        list_full[i] = ExporterTexts.FileListNotFoundPathPrefix + path;
                     }
                 } else if ( Directory.Exists( path ) == false ) {
-                    var text = string.Format( ExporterTexts.t_ExportLogNotFound, path );
+                    var text = string.Format( ExporterTexts.ExportLogNotFound, path );
                     logs.Add( ExporterEditorLogs.LogType.Error, text );
                     Debug.LogError( text );
                     result = false;
 
-                    list_full[i] = ExporterTexts.t_FileListNotFoundPathPrefix + path;
+                    list_full[i] = ExporterTexts.FileListNotFoundPathPrefix + path;
                 }
             }
             if ( result ) {
-                var text = ExporterTexts.t_ExportLogAllFileExists;
+                var text = ExporterTexts.ExportLogAllFileExists;
                 logs.Add( ExporterEditorLogs.LogType.Info, text );
                 Debug.Log( text );
             }
@@ -500,7 +500,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs, list );
             if ( exists == false ) {
-                logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.t_ExportLogFailed );
+                logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.ExportLogFailed );
                 return;
             }
 
@@ -511,7 +511,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
             EditorUtility.RevealInFinder( exportPath );
 
-            logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.t_ExportLogSuccess );
+            logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess );
             Debug.Log( exportPath + "をエクスポートしました。" );
 #endif
         }

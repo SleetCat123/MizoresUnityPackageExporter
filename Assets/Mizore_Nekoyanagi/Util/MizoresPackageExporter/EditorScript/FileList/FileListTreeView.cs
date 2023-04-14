@@ -177,13 +177,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 icon = node.icon;
                 switch ( path ) {
                     case ExporterConsts.PATH_PREFIX_NOTFOUND:
-                        path = ExporterTexts.t_FileListCategoryNotFound;
+                        path = ExporterTexts.FileListCategoryNotFound;
                         break;
                     case ExporterConsts.PATH_PREFIX_REFERENCED:
-                        path = ExporterTexts.t_FileListCategoryReferences;
+                        path = ExporterTexts.FileListCategoryReferences;
                         break;
                     case ExporterConsts.PATH_PREFIX_EXCLUDES:
-                        path = ExporterTexts.t_FileListCategoryExcludes;
+                        path = ExporterTexts.FileListCategoryExcludes;
                         break;
                 }
             } else {
@@ -202,17 +202,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 }
                 switch ( node.type ) {
                     case NodeType.NotFound:
-                        subLabel = ExporterTexts.t_FileListNotFoundPathPrefix;
+                        subLabel = ExporterTexts.FileListNotFoundPathPrefix;
                         subLabelColor = new Color( 1, 0.25f, 0.25f );
                         break;
                     case NodeType.Excludes:
                         if ( node.ChildCount == 0 ) {
-                            subLabel = ExporterTexts.t_FileListExcludesPathPrefix;
+                            subLabel = ExporterTexts.FileListExcludesPathPrefix;
                         }
                         break;
                     case NodeType.References:
                         if ( node.args != null && node.args.Count != 0 ) {
-                            subLabel = ExporterTexts.t_FileListReferencesPathPrefix;
+                            subLabel = ExporterTexts.FileListReferencesPathPrefix;
                         }
                         break;
                 }

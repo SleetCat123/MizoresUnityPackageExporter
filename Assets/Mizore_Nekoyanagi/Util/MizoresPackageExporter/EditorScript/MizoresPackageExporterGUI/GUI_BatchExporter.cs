@@ -17,7 +17,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             EditorGUI.showMixedValue = !samevalue_in_all_mode;
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 ExporterUtils.Indent( 1 );
-                t.batchExportMode = (BatchExportMode)EditorGUILayout.EnumPopup( ExporterTexts.t_BatchExportMode, t.batchExportMode );
+                t.batchExportMode = (BatchExportMode)EditorGUILayout.EnumPopup( ExporterTexts.BatchExportMode, t.batchExportMode );
             }
             EditorGUI.showMixedValue = false;
             if ( EditorGUI.EndChangeCheck( ) ) {
@@ -138,7 +138,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         EditorGUI.showMixedValue = !samevalue_in_all_regex;
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( 1 );
-                            t.batchExportFolderRegex = EditorGUILayout.TextField( ExporterTexts.t_BatchExportRegex, t.batchExportFolderRegex );
+                            t.batchExportFolderRegex = EditorGUILayout.TextField( ExporterTexts.BatchExportRegex, t.batchExportFolderRegex );
                         }
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
@@ -216,12 +216,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             string foldoutLabel;
             if ( samevalue_in_all_mode ) {
                 if ( t.batchExportMode == BatchExportMode.Disable ) {
-                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportDisabled;
+                    foldoutLabel = ExporterTexts.FoldoutBatchExportDisabled;
                 } else {
-                    foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
+                    foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
                 }
             } else {
-                foldoutLabel = ExporterTexts.t_FoldoutBatchExportEnabled;
+                foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
             }
             if ( ExporterUtils.EditorPrefFoldout(
     ExporterEditorPrefs.FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
@@ -235,13 +235,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         Regex.Match( string.Empty, item.batchExportFolderRegex );
                     } catch ( System.ArgumentException e ) {
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            var error = string.Format( ExporterTexts.t_BatchExportRegexError, item.name, e.Message );
+                            var error = string.Format( ExporterTexts.BatchExportRegexError, item.name, e.Message );
                             EditorGUILayout.HelpBox( error, MessageType.Error );
                         }
                     }
                 }
                 if ( item.batchExportMode != BatchExportMode.Disable && !item.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
-                    var error = string.Format( ExporterTexts.t_BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
+                    var error = string.Format( ExporterTexts.BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
                     EditorGUILayout.HelpBox( error, MessageType.Error );
                 }
             }

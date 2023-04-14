@@ -29,11 +29,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_DYNAMICPATH,
-                string.Format( ExporterTexts.t_FoldoutDynamicPath, dpath_count.GetRangeString( ) ),
+                string.Format( ExporterTexts.FoldoutDynamicPath, dpath_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.t_FoldoutDynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.FoldoutDynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
                 }
                 ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {
@@ -113,7 +113,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↑ Dynamic Path
 
             // ↓ Dynamic Path Preview
-            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.t_FoldoutDynamicPathPreview ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.FoldoutDynamicPathPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );

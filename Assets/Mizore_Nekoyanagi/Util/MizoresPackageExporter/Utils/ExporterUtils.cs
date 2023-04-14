@@ -83,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public static void DiffLabel( ) {
 #if UNITY_EDITOR
-            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.t_DiffLabel, ExporterTexts.t_DiffTooltip ), GUILayout.Width( 30 ) );
+            EditorGUILayout.LabelField( new GUIContent( ExporterTexts.DiffLabel, ExporterTexts.DiffTooltip ), GUILayout.Width( 30 ) );
 #endif
         }
 
