@@ -68,7 +68,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_DateVariableTooltip => Get( "DateVariableTooltip" );
 
         public static string t_FoldoutObjects => Get( "FoldoutObjects" );
+        public static string t_FoldoutObjectsTooltip => Get( "FoldoutObjectsTooltip" );
         public static string t_FoldoutReferences => Get( "FoldoutReferences" );
+        public static string t_FoldoutReferencesTooltip => Get( "FoldoutReferencesTooltip" );
         public static string t_FoldoutExcludes => Get( "FoldoutExcludes" );
         public static string t_FoldoutExcludesPreview => Get( "FoldoutExcludesPreview" );
         public static string t_FoldoutExcludeObjects => Get( "FoldoutExcludeObjects" );
@@ -92,8 +94,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_ButtonFolder => Get( "ButtonFolder" );
         public static string t_ButtonFile => Get( "ButtonFile" );
         public static string t_ExportLogNotFound => Get( "ExportLogNotFound" );
-        public static string t_ExportLogNotFoundPathPrefix => Get( "ExportLogNotFoundPathPrefix" );
-        public static string t_ExportLogDependencyPathPrefix => Get( "ExportLogDependencyPathPrefix" );
         public static string t_ExportLogFailed => Get( "ExportLogFailed" );
         public static string t_ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
         public static string t_ExportLogSuccess => Get( "ExportLogSuccess" );
@@ -109,6 +109,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string t_FileListViewFullPath => Get( "FileListViewFullPath" );
         public static string t_FileListTreeView => Get( "FileListTreeView" );
         public static string t_FileListClose => Get( "FileListClose" );
+        public static string t_FileListNotFoundPathPrefix => Get( "FileListNotFoundPathPrefix" );
+        public static string t_FileListExcludesPathPrefix => Get( "FileListExcludesPathPrefix" );
+        public static string t_FileListReferencesPathPrefix => Get( "FileListReferencesPathPrefix" );
+        public static string t_FileListCategoryNotFound => Get( "FileListCategoryNotFound" );
+        public static string t_FileListCategoryExcludes => Get( "FileListCategoryExcludes" );
+        public static string t_FileListCategoryReferences => Get( "FileListCategoryReferences" );
+        public static string t_FileListTooltipReferencedBy => Get( "FileListTooltipReferencedBy" );
+
         public static string t_ExportListEmpty => Get( "ExportListEmpty" );
     }
 }

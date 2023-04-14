@@ -6,3 +6,5 @@ variablesの複数編集対応
 　ScriptableObjectを継承？
 各項目のtooltip
 Readme書く
+除外オブジェクトの一覧表示
+エクスポートリストの検索

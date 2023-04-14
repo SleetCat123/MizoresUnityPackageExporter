@@ -12,14 +12,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 var table = item.GetAllPath_Batch( );
                 foreach ( var kvp in table ) {
                     string exportPath = kvp.Key;
-                    var list = kvp.Value;
                     if ( root.Contains( exportPath ) ) {
                         Debug.Log( "skip: " + exportPath );
                         //_action?.filelist_postprocessing?.Invoke( item, i );
                         continue;
                     }
                     Debug.Log( exportPath );
-                    var node = FileList.FileListNode.CreateList( list );
+                    var list = kvp.Value;
+
+                    FileListNode node = new FileListNode( );
+                    foreach ( var path in list.paths ) {
+                        node.Add( path, NodeType.Default );
+                    }
+                    foreach ( var refkvp in list.referencedPaths ) {
+                        var path = refkvp.Key;
+                        var referenceFrom = refkvp.Value;
+                        node.Add( path, NodeType.References, referenceFrom );
+                    }
+                    foreach ( var path in list.excludePaths ) {
+                        node.Add( path, NodeType.Excludes );
+                    }
                     node.id = exportPath;
                     node.path = exportPath;
                     root.Add( node );

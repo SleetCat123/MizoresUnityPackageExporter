@@ -39,7 +39,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public enum GetIconResult
         {
-            ExistsFile, ExistsFolder, NotExistsFile, NotExistsFolder
+            ExistsFile, ExistsFolder, NotExistsFile, NotExistsFolder, Dummy
         }
         public static bool IsExists( this GetIconResult value ) {
             switch ( value ) {

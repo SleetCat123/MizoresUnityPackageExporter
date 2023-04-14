@@ -54,5 +54,41 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 return _infoIcon;
             }
         }
+
+        static Texture _helpIcon;
+        public static Texture HelpIcon {
+            get {
+#if UNITY_EDITOR
+                if ( _helpIcon == null ) {
+                    _helpIcon = EditorGUIUtility.IconContent( "_Help@2x" ).image;
+                }
+#endif
+                return _helpIcon;
+            }
+        }
+
+        static Texture _AddIcon;
+        public static Texture AddIcon {
+            get {
+#if UNITY_EDITOR
+                if ( _AddIcon == null ) {
+                    _AddIcon = EditorGUIUtility.IconContent( "Toolbar Plus@2x" ).image;
+                }
+#endif
+                return _AddIcon;
+            }
+        }
+
+        static Texture _RemoveIcon;
+        public static Texture RemoveIcon {
+            get {
+#if UNITY_EDITOR
+                if ( _RemoveIcon == null ) {
+                    _RemoveIcon = EditorGUIUtility.IconContent( "Toolbar Minus@2x" ).image;
+                }
+#endif
+                return _RemoveIcon;
+            }
+        }
     }
 }

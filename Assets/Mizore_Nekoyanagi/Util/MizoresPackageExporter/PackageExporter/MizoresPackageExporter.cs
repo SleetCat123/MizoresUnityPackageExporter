@@ -315,6 +315,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return path;
         }
         #endregion
+        /// <summary>
+        /// Referencesの候補を取得
+        /// </summary>
+        /// <returns></returns>
         IEnumerable<string> GetReferencesPath( ) {
             List<string> result = new List<string>( );
             foreach ( var v in references ) {
@@ -328,8 +332,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
             return result.Select( v => v.Replace( '\\', '/' ) );
         }
-        public Dictionary<string, IEnumerable<string>> GetAllPath_Batch( ) {
-            var result = new Dictionary<string, IEnumerable<string>>( );
+        public class FilePathList
+        {
+            public IEnumerable<string> paths;
+            public IEnumerable<string> excludePaths;
+            public Dictionary<string, HashSet<string>> referencedPaths;
+        }
+        public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
+            var result = new Dictionary<string, FilePathList>( );
             if ( batchExportMode == BatchExportMode.Disable ) {
                 temp_batchExportCurrentKey = string.Empty;
                 result.Add( ExportPath, GetAllPath( ) );
@@ -346,7 +356,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             return result;
         }
-        public IEnumerable<string> GetAllPath( ) {
+        public FilePathList GetAllPath( ) {
 #if UNITY_EDITOR
             var references_path = GetReferencesPath( );
             ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", references_path ) );
@@ -378,7 +388,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             list_include_sub = new HashSet<string>( list_include_sub.Where( v => Path.GetExtension( v ) != ".meta" ) );
 
             var result = new HashSet<string>( );
-
+            var referencesResults = new Dictionary<string, HashSet<string>>( );
             foreach ( var item in list_include_sub ) {
                 if ( Path.GetExtension( item ).Length != 0 ) {
                     if ( useReference ) {
@@ -389,7 +399,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             } else if ( references_path.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
                                 result.Add( dp );
-                                Debug.Log( "Dependency: " + dp );
+
+                                HashSet<string> referenceFrom;
+                                if ( !referencesResults .TryGetValue(dp, out referenceFrom ) ) {
+                                    referenceFrom = new HashSet<string>( );
+                                    referencesResults.Add( dp, referenceFrom );
+                                }
+                                referenceFrom.Add( item );
+
+                                ExporterUtils.DebugLog( "Dependency: " + dp );
+                                ExporterUtils.DebugLog( "Referenced by: " + item );
                             } else {
                                 ExporterUtils.DebugLog( "Ignore Dependency: " + dp );
                             }
@@ -417,20 +436,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
             var excludeResults = result.Except( result_enumerable );
             if ( excludeResults.Any( ) ) {
-                Debug.Log( "Excludes: \n" + string.Join( "\n", excludeResults ) + "\n" );
+                ExporterUtils.DebugLog( "Excludes: \n" + string.Join( "\n", excludeResults ) + "\n" );
             } else {
-                Debug.Log( ExporterTexts.t_ExcludesWereEmpty );
+                ExporterUtils.DebugLog( ExporterTexts.t_ExcludesWereEmpty );
             }
-            return result_enumerable;
+            return new FilePathList( ) {
+                paths = result_enumerable,
+                excludePaths = excludeResults,
+                referencedPaths = referencesResults
+            };
 #else
-            return new string[0];
+            return new FilePathList( );
 #endif
         }
-        public bool AllFileExists( ExporterEditorLogs logs ) {
+        public static bool AllFileExists( ExporterEditorLogs logs, IEnumerable<string> list ) {
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
-            var list_full = GetAllPath( ).ToList( );
+            var list_full = list.ToList( );
             Debug.Log( string.Join( "\n", list_full ) );
             for ( int i = 0; i < list_full.Count; i++ ) {
                 var path = list_full[i];
@@ -441,7 +464,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         Debug.LogError( text );
                         result = false;
 
-                        list_full[i] = ExporterTexts.t_ExportLogNotFoundPathPrefix + path;
+                        list_full[i] = ExporterTexts.t_FileListNotFoundPathPrefix + path;
                     }
                 } else if ( Directory.Exists( path ) == false ) {
                     var text = string.Format( ExporterTexts.t_ExportLogNotFound, path );
@@ -449,7 +472,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     Debug.LogError( text );
                     result = false;
 
-                    list_full[i] = ExporterTexts.t_ExportLogNotFoundPathPrefix + path;
+                    list_full[i] = ExporterTexts.t_FileListNotFoundPathPrefix + path;
                 }
             }
             if ( result ) {
@@ -471,20 +494,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
             return result;
         }
-        void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
+        static void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
 #if UNITY_EDITOR
             Debug.Log( "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
-            bool exists = AllFileExists( logs );
+            bool exists = AllFileExists( logs, list );
             if ( exists == false ) {
                 logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.t_ExportLogFailed );
                 return;
             }
 
-            string[] pathNames = list.ToArray( );
             if ( Directory.Exists( exportPath ) == false ) {
                 Directory.CreateDirectory( Path.GetDirectoryName( exportPath ) );
             }
+            string[] pathNames = list.ToArray( );
             AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
             EditorUtility.RevealInFinder( exportPath );
 
@@ -502,7 +525,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             foreach ( var kvp in table ) {
                 string exportPath = kvp.Key;
                 var list = kvp.Value;
-                Export_Internal( logs, exportPath, list );
+                Export_Internal( logs, exportPath, list.paths );
             }
 #endif
         }

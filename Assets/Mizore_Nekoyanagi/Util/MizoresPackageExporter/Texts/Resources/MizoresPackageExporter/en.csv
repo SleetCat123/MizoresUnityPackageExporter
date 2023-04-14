@@ -1,7 +1,9 @@
 Undo,PackagePrefs
 
 FoldoutObjects,Objects to export ({0})
+FoldoutObjectsTooltip,Objects to export
 FoldoutReferences,References ({0})
+FoldoutReferencesTooltip,If the files/folders in this list is referenced by another Asset to be exported\. corresponding files are automatically added to the export target.
 FoldoutExcludes,Excludes Path ({0})
 FoldoutExcludesPreview,Excludes Path Preview
 FoldoutExcludeObjects,Exclude Objects ({0})
@@ -33,8 +35,6 @@ DiffLabel,?
 DiffTooltip,Some values are different.
 ButtonFolder,Folder
 ButtonFile,File
-ExportLogNotFoundPathPrefix,[ ! not found ! ] 
-ExportLogDependencyPathPrefix,[Dependency]
 ExportLogNotFound,[{0}] is not exists.\n
 ExportLogFailed,Export has been cancelled.\n
 ExportLogAllFileExists,All files or directories exist.\n
@@ -48,7 +48,19 @@ PasteTargetWithValue,Paste [{1}] ({0})
 PasteTargetNoValue,Paste
 IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
 IncompatibleVersionForceOpen,Force open
+
 FileListViewFullPath,FullPath
 FileListTreeView,TreeView
 FileListClose,Close
+
+FileListNotFoundPathPrefix,[ ! not found ! ] 
+FileListExcludesPathPrefix,[Excludes] 
+FileListReferencesPathPrefix,[Referenced] 
+
+FileListCategoryNotFound,Not Found Files
+FileListCategoryExcludes,Exclude Files (Do not export)
+FileListCategoryReferences,Referenced Files (Export target) 
+
+FileListTooltipReferencedBy,Referenced by
+
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.

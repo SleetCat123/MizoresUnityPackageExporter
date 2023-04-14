@@ -13,6 +13,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
+        public FileListNode GetNode( int id ) {
+            return table_id_node[id];
+        }
         public bool viewFullPath;
         public bool hierarchyView;
 
@@ -80,6 +83,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         private void AddChildrenRecursive( FileListNode node, TreeViewItem item, IList<TreeViewItem> rows ) {
             foreach ( var child in node.childrenTable.Values ) {
                 int id = table_node_id[child];
+                bool hierarchyView = this.hierarchyView;
+                if ( child.type == NodeType.NotFound && child.path != ExporterConsts.PATH_PREFIX_NOTFOUND ) {
+                    hierarchyView = false;
+                }
                 if ( hierarchyView ) {
                     var childItem = new TreeViewItem { id = id, displayName = child.path };
                     item.AddChild( childItem );
@@ -144,12 +151,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             var node = table_id_node[args.item.id];
             Texture icon;
             bool isRoot = node.parent == _root;
-            string errorLabel = null;
+            string subLabel = null;
+            Color subLabelColor = Color.white;
             if ( isRoot ) {
                 icon = IconCache.UnityLogoIcon;
+            } else if ( path[0] == '[' ) {
+                icon = node.icon;
+                switch ( path ) {
+                    case ExporterConsts.PATH_PREFIX_NOTFOUND:
+                        path = ExporterTexts.t_FileListCategoryNotFound;
+                        break;
+                    case ExporterConsts.PATH_PREFIX_REFERENCED:
+                        path = ExporterTexts.t_FileListCategoryReferences;
+                        break;
+                    case ExporterConsts.PATH_PREFIX_EXCLUDES:
+                        path = ExporterTexts.t_FileListCategoryExcludes;
+                        break;
+                }
             } else {
-                var result = ExporterUtils.TryGetIcon( path, out icon );
-                switch ( result ) {
+                icon = node.icon;
+                switch ( node.iconResult ) {
                     case ExporterUtils.GetIconResult.ExistsFile:
                         break;
                     case ExporterUtils.GetIconResult.ExistsFolder:
@@ -158,16 +179,35 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                     default:
                     case ExporterUtils.GetIconResult.NotExistsFile:
                     case ExporterUtils.GetIconResult.NotExistsFolder:
-                        errorLabel = ExporterTexts.t_ExportLogNotFoundPathPrefix;
                         GUI.contentColor = temp_contentColor + ( Color.red * 0.2f );
                         break;
                 }
+                switch ( node.type ) {
+                    case NodeType.NotFound:
+                        subLabel = ExporterTexts.t_FileListNotFoundPathPrefix;
+                        subLabelColor = new Color( 1, 0.25f, 0.25f );
+                        break;
+                    case NodeType.Excludes:
+                        if ( node.ChildCount == 0 ) {
+                            subLabel = ExporterTexts.t_FileListExcludesPathPrefix;
+                        }
+                        break;
+                    case NodeType.References:
+                        if ( node.args != null && node.args.Count != 0 ) {
+                            subLabel = ExporterTexts.t_FileListReferencesPathPrefix;
+                        }
+                        break;
+                }
             }
+
             Rect iconRect = args.rowRect;
             iconRect.x += GetContentIndent( args.item );
             iconRect.y += ICON_MARGIN_HALF;
             iconRect.width = rowHeight - ICON_MARGIN;
             iconRect.height -= ICON_MARGIN;
+            if ( icon == null ) {
+                icon = IconCache.HelpIcon;
+            }
             GUI.DrawTexture( iconRect, icon );
 
             Rect spaceRect = args.rowRect;
@@ -175,15 +215,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             spaceRect.width = iconRect.width + 2;
 
             Rect labelRect1 = spaceRect;
-            if ( errorLabel != null ) {
+            if ( subLabel != null ) {
                 var c = GUI.contentColor;
-                GUI.contentColor = new Color( 1, 0.25f, 0.25f );
-                labelRect1 = DrawLabel( labelRect1, errorLabel, _boldStyle );
+                GUI.contentColor = subLabelColor;
+                labelRect1 = DrawLabel( labelRect1, subLabel, _boldStyle );
                 GUI.contentColor = c;
             }
 
             Rect labelRect2 = labelRect1;
-            if ( viewFullPath || isRoot || args.selected || errorLabel != null ) {
+            if ( viewFullPath || isRoot || args.selected || node.type == NodeType.NotFound ) {
                 var c = GUI.contentColor;
                 if ( !isRoot ) {
                     GUI.contentColor = GUI.contentColor * 0.9f;
@@ -191,8 +231,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 var directoryName = Path.GetDirectoryName( path );
                 if ( directoryName.Length != 0 ) {
                     directoryName = directoryName + "\\";
+                    labelRect2 = DrawLabel( labelRect2, directoryName, _style );
                 }
-                labelRect2 = DrawLabel( labelRect2, directoryName, _style );
                 GUI.contentColor = c;
             }
 

@@ -46,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_OBJECT,
-                string.Format( ExporterTexts.t_FoldoutObjects, objects_count.GetRangeString( ) ),
+                new GUIContent( string.Format( ExporterTexts.t_FoldoutObjects, objects_count.GetRangeString( ) ), ExporterTexts.t_FoldoutObjectsTooltip ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.objects, objectReferences ),
@@ -66,7 +66,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_REFERENCES,
-                string.Format( ExporterTexts.t_FoldoutReferences, references_count.GetRangeString( ) ),
+                new GUIContent( string.Format( ExporterTexts.t_FoldoutReferences, references_count.GetRangeString( ) ), ExporterTexts.t_FoldoutReferencesTooltip ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.references, objectReferences ),
