@@ -48,14 +48,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     var rect = EditorGUILayout.GetControlRect( );
                     var labelRect = rect;
                     var iconSize = 16;
-                    if ( i == 0 && logIcon != null ) {
-                        var iconRect = rect;
-                        iconRect.width = 16;
-                        iconRect.height = 16;
-                        GUI.DrawTexture( iconRect, logIcon );
+                    if ( logIcon != null ) {
+                        if ( i == 0 ) {
+                            var iconRect = rect;
+                            iconRect.width = 16;
+                            iconRect.height = 16;
+                            GUI.DrawTexture( iconRect, logIcon );
+                        }
+                        labelRect.x += iconSize;
+                        labelRect.width -= iconSize;
                     }
-                    labelRect.x += iconSize;
-                    labelRect.width -= iconSize;
                     EditorGUI.LabelField( labelRect, new GUIContent( texts[i], icon ) );
                 }
 #endif
