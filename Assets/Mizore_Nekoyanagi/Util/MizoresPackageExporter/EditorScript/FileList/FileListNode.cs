@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine;
 #endif
+using UnityEngine;
 
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
