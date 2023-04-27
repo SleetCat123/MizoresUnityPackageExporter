@@ -50,15 +50,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
 
         #region PackageName
-        public VersionSource versionSource;
-        public PackagePrefsElement versionFile;
-        public string versionString;
-        public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
-        public string packageName = $"{Const_Keys.KEY_NAME}{Const_Keys.KEY_FORMATTED_VERSION}";
+        /// <summary>互換性のため残しておく。今後はpackageNameSettings.versionFileを使用</summary>
+        [System.Obsolete, SerializeField]
+        PackagePrefsElement versionFile;
+
+        /// <summary>互換性のため残しておく。今後はpackageNameSettings.versionFormatを使用</summary>
+        [System.Obsolete, SerializeField]
+        string versionFormat = null;
+
+        /// <summary>互換性のため残しておく。今後はpackageNameSettings.packageNameを使用</summary>
+        [System.Obsolete, SerializeField]
+        string packageName = null;
+
+        public PackageNameSettings packageNameSettings = new PackageNameSettings( );
 
         public string PackageName {
             get {
-                return ConvertDynamicPath( packageName );
+                return ConvertDynamicPath( packageNameSettings.packageName );
             }
         }
         public string ExportFileName {
@@ -117,7 +125,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 if ( string.IsNullOrWhiteSpace( ExportVersion ) ) {
                     return string.Empty;
                 } else {
-                    return ConvertDynamicPath( versionFormat );
+                    return ConvertDynamicPath( packageNameSettings.versionFormat );
                 }
             }
         }
@@ -125,15 +133,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public void UpdateExportVersion( ) {
 #if UNITY_EDITOR
             lastUpdate_ExportVersion = EditorApplication.timeSinceStartup;
-            if ( versionSource == VersionSource.String ) {
-                _exportVersion = versionString;
+            if ( packageNameSettings.versionSource == VersionSource.String ) {
+                _exportVersion = packageNameSettings.versionString;
                 return;
             }
-            if ( versionFile == null || string.IsNullOrEmpty( versionFile.Path ) ) {
+            if ( packageNameSettings.versionFile == null || string.IsNullOrEmpty( packageNameSettings.versionFile.Path ) ) {
                 _exportVersion = string.Empty;
             } else {
                 try {
-                    string path = versionFile.Path;
+                    string path = packageNameSettings.versionFile.Path;
                     using ( StreamReader sr = new StreamReader( path ) ) {
                         string ext = Path.GetExtension( path );
                         if ( ext == ".json" ) {
@@ -159,26 +167,60 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
 
-        public void ConvertToCurrentVersion( bool force = false ) {
+        public bool ConvertToCurrentVersion( bool force = false ) {
             if ( !force && !IsCompatible ) {
                 throw new System.Exception( "互換性のないバージョンで作成されたオブジェクトです。\nThis object is not compatible." );
             }
+
+            bool converted = false;
+            // packageExporterVersion実装前のオブジェクトからの変換
+            switch ( packageExporterVersion ) {
+                case 0:
+                case 1:
+#pragma warning disable 612
+                    if ( versionFile != null && !string.IsNullOrEmpty( versionFile.Path ) ) {
+                        // versionFileの場所変更
+                        ExporterUtils.DebugLog( "Convert: versionFile" );
+                        packageNameSettings.versionSource = VersionSource.File;
+                        packageNameSettings.versionFile = versionFile;
+                        versionFile = null;
+                        converted = true;
+                    }
+                    if ( !string.IsNullOrEmpty( versionFormat ) ) {
+                        // versionFormatの場所変更
+                        ExporterUtils.DebugLog( "Convert: versionFormat" );
+                        packageNameSettings.versionFormat = versionFormat;
+                        versionFormat = null;
+                        converted = true;
+                    }
+                    if ( !string.IsNullOrEmpty( packageName ) ) {
+                        // packageNameの場所変更
+                        ExporterUtils.DebugLog( "Convert: packageName" );
+                        packageNameSettings.packageName = packageName;
+                        packageName = null;
+                        converted = true;
+                    }
+#pragma warning restore 612
+                    break;
+            }
+
             if ( IsCurrentVersion ) {
-                return;
+                return converted;
             }
             if ( force ) {
                 packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
-                return;
+                return converted;
             }
 
             switch ( packageExporterVersion ) {
                 case 0:
-                    // versionSource = VersionSource.File;
+                case 1:
                     break;
             }
 
             Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
             packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
+            return converted;
         }
         #endregion
 
@@ -207,7 +249,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 // 短時間に連続してファイルを読めないようにする
-                if ( CanUpdate( lastUpdate_BatchExportKeys ) ) {
+                if ( CanUpdate( lastUpdate_BatchExportKeys ) || temp_batchExportKeys == null ) {
                     UpdateBatchExportKeys( );
                 }
 #endif
@@ -300,13 +342,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 if ( string.IsNullOrWhiteSpace( ExportVersion ) ) {
                     path = path.Replace( key, string.Empty );
                 } else {
-                    path = path.Replace( key, ConvertDynamicPath_Main( versionFormat, recursiveCount ) );
+                    path = path.Replace( key, ConvertDynamicPath_Main( packageNameSettings.versionFormat, recursiveCount ) );
                 }
             }
 
             key = Const_Keys.KEY_PACKAGE_NAME;
             if ( path.Contains( key ) ) {
-                var str = ConvertDynamicPath_Main( packageName, recursiveCount );
+                var str = ConvertDynamicPath_Main( packageNameSettings.packageName, recursiveCount );
                 // ファイル名に使用できない文字を_に置き換え
                 str = InvalidCharsRegex.Replace( str, "_" );
                 path = path.Replace( key, str );

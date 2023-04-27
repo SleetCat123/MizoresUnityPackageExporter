@@ -240,7 +240,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         }
                     }
                 }
-                if ( item.batchExportMode != BatchExportMode.Disable && !item.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
+                if ( item.batchExportMode != BatchExportMode.Disable && !item.packageNameSettings.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
                     var error = string.Format( ExporterTexts.BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
                     EditorGUILayout.HelpBox( error, MessageType.Error );
                 }

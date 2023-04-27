@@ -4,7 +4,7 @@ FoldoutReferencesTooltip,この項目に指定されているファイル／フ�
 FoldoutExcludeObjects,除外するオブジェクト ({0})
 FoldoutExcludes,除外する場所 ({0})
 FoldoutExcludesPreview,除外する場所のプレビュー
-FoldoutVersion,バージョン設定
+FoldoutPackageName,パッケージ名・バージョン設定
 
 FoldoutBatchExportEnabled,一括エクスポート（有効）
 FoldoutBatchExportDisabled,一括エクスポート

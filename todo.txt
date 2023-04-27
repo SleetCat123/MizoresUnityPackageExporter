@@ -6,3 +6,6 @@ variablesの複数編集対応
 　ScriptableObjectを継承？
 各項目のtooltip
 Readme書く
+filelist上でチェックボックスを使ってエクスポートするpackageを指定できるようにする
+batchexportのpackageごとにバージョンを指定
+条件を満たすunitypackage名を置換する　ファイル指定

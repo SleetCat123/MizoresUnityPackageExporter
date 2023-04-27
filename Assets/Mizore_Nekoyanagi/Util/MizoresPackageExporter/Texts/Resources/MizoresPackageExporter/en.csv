@@ -10,7 +10,7 @@ FoldoutExcludeObjects,Exclude Objects ({0})
 FoldoutDynamicPath,Dynamic Export Path ({0})
 FoldoutDynamicPathPreview,Dynamic Export Path Preview
 FoldoutVariables,Variables ({0})
-FoldoutVersion,Version
+FoldoutPackageName,Package Name / Version
 
 FoldoutBatchExportEnabled,Batch Export (Enable)
 FoldoutBatchExportDisabled,Batch Export

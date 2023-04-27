@@ -79,7 +79,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string FoldoutVariables => Get( "FoldoutVariables" );
         public static string FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
         public static string FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
-        public static string FoldoutVersion => Get( "FoldoutVersion" );
+        public static string FoldoutPackageName => Get( "FoldoutPackageName" );
         public static string Version => Get( "Version" );
         public static string VersionSource => Get( "VersionSource" );
         public static string VersionFormat => Get( "VersionFormat" );

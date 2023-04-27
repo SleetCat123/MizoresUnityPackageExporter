@@ -48,7 +48,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             }
 
             ExporterUtils.SeparateLine( );
-            
+
             // Exporterのファイルバージョンの互換性チェック
             foreach ( var item in targets ) {
                 var exporter = item as MizoresPackageExporter;
@@ -60,9 +60,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     }
                     return;
                 }
-                if ( !exporter.IsCurrentVersion ) {
-                    exporter.ConvertToCurrentVersion( );
-                    EditorUtility.SetDirty( exporter );
+                bool converted = exporter.ConvertToCurrentVersion( );
+                if ( converted ) {
+                    EditorUtility.SetDirty( item );
                 }
             }
 
