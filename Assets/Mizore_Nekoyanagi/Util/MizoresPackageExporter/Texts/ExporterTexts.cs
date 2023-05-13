@@ -96,7 +96,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string ExportLogNotFound => Get( "ExportLogNotFound" );
         public static string ExportLogFailed => Get( "ExportLogFailed" );
         public static string ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
-        public static string ExportLogSuccess => Get( "ExportLogSuccess" );
+        public static string ExportLogSuccess( string path ) => string.Format( Get( "ExportLogSuccess" ), path );
         public static string ExcludesWereEmpty => Get( "ExcludesWereEmpty" );
         public static string CopyTarget => Get( "CopyTarget" );
         public static string CopyTargetWithValue => Get( "CopyTargetWithValue" );

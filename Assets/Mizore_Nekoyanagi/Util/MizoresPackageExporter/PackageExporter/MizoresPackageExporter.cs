@@ -555,7 +555,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
             EditorUtility.RevealInFinder( exportPath );
 
-            logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess );
+            logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess( exportPath ) );
             Debug.Log( exportPath + "をエクスポートしました。" );
 #endif
         }
