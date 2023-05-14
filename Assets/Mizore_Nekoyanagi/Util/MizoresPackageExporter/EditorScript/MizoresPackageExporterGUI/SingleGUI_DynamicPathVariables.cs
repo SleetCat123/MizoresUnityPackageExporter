@@ -42,7 +42,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.ExportVersion );
                 DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.FormattedVersion );
                 DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.PackageName );
-                if ( t.batchExportMode != BatchExportMode.Disable ) {
+                if ( t.batchExportMode != BatchExportMode.Single ) {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
                 }
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, string.Format( ExporterTexts.DateVariableTooltip, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );

@@ -13,9 +13,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const int EDITOR_INDENT = 15;
         public static void Indent( int indent ) {
 #if UNITY_EDITOR
-            for ( int i = 0; i < indent; i++ ) {
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( EDITOR_INDENT ) );
-            }
+            EditorGUILayout.LabelField( string.Empty, GUILayout.Width( EDITOR_INDENT * indent ) );
 #endif
         }
 
@@ -75,9 +73,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
 
-        public static void SeparateLine( ) {
+        public static void SeparateLine( int indent = 0 ) {
 #if UNITY_EDITOR
-            EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+            if ( indent > 0 ) {
+                var rect = EditorGUILayout.GetControlRect( );
+                rect.width -= EDITOR_INDENT * indent;
+                rect.x += EDITOR_INDENT * indent;
+                EditorGUI.LabelField( rect, string.Empty, GUI.skin.horizontalSlider );
+            } else {
+                EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+            }
 #endif
         }
 

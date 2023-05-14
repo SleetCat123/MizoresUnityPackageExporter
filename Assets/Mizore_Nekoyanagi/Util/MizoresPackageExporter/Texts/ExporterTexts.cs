@@ -1,18 +1,17 @@
-﻿#if UNITY_EDITOR
-#endif
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class ExporterTexts
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class ExporterTexts {
+        public const string TEXT_RESOURCES_PATH = "MizoresPackageExporter/";
         public const string DEFAULT_KEY = "en";
         static Dictionary<string, Dictionary<string, string>> _table = new Dictionary<string, Dictionary<string, string>>( );
         static string[] languageList = new string[] { DEFAULT_KEY, "jp" };
         public static string[] LanguageList => languageList;
+        public static string GetTextAssetResourcesPath( string language = DEFAULT_KEY ) {
+            return TEXT_RESOURCES_PATH + language;
+        }
         public static void Clear( ) {
             _table.Clear( );
         }
@@ -26,7 +25,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         static string Get( string language, string key ) {
             Dictionary<string, string> t;
             if ( !_table.TryGetValue( language, out t ) ) {
-                var path = "MizoresPackageExporter/" + language;
+                var path = GetTextAssetResourcesPath( language );
                 ExporterUtils.DebugLog( "LoadText: " + path );
                 var text = Resources.Load<TextAsset>( path );
                 if ( text == null ) {
@@ -79,12 +78,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static string FoldoutVariables => Get( "FoldoutVariables" );
         public static string FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
         public static string FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
-        public static string FoldoutPackageName => Get( "FoldoutPackageName" );
         public static string Version => Get( "Version" );
         public static string VersionSource => Get( "VersionSource" );
         public static string VersionFormat => Get( "VersionFormat" );
         public static string PackageName => Get( "PackageName" );
         public static string LabelExportPackage => Get( "LabelExportPackage" );
+        public static string ButtonAddNameOverride => Get( "ButtonAddNameOverride" );
+        public static string ButtonRemoveNameOverride => Get( "ButtonRemoveNameOverride" );
+        public static string ButtonCleanNameOverride => Get( "ButtonCleanNameOverride" );
+        public static string LogCleanNameOverride => Get( "LogCleanNameOverride" );
         public static string ButtonCheck => Get( "ButtonCheck" );
         public static string ButtonExportPackage => Get( "ButtonExportPackage" );
         public static string ButtonExportPackages => Get( "ButtonExportPackages" );

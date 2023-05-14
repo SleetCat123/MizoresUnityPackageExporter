@@ -65,16 +65,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         //    set => EditorPrefsCache.SetBool( FOLDOUT_VARIABLES, value );
         //}
 
-        public const string FOLDOUT_BATCHEXPORT = PREFIX + "Foldout_BatchExport";
+        public const string FOLDOUT_EXPORT_SETTING = PREFIX + "Foldout_ExportSetting";
         //public static bool FoldoutBatchExport {
         //    get => EditorPrefsCache.GetBool( FOLDOUT_BATCHEXPORT, true );
         //    set => EditorPrefsCache.SetBool( FOLDOUT_BATCHEXPORT, value );
-        //}
-
-        public const string FOLDOUT_PACKAGE_NAME = PREFIX + "Foldout_PackageName";
-        //public static bool FoldoutPackageName {
-        //    get => EditorPrefsCache.GetBool( FOLDOUT_PACKAGE_NAME, true );
-        //    set => EditorPrefsCache.SetBool( FOLDOUT_PACKAGE_NAME, value );
         //}
 
         private const string FILELIST_TREEVIEW_FULLPATH = PREFIX + "FileList_FullPath";

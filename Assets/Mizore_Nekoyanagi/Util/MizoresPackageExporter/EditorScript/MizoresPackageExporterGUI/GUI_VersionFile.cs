@@ -10,12 +10,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 #if UNITY_EDITOR
     public static class GUI_VersionFile
     {
-        static void DrawMain( PackageNameSettings[] settings, MizoresPackageExporter[] targetlist ) {
+        public static void DrawMain( PackageNameSettings[] settings, MizoresPackageExporter[] targetlist, int indent ) {
             var t = targetlist[0];
             var s = settings[0];
             var same_versionSource_valueInAllObj = settings.All( v => s.versionSource == v.versionSource );
             using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
+                ExporterUtils.Indent( indent );
                 EditorGUI.BeginChangeCheck( );
                 VersionSource versionSource;
 
@@ -33,7 +33,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             }
             if ( same_versionSource_valueInAllObj ) {
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
+                    ExporterUtils.Indent( indent );
                     switch ( s.versionSource ) {
                         case VersionSource.String: {
                             var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
@@ -79,7 +79,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 
             // Version Format
             using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
+                ExporterUtils.Indent( indent );
                 var samevalue_in_all = settings.All( v => s.versionFormat == v.versionFormat );
                 EditorGUI.BeginChangeCheck( );
                 string value;
@@ -100,7 +100,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 
             // Package Name
             using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
+                ExporterUtils.Indent( indent );
                 var samevalue_in_all = settings.All( v => s.packageName == v.packageName );
                 EditorGUI.BeginChangeCheck( );
                 string value;
@@ -119,12 +119,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         EditorUtility.SetDirty( targetlist[i] );
                     }
                 }
-            }
-        }
-        public static void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
-            if ( ExporterUtils.EditorPrefFoldout(
-                ExporterEditorPrefs.FOLDOUT_PACKAGE_NAME, ExporterTexts.FoldoutPackageName ) ) {
-                DrawMain( targetlist.Select( v => v.packageNameSettings ).ToArray( ), targetlist );
             }
         }
     }

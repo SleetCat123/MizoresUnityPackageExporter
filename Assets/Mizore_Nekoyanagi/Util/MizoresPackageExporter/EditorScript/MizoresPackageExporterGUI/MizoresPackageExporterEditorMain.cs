@@ -94,21 +94,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             }
             // ↑ Exclude Objects
 
-            // ↓ Excludes
             GUI_Excludes.Draw( ed, t, targetlist );
-            // ↑ Excludes
 
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
-                // ↓ Dynamic Path Variables
                 SingleGUI_DynamicPathVariables.Draw( ed, t );
-                // ↑ Dynamic Path Variables
             }
-
-            // ↓ Version File
-            ExporterUtils.SeparateLine( );
-            GUI_VersionFile.Draw( t, targetlist );
-            // ↑ Version File
 
             ExporterUtils.SeparateLine( );
             GUI_BatchExporter.Draw( ed, t, targetlist );

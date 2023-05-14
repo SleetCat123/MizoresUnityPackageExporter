@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
-    public static class GUI_BatchExporter
-    {
+    public static class GUI_BatchExporter {
+        static MizoresPackageExporter selected;
+        static string selectedKey;
         static void Main( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, bool samevalue_in_all_mode ) {
             bool multiple = targetlist.Length > 1;
 
@@ -17,7 +17,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             EditorGUI.showMixedValue = !samevalue_in_all_mode;
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 ExporterUtils.Indent( 1 );
-                t.batchExportMode = (BatchExportMode)EditorGUILayout.EnumPopup( ExporterTexts.BatchExportMode, t.batchExportMode );
+                t.batchExportMode = ( BatchExportMode )EditorGUILayout.EnumPopup( ExporterTexts.BatchExportMode, t.batchExportMode );
             }
             EditorGUI.showMixedValue = false;
             if ( EditorGUI.EndChangeCheck( ) ) {
@@ -32,7 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             if ( samevalue_in_all_mode ) {
                 switch ( t.batchExportMode ) {
                     default:
-                    case BatchExportMode.Disable:
+                    case BatchExportMode.Single:
                         break;
                     case BatchExportMode.Texts: {
                         var texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
@@ -178,11 +178,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
             }
         }
-        static void Preview( MizoresPackageExporter[] targetlist ) {
+        static void DrawList( MizoresPackageExporter[] targetlist ) {
             bool multiple = targetlist.Length > 1;
             bool first = true;
             foreach ( var item in targetlist ) {
-                if ( item.batchExportMode == BatchExportMode.Disable ) {
+                if ( item.batchExportMode == BatchExportMode.Single ) {
                     continue;
                 }
                 if ( first == false ) {
@@ -199,15 +199,71 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
                 var list = item.BatchExportKeysConverted;
                 for ( int i = 0; i < list.Length; i++ ) {
+                    string key = list[i];
+                    bool isSelected = false;
+                    int indent = 1;
+                    bool hasOverride = item.packageNameSettingsOverride.ContainsKey( key );
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         if ( multiple ) {
-                            ExporterUtils.Indent( 2 );
-                        } else {
-                            ExporterUtils.Indent( 1 );
+                            indent = 2;
                         }
-                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
-                        EditorGUILayout.LabelField( list[i] );
+                        ExporterUtils.Indent( indent );
+                        Rect rect = EditorGUILayout.GetControlRect( );
+                        var label = i.ToString( ) + "   " + key;
+                        GUIStyle style;
+                        if ( hasOverride ) {
+                            style = EditorStyles.foldoutHeader;
+                        } else {
+                            style = EditorStyles.label;
+                        }
+                        isSelected = selected == item && selectedKey == key;
+                        bool foldout = EditorGUI.BeginFoldoutHeaderGroup( rect, isSelected, label, style );
+                        string buttonLabel;
+                        if ( hasOverride ) {
+                            buttonLabel = ExporterTexts.ButtonRemoveNameOverride;
+                        } else {
+                            buttonLabel = ExporterTexts.ButtonAddNameOverride;
+                        }
+                        if ( GUILayout.Button( buttonLabel, GUILayout.Width( 120 ) ) ) {
+                            if ( hasOverride ) {
+                                foldout = false;
+                                item.packageNameSettingsOverride.Remove( key );
+                                hasOverride = false;
+                            } else {
+                                foldout = true;
+                                var settings = new PackageNameSettings( );
+                                item.packageNameSettingsOverride.Add( key, settings );
+                                hasOverride = true;
+                            }
+                        }
+                        if ( foldout && hasOverride ) {
+                            selected = item;
+                            selectedKey = key;
+                            isSelected = true;
+                        } else if ( isSelected ) {
+                            selected = null;
+                            selectedKey = null;
+                            isSelected = false;
+                        }
+                        EditorGUI.EndFoldoutHeaderGroup( );
                     }
+                    if ( isSelected && hasOverride ) {
+                        GUI_VersionFile.DrawMain( new PackageNameSettings[] { item.packageNameSettingsOverride[key] }, new MizoresPackageExporter[] { item }, indent + 1 );
+                    }
+                }
+
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
+                    EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
+                    if ( GUILayout.Button( ExporterTexts.ButtonCleanNameOverride ) ) {
+                        foreach ( var remove in unusedOverrides ) {
+                            Debug.Log( "Override Removed: \n" + remove );
+                            item.packageNameSettingsOverride.Remove( remove );
+                        }
+                        Debug.LogFormat( ExporterTexts.LogCleanNameOverride, unusedOverrides.Count( ) );
+                    }
+                    EditorGUI.EndDisabledGroup( );
                 }
             }
         }
@@ -215,7 +271,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             var samevalue_in_all_mode = targetlist.All( v => t.batchExportMode == v.batchExportMode );
             string foldoutLabel;
             if ( samevalue_in_all_mode ) {
-                if ( t.batchExportMode == BatchExportMode.Disable ) {
+                if ( t.batchExportMode == BatchExportMode.Single ) {
                     foldoutLabel = ExporterTexts.FoldoutBatchExportDisabled;
                 } else {
                     foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
@@ -224,9 +280,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
             }
             if ( ExporterUtils.EditorPrefFoldout(
-    ExporterEditorPrefs.FOLDOUT_BATCHEXPORT, foldoutLabel ) ) {
+    ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
                 Main( t, targetlist, samevalue_in_all_mode );
-                Preview( targetlist );
+
+                EditorGUILayout.Separator( );
+                GUI_VersionFile.DrawMain( targetlist.Select( v => v.packageNameSettings ).ToArray( ), targetlist, 1 );
+
+                if ( t.batchExportMode != BatchExportMode.Single ) {
+                    ExporterUtils.SeparateLine( 1 );
+                }
+                DrawList( targetlist );
             }
 
             foreach ( var item in targetlist ) {
@@ -240,7 +303,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         }
                     }
                 }
-                if ( item.batchExportMode != BatchExportMode.Disable && !item.packageNameSettings.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
+                if ( item.batchExportMode != BatchExportMode.Single && !item.packageNameSettings.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
                     var error = string.Format( ExporterTexts.BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
                     EditorGUILayout.HelpBox( error, MessageType.Error );
                 }

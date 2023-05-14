@@ -4,13 +4,11 @@ using System.Linq;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
     [CustomEditor( typeof( MizoresPackageExporter ) ), CanEditMultipleObjects]
-    public class MizoresPackageExporterEditor : Editor
-    {
+    public class MizoresPackageExporterEditor : Editor {
         public ExporterEditorLogs logs = new ExporterEditorLogs( );
         public string _variableKeyTemp = string.Empty;
         public MizoresPackageExporter t;
@@ -26,6 +24,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 ExporterEditorPrefs.DebugMode = debugmode;
             }
 
+            if ( debugmode ) {
+                EditorGUI.BeginDisabledGroup( true );
+                EditorGUILayout.ObjectField( MonoScript.FromScriptableObject( t ), typeof( MonoScript ), false );
+                EditorGUI.EndDisabledGroup( );
+            }
+
             ExporterUtils.SeparateLine( );
 
             // 言語選択
@@ -37,9 +41,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             }
             using ( new GUILayout.HorizontalScope( ) ) {
                 languageIndex = EditorGUILayout.Popup( "Language", languageIndex, ExporterTexts.LanguageList );
-                if ( ExporterEditorPrefs.DebugMode ) {
+                if ( debugmode ) {
                     if ( GUILayout.Button( "Reload", GUILayout.Width( 60 ) ) ) {
                         ExporterTexts.Clear( );
+                    }
+                    if ( GUILayout.Button( "Open", GUILayout.Width( 50 ) ) ) {
+                        var text = Resources.Load<TextAsset>( ExporterTexts.GetTextAssetResourcesPath( ) );
+                        EditorUtility.RevealInFinder( AssetDatabase.GetAssetPath( text ) );
                     }
                 }
             }

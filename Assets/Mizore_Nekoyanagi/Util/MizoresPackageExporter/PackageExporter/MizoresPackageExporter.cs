@@ -21,6 +21,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         {
             public string version;
         }
+        [System.Serializable]
+        private class PackageNameSettingsKVP
+        {
+            public string key;
+            public PackageNameSettings value;
+
+            public PackageNameSettingsKVP( string key, PackageNameSettings value ) {
+                this.key = key;
+                this.value = value;
+            }
+        }
 
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
         [SerializeField]
@@ -64,6 +75,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public PackageNameSettings packageNameSettings = new PackageNameSettings( );
 
+        [SerializeField]
+        PackageNameSettingsKVP[] s_packageNameSettingsOverride;
+        [System.NonSerialized]
+        public Dictionary<string, PackageNameSettings> packageNameSettingsOverride = new Dictionary<string, PackageNameSettings>( );
+
         public string PackageName {
             get {
                 return ConvertDynamicPath( packageNameSettings.packageName );
@@ -80,7 +96,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public string[] GetAllExportFileName( ) {
-            if ( batchExportMode == BatchExportMode.Disable ) {
+            if ( batchExportMode == BatchExportMode.Single ) {
                 temp_batchExportCurrentKey = string.Empty;
                 return new string[] { ExportFileName };
             }
@@ -262,7 +278,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
             switch ( batchExportMode ) {
                 default:
-                case BatchExportMode.Disable:
+                case BatchExportMode.Single:
                     temp_batchExportKeys = new string[0];
                     break;
                 case BatchExportMode.Texts:
@@ -382,7 +398,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
             var result = new Dictionary<string, FilePathList>( );
-            if ( batchExportMode == BatchExportMode.Disable ) {
+            if ( batchExportMode == BatchExportMode.Single ) {
                 temp_batchExportCurrentKey = string.Empty;
                 result.Add( ExportPath, GetAllPath( ) );
                 return result;
@@ -576,11 +592,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public void OnBeforeSerialize( ) {
             s_variables = variables.Select( kvp => new DynamicPathVariable( kvp.Key, kvp.Value ) ).ToArray( );
+            s_packageNameSettingsOverride = packageNameSettingsOverride.Select( kvp => new PackageNameSettingsKVP( kvp.Key, kvp.Value ) ).ToArray( );
         }
 
         public void OnAfterDeserialize( ) {
             if ( s_variables != null ) {
                 variables = s_variables.ToDictionary( v => v.key, v => v.value );
+            }
+            if ( s_packageNameSettingsOverride != null ) {
+                packageNameSettingsOverride = s_packageNameSettingsOverride.ToDictionary( v => v.key, v => v.value );
             }
         }
 
