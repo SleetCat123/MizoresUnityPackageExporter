@@ -27,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDES,
-                string.Format( ExporterTexts.FoldoutExcludes, minmax_count.GetRangeString( ) ),
+                ExporterTexts.FoldoutExcludes( minmax_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),
@@ -102,15 +102,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             // Copy
                             if ( samevalue_in_all_type && samevalue_in_all_value ) {
                                 var item = t.excludes[i];
-                                string label = string.Format( ExporterTexts.CopyTargetWithValue, item.GetType( ).Name, i.ToString( ) );
+                                string label = ExporterTexts.CopyTargetWithValue( item.GetType( ).Name, i );
                                 menu.AddItem( new GUIContent( label ), false, CopyCache.Copy, item );
                             } else {
-                                menu.AddDisabledItem( new GUIContent( ExporterTexts.CopyTargetWithValue ) );
+                                menu.AddDisabledItem( new GUIContent( ExporterTexts.CopyTargetNoValue ) );
                             }
                             // Paste
                             if ( CopyCache.CanPaste<SearchPath>( ) ) {
                                 var item = t.excludes[i];
-                                string label = string.Format( ExporterTexts.PasteTargetWithValue, item.GetType( ).Name, item.ToString( ) );
+                                string label = ExporterTexts.PasteTargetWithValue( item.GetType( ).Name, item.ToString( ) );
                                 int index = i;
                                 menu.AddItem( new GUIContent( label ), false, ( ) => {
                                     var paste = CopyCache.GetCache<SearchPath>( );

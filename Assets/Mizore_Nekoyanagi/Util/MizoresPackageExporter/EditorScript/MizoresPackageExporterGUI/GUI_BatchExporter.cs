@@ -261,7 +261,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             Debug.Log( "Override Removed: \n" + remove );
                             item.packageNameSettingsOverride.Remove( remove );
                         }
-                        Debug.LogFormat( ExporterTexts.LogCleanNameOverride, unusedOverrides.Count( ) );
+                        Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
                     }
                     EditorGUI.EndDisabledGroup( );
                 }
@@ -298,13 +298,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         Regex.Match( string.Empty, item.batchExportFolderRegex );
                     } catch ( System.ArgumentException e ) {
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            var error = string.Format( ExporterTexts.BatchExportRegexError, item.name, e.Message );
+                            var error = ExporterTexts.BatchExportRegexError( item.name, e.Message );
                             EditorGUILayout.HelpBox( error, MessageType.Error );
                         }
                     }
                 }
                 if ( item.batchExportMode != BatchExportMode.Single && !item.packageNameSettings.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
-                    var error = string.Format( ExporterTexts.BatchExportNoTagError, item.name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
+                    var error = ExporterTexts.BatchExportNoTagError( item.name );
                     EditorGUILayout.HelpBox( error, MessageType.Error );
                 }
             }

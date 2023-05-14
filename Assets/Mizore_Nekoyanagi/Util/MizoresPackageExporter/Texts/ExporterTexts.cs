@@ -15,14 +15,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static void Clear( ) {
             _table.Clear( );
         }
+        static string Get( string key, params object[] args ) {
+            return string.Format( key, args );
+        }
         static string Get( string key ) {
 #if UNITY_EDITOR
-            return Get( ExporterEditorPrefs.Language, key );
+            return GetFromLanguage( ExporterEditorPrefs.Language, key );
 #else
-            return Get( DEFAULT_KEY, key );
+            return GetFromLanguage( DEFAULT_KEY, key );
 #endif
         }
-        static string Get( string language, string key ) {
+        static string GetFromLanguage( string language, string key ) {
             Dictionary<string, string> t;
             if ( !_table.TryGetValue( language, out t ) ) {
                 var path = GetTextAssetResourcesPath( language );
@@ -51,7 +54,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( t != null && t.TryGetValue( key, out result ) ) {
                 return result;
             } else if ( language != DEFAULT_KEY ) {
-                return Get( DEFAULT_KEY, key );
+                return GetFromLanguage( DEFAULT_KEY, key );
             } else {
                 return "[NotFound: " + key + "]";
             }
@@ -59,23 +62,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string Undo => Get( "Undo" );
         public static string BatchExportRegex => Get( "BatchExportRegex" );
-        public static string BatchExportRegexError => Get( "BatchExportRegexError" );
+        public static string BatchExportRegexError( string name, string message ) => Get( "BatchExportRegexError", name, message );
         public static string BatchExportMode => Get( "BatchExportMode" );
-        public static string BatchExportNoTagError => Get( "BatchExportNoTagError" );
+        public static string BatchExportNoTagError( string name ) => Get( "BatchExportNoTagError", name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
         public static string BatchVariableTooltip => Get( "BatchVariableTooltip" );
 
-        public static string DateVariableTooltip => Get( "DateVariableTooltip" );
+        public static string DateVariableTooltip( string example ) => Get( "DateVariableTooltip", example );
 
-        public static string FoldoutObjects => Get( "FoldoutObjects" );
+        public static string FoldoutObjects( string range ) => Get( "FoldoutObjects", range );
         public static string FoldoutObjectsTooltip => Get( "FoldoutObjectsTooltip" );
-        public static string FoldoutReferences => Get( "FoldoutReferences" );
+        public static string FoldoutReferences( string range ) => Get( "FoldoutReferences", range );
         public static string FoldoutReferencesTooltip => Get( "FoldoutReferencesTooltip" );
-        public static string FoldoutExcludes => Get( "FoldoutExcludes" );
+        public static string FoldoutExcludes( string range ) => Get( "FoldoutExcludes", range );
         public static string FoldoutExcludesPreview => Get( "FoldoutExcludesPreview" );
-        public static string FoldoutExcludeObjects => Get( "FoldoutExcludeObjects" );
-        public static string FoldoutDynamicPath => Get( "FoldoutDynamicPath" );
+        public static string FoldoutExcludeObjects( string range ) => Get( "FoldoutExcludeObjects", range );
+        public static string FoldoutDynamicPath( string range ) => Get( "FoldoutDynamicPath", range );
         public static string FoldoutDynamicPathPreview => Get( "FoldoutDynamicPathPreview" );
-        public static string FoldoutVariables => Get( "FoldoutVariables" );
+        public static string FoldoutVariables( string range ) => Get( "FoldoutVariables", range );
         public static string FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
         public static string FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
         public static string Version => Get( "Version" );
@@ -86,7 +89,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ButtonAddNameOverride => Get( "ButtonAddNameOverride" );
         public static string ButtonRemoveNameOverride => Get( "ButtonRemoveNameOverride" );
         public static string ButtonCleanNameOverride => Get( "ButtonCleanNameOverride" );
-        public static string LogCleanNameOverride => Get( "LogCleanNameOverride" );
+        public static string LogCleanNameOverride( int count ) => Get( "LogCleanNameOverride", count );
         public static string ButtonCheck => Get( "ButtonCheck" );
         public static string ButtonExportPackage => Get( "ButtonExportPackage" );
         public static string ButtonExportPackages => Get( "ButtonExportPackages" );
@@ -95,18 +98,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string DiffTooltip => Get( "DiffTooltip" );
         public static string ButtonFolder => Get( "ButtonFolder" );
         public static string ButtonFile => Get( "ButtonFile" );
-        public static string ExportLogNotFound => Get( "ExportLogNotFound" );
-        public static string ExportLogFailed => Get( "ExportLogFailed" );
+        public static string ExportLogNotFound( string path ) => Get( "ExportLogNotFound", path );
+        public static string ExportLogFailed( string path ) => Get( "ExportLogFailed", path );
         public static string ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
-        public static string ExportLogSuccess( string path ) => string.Format( Get( "ExportLogSuccess" ), path );
+        public static string ExportLogSuccess( string path ) => Get( "ExportLogSuccess", path );
         public static string ExcludesWereEmpty => Get( "ExcludesWereEmpty" );
-        public static string CopyTarget => Get( "CopyTarget" );
-        public static string CopyTargetWithValue => Get( "CopyTargetWithValue" );
+        public static string CopyTarget( string text ) => Get( "CopyTarget", text );
+        public static string CopyTargetWithValue( string type, int index ) => Get( "CopyTargetWithValue", type, index );
         public static string CopyTargetNoValue => Get( "CopyTargetNoValue" );
-        public static string PasteTarget => Get( "PasteTarget" );
-        public static string PasteTargetWithValue => Get( "PasteTargetWithValue" );
+        public static string PasteTarget( string text ) => Get( "PasteTarget", text );
+        public static string PasteTargetWithValue( string type, string text ) => Get( "PasteTargetWithValue", type, text );
         public static string PasteTargetNoValue => Get( "PasteTargetNoValue" );
-        public static string IncompatibleVersion => Get( "IncompatibleVersion" );
+        public static string IncompatibleVersion( string name ) => Get( "IncompatibleVersion", name );
         public static string IncompatibleVersionForceOpen => Get( "IncompatibleVersionForceOpen" );
         public static string FileListViewFullPath => Get( "FileListViewFullPath" );
         public static string FileListTreeView => Get( "FileListTreeView" );

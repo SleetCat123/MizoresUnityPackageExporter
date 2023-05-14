@@ -29,7 +29,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_DYNAMICPATH,
-                string.Format( ExporterTexts.FoldoutDynamicPath, dpath_count.GetRangeString( ) ),
+                ExporterTexts.FoldoutDynamicPath( dpath_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),

@@ -46,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_OBJECT,
-                new GUIContent( string.Format( ExporterTexts.FoldoutObjects, objects_count.GetRangeString( ) ), ExporterTexts.FoldoutObjectsTooltip ),
+                new GUIContent( ExporterTexts.FoldoutObjects( objects_count.GetRangeString( ) ), ExporterTexts.FoldoutObjectsTooltip ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.objects, objectReferences ),
@@ -66,7 +66,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_REFERENCES,
-                new GUIContent( string.Format( ExporterTexts.FoldoutReferences, references_count.GetRangeString( ) ), ExporterTexts.FoldoutReferencesTooltip ),
+                new GUIContent( ExporterTexts.FoldoutReferences( references_count.GetRangeString( ) ), ExporterTexts.FoldoutReferencesTooltip ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.references, objectReferences ),
@@ -83,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDE_OBJECTS,
-                string.Format( ExporterTexts.FoldoutExcludeObjects, excludeObjects_count.GetRangeString( ) ),
+                ExporterTexts.FoldoutExcludeObjects( excludeObjects_count.GetRangeString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => objects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludeObjects, objectReferences ),

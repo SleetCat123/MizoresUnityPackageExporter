@@ -517,7 +517,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 var path = list_full[i];
                 if ( Path.GetExtension( path ).Length != 0 ) {
                     if ( File.Exists( path ) == false ) {
-                        var text = string.Format( ExporterTexts.ExportLogNotFound, path );
+                        var text = ExporterTexts.ExportLogNotFound( path );
                         logs.Add( ExporterEditorLogs.LogType.Error, text );
                         Debug.LogError( text );
                         result = false;
@@ -525,7 +525,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         list_full[i] = ExporterTexts.FileListNotFoundPathPrefix + path;
                     }
                 } else if ( Directory.Exists( path ) == false ) {
-                    var text = string.Format( ExporterTexts.ExportLogNotFound, path );
+                    var text = ExporterTexts.ExportLogNotFound( path );
                     logs.Add( ExporterEditorLogs.LogType.Error, text );
                     Debug.LogError( text );
                     result = false;
@@ -558,7 +558,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs, list );
             if ( exists == false ) {
-                string failedText = string.Format( ExporterTexts.ExportLogFailed, exportPath );
+                string failedText = ExporterTexts.ExportLogFailed( exportPath );
                 Debug.LogError( failedText );
                 logs.Add( ExporterEditorLogs.LogType.Error, failedText );
                 return;

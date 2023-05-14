@@ -4,10 +4,8 @@ using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_K
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
-    public static class SingleGUI_DynamicPathVariables
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
+    public static class SingleGUI_DynamicPathVariables {
         const int SPACE_WIDTH = 30;
         const int BUTTON_WIDTH = 15;
         static void DrawBuiltInVariable( string key, string value ) {
@@ -33,7 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_VARIABLES,
-                string.Format( ExporterTexts.FoldoutVariables, t.variables.Count )
+                ExporterTexts.FoldoutVariables( t.variables.Count.ToString( ) )
                 ) ) {
                 var space_width = GUILayout.Width( SPACE_WIDTH );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
@@ -45,7 +43,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 if ( t.batchExportMode != BatchExportMode.Single ) {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
                 }
-                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, string.Format( ExporterTexts.DateVariableTooltip, MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
+                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
                 GUI.enabled = true;
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {

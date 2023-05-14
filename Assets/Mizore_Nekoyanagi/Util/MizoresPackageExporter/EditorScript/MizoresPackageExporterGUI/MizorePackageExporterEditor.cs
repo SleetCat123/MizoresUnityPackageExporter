@@ -61,7 +61,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             foreach ( var item in targets ) {
                 var exporter = item as MizoresPackageExporter;
                 if ( !exporter.IsCompatible ) {
-                    EditorGUILayout.HelpBox( string.Format( ExporterTexts.IncompatibleVersion, exporter.name ), MessageType.Error );
+                    EditorGUILayout.HelpBox( ExporterTexts.IncompatibleVersion( exporter.name ), MessageType.Error );
                     if ( GUILayout.Button( ExporterTexts.IncompatibleVersionForceOpen ) ) {
                         // SetDirtyはしない
                         exporter.ConvertToCurrentVersion( force: true );
