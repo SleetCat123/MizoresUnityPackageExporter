@@ -16,7 +16,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             _table.Clear( );
         }
         static string Get( string key, params object[] args ) {
-            return string.Format( key, args );
+            return string.Format( Get( key ), args );
         }
         static string Get( string key ) {
 #if UNITY_EDITOR
