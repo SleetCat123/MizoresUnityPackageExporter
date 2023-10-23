@@ -7,11 +7,9 @@ using System.IO;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
-    public static class GUI_ExportPackage
-    {
+    public static class GUI_ExportPackage {
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             bool multiple = targetlist.Length > 1;
             EditorGUILayout.LabelField( ExporterTexts.LabelExportPackage, EditorStyles.boldLabel );
@@ -62,8 +60,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );
             }
             if ( GUILayout.Button( ExporterTexts.ButtonOpen, GUILayout.Width( 60 ) ) ) {
-                if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath ) ) {
-                    EditorUtility.RevealInFinder( ed.t.ExportPath );
+                if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath( ) ) ) {
+                    EditorUtility.RevealInFinder( ed.t.ExportPath( ) );
                 } else {
                     EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
                 }

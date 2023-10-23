@@ -8,8 +8,6 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
     public static class GUI_BatchExporter {
-        static MizoresPackageExporter selected;
-        static string selectedKey;
         static void Main( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, bool samevalue_in_all_mode ) {
             bool multiple = targetlist.Length > 1;
 
@@ -190,7 +188,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 first = false;
                 if ( multiple ) {
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
                         GUI.enabled = false;
                         ExporterUtils.Indent( 1 );
                         EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
@@ -198,72 +196,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 var list = item.BatchExportKeysConverted;
+                var overrideTable = item.packageNameSettingsOverride;
                 for ( int i = 0; i < list.Length; i++ ) {
                     string key = list[i];
-                    bool isSelected = false;
-                    int indent = 1;
-                    bool hasOverride = item.packageNameSettingsOverride.ContainsKey( key );
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
                         if ( multiple ) {
-                            indent = 2;
-                        }
-                        ExporterUtils.Indent( indent );
-                        Rect rect = EditorGUILayout.GetControlRect( );
-                        var label = i.ToString( ) + "   " + key;
-                        GUIStyle style;
-                        if ( hasOverride ) {
-                            style = EditorStyles.foldoutHeader;
+                            ExporterUtils.Indent( 2 );
                         } else {
-                            style = EditorStyles.label;
+                            ExporterUtils.Indent( 1 );
                         }
-                        isSelected = selected == item && selectedKey == key;
-                        bool foldout = EditorGUI.BeginFoldoutHeaderGroup( rect, isSelected, label, style );
-                        string buttonLabel;
-                        if ( hasOverride ) {
-                            buttonLabel = ExporterTexts.ButtonRemoveNameOverride;
-                        } else {
-                            buttonLabel = ExporterTexts.ButtonAddNameOverride;
+                        EditorGUILayout.LabelField( i.ToString( ) + "   " + key );
+                        PackageNameSettingsObject settings;
+                        overrideTable.TryGetValue( key, out settings );
+                        settings = EditorGUILayout.ObjectField( settings, typeof( PackageNameSettingsObject ), false, GUILayout.Width( 150 ) ) as PackageNameSettingsObject;
+                        if ( settings != null ) {
+                            overrideTable[key] = settings;
+                        } else if ( settings == null && overrideTable.ContainsKey( key ) ) {
+                            overrideTable.Remove( key );
                         }
-                        if ( GUILayout.Button( buttonLabel, GUILayout.Width( 120 ) ) ) {
-                            if ( hasOverride ) {
-                                foldout = false;
-                                item.packageNameSettingsOverride.Remove( key );
-                                hasOverride = false;
-                            } else {
-                                foldout = true;
-                                var settings = new PackageNameSettings( );
-                                item.packageNameSettingsOverride.Add( key, settings );
-                                hasOverride = true;
-                            }
-                        }
-                        if ( foldout && hasOverride ) {
-                            selected = item;
-                            selectedKey = key;
-                            isSelected = true;
-                        } else if ( isSelected ) {
-                            selected = null;
-                            selectedKey = null;
-                            isSelected = false;
-                        }
-                        EditorGUI.EndFoldoutHeaderGroup( );
                     }
-                    if ( isSelected && hasOverride ) {
-                        GUI_VersionFile.DrawMain( new PackageNameSettings[] { item.packageNameSettingsOverride[key] }, new MizoresPackageExporter[] { item }, indent + 1 );
-                    }
-                }
-
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
-                    var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
-                    EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
-                    if ( GUILayout.Button( ExporterTexts.ButtonCleanNameOverride ) ) {
-                        foreach ( var remove in unusedOverrides ) {
-                            Debug.Log( "Override Removed: \n" + remove );
-                            item.packageNameSettingsOverride.Remove( remove );
-                        }
-                        Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
-                    }
-                    EditorGUI.EndDisabledGroup( );
                 }
             }
         }

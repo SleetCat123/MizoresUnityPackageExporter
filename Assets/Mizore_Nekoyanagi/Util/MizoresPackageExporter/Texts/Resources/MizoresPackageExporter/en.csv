@@ -21,8 +21,6 @@ BatchVariableTooltip,[Note] Replaced by Batch Export strings.
 
 DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
 
-ButtonAddNameOverride,Override Settings
-ButtonRemoveNameOverride,Remove Override
 ButtonCleanNameOverride,Clean Unused Overrides
 LogCleanNameOverride,Removed {0} overrides.
 
