@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
-    public static class GUI_VersionFile
-    {
+    public static class GUI_VersionFile {
         public static void DrawMain( PackageNameSettings[] settings, MizoresPackageExporter[] targetlist, int indent ) {
             var t = targetlist[0];
             var s = settings[0];
@@ -20,13 +18,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 VersionSource versionSource;
 
                 EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
-                versionSource = (VersionSource)EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, s.versionSource );
+                versionSource = ( VersionSource )EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, s.versionSource );
                 EditorGUI.showMixedValue = false;
 
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     for ( int i = 0; i < targetlist.Length; i++ ) {
                         settings[i].versionSource = versionSource;
-                        targetlist[i].UpdateExportVersion( );
+                        targetlist[i].CurrentSettings.UpdateExportVersion( );
                         EditorUtility.SetDirty( targetlist[i] );
                     }
                 }
@@ -47,7 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             if ( EditorGUI.EndChangeCheck( ) ) {
                                 for ( int i = 0; i < targetlist.Length; i++ ) {
                                     settings[i].versionString = versionString;
-                                    targetlist[i].UpdateExportVersion( );
+                                    targetlist[i].CurrentSettings.UpdateExportVersion( );
                                     EditorUtility.SetDirty( targetlist[i] );
                                 }
                             }
@@ -67,7 +65,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                                 var obj = s.versionFile.Object;
                                 for ( int i = 0; i < targetlist.Length; i++ ) {
                                     settings[i].versionFile.Object = obj;
-                                    targetlist[i].UpdateExportVersion( );
+                                    targetlist[i].CurrentSettings.UpdateExportVersion( );
                                     EditorUtility.SetDirty( targetlist[i] );
                                 }
                             }
@@ -98,6 +96,29 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 }
             }
 
+            // Batch Format
+            if ( targetlist.Any( v => v.batchExportMode != BatchExportMode.Single ) ) {
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( indent );
+                    var samevalue_in_all = settings.All( v => s.batchFormat == v.batchFormat );
+                    EditorGUI.BeginChangeCheck( );
+                    string value;
+                    if ( !samevalue_in_all ) {
+                        ExporterUtils.DiffLabel( );
+                        EditorGUI.showMixedValue = true;
+                    }
+                    value = EditorGUILayout.TextField( ExporterTexts.BatchFormat, s.batchFormat );
+                    EditorGUI.showMixedValue = false;
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        for ( int i = 0; i < targetlist.Length; i++ ) {
+                            settings[i].batchFormat = value;
+                            // targetlist[i].UpdateExportVersion( );
+                            EditorUtility.SetDirty( targetlist[i] );
+                        }
+                    }
+                }
+            }
+
             // Package Name
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 ExporterUtils.Indent( indent );
@@ -115,7 +136,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     for ( int i = 0; i < targetlist.Length; i++ ) {
                         settings[i].packageName = value;
-                        targetlist[i].UpdateExportVersion( );
+                        targetlist[i].CurrentSettings.UpdateExportVersion( );
                         EditorUtility.SetDirty( targetlist[i] );
                     }
                 }

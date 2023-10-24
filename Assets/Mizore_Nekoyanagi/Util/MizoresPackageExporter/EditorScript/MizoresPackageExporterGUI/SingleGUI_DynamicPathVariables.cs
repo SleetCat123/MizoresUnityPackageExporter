@@ -37,11 +37,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
                 GUI.enabled = false;
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
-                DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.ExportVersion );
-                DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.FormattedVersion );
-                DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.PackageName( ) );
+                DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.CurrentSettings.GetExportVersion( ) );
+                DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.GetFormattedVersion( ) );
+                DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.GetPackageName( ) );
                 if ( t.batchExportMode != BatchExportMode.Single ) {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
+                    DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, t.FormattedBatch );
                 }
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
                 GUI.enabled = true;

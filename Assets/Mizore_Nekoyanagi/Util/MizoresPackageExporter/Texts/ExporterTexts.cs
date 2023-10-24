@@ -64,7 +64,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string BatchExportRegex => Get( "BatchExportRegex" );
         public static string BatchExportRegexError( string name, string message ) => Get( "BatchExportRegexError", name, message );
         public static string BatchExportMode => Get( "BatchExportMode" );
-        public static string BatchExportNoTagError( string name ) => Get( "BatchExportNoTagError", name, ExporterConsts_Keys.KEY_BATCH_EXPORTER );
+        public static string BatchExportNoTagError( string name ) => Get( "BatchExportNoTagError", name, ExporterConsts_Keys.KEY_BATCH_EXPORTER, ExporterConsts_Keys.KEY_FORMATTED_BATCH_EXPORTER );
         public static string BatchVariableTooltip => Get( "BatchVariableTooltip" );
 
         public static string DateVariableTooltip( string example ) => Get( "DateVariableTooltip", example );
@@ -84,11 +84,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string Version => Get( "Version" );
         public static string VersionSource => Get( "VersionSource" );
         public static string VersionFormat => Get( "VersionFormat" );
+        public static string BatchFormat => Get( "BatchFormat" );
         public static string PackageName => Get( "PackageName" );
         public static string LabelExportPackage => Get( "LabelExportPackage" );
         public static string ButtonAddNameOverride => Get( "ButtonAddNameOverride" );
         public static string ButtonRemoveNameOverride => Get( "ButtonRemoveNameOverride" );
         public static string ButtonCleanNameOverride => Get( "ButtonCleanNameOverride" );
+        public static string SettingOverrideVersion => Get( "SettingOverrideVersion" );
+        public static string SettingOverrideVersionFormat => Get( "SettingOverrideVersionFormat" );
+        public static string SettingOverrideBatchFormat => Get( "SettingOverrideBatchFormat" );
+        public static string SettingOverridePackageName => Get( "SettingOverridePackageName" );
         public static string LogCleanNameOverride( int count ) => Get( "LogCleanNameOverride", count );
         public static string ButtonCheck => Get( "ButtonCheck" );
         public static string ButtonExportPackage => Get( "ButtonExportPackage" );

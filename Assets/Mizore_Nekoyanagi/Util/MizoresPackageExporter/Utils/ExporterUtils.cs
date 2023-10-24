@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using System.IO;
+using System.Text.RegularExpressions;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -184,6 +185,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 list.AddRange( new T[newSize - list.Count] );
             } else {
                 list.RemoveRange( newSize, list.Count - newSize );
+            }
+        }
+
+        static Regex _invalidFileCharsRegex;
+        /// <summary>
+        /// ファイル名に使用できない文字の判定用
+        /// </summary>
+        public static Regex InvalidFileCharsRegex {
+            get {
+                if ( _invalidFileCharsRegex == null ) {
+                    string invalid = "." + new string( Path.GetInvalidFileNameChars( ) );
+                    string pattern = string.Format( "[{0}]", Regex.Escape( invalid ) );
+                    _invalidFileCharsRegex = new Regex( pattern );
+                }
+                return _invalidFileCharsRegex;
             }
         }
 

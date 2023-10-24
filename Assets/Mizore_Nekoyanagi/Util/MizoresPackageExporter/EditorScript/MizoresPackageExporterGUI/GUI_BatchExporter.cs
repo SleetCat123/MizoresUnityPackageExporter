@@ -8,6 +8,8 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
     public static class GUI_BatchExporter {
+        static MizoresPackageExporter selected;
+        static string selectedKey;
         static void Main( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, bool samevalue_in_all_mode ) {
             bool multiple = targetlist.Length > 1;
 
@@ -177,6 +179,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
         }
         static void DrawList( MizoresPackageExporter[] targetlist ) {
+            var t = targetlist[0];
             bool multiple = targetlist.Length > 1;
             bool first = true;
             foreach ( var item in targetlist ) {
@@ -188,7 +191,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 first = false;
                 if ( multiple ) {
-                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         GUI.enabled = false;
                         ExporterUtils.Indent( 1 );
                         EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
@@ -196,25 +199,151 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 var list = item.BatchExportKeysConverted;
-                var overrideTable = item.packageNameSettingsOverride;
                 for ( int i = 0; i < list.Length; i++ ) {
                     string key = list[i];
-                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    bool isSelected = false;
+                    int indent = 1;
+                    bool hasOverride = item.packageNameSettingsOverride.ContainsKey( key );
+                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         if ( multiple ) {
-                            ExporterUtils.Indent( 2 );
+                            indent = 2;
+                        }
+                        ExporterUtils.Indent( indent );
+                        Rect rect = EditorGUILayout.GetControlRect( );
+                        var label = i.ToString( ) + "   " + key;
+                        GUIStyle style;
+                        if ( hasOverride ) {
+                            style = EditorStyles.foldoutHeader;
                         } else {
-                            ExporterUtils.Indent( 1 );
+                            style = EditorStyles.label;
                         }
-                        EditorGUILayout.LabelField( i.ToString( ) + "   " + key );
-                        PackageNameSettingsObject settings;
-                        overrideTable.TryGetValue( key, out settings );
-                        settings = EditorGUILayout.ObjectField( settings, typeof( PackageNameSettingsObject ), false, GUILayout.Width( 150 ) ) as PackageNameSettingsObject;
-                        if ( settings != null ) {
-                            overrideTable[key] = settings;
-                        } else if ( settings == null && overrideTable.ContainsKey( key ) ) {
-                            overrideTable.Remove( key );
+                        isSelected = selected == item && selectedKey == key;
+                        bool foldout = EditorGUI.BeginFoldoutHeaderGroup( rect, isSelected, label, style );
+                        string buttonLabel;
+                        if ( hasOverride ) {
+                            buttonLabel = ExporterTexts.ButtonRemoveNameOverride;
+                        } else {
+                            buttonLabel = ExporterTexts.ButtonAddNameOverride;
                         }
+                        if ( GUILayout.Button( buttonLabel, GUILayout.Width( 120 ) ) ) {
+                            if ( hasOverride ) {
+                                foldout = false;
+                                item.packageNameSettingsOverride.Remove( key );
+                                hasOverride = false;
+                            } else {
+                                foldout = true;
+                                var settings = new PackageNameSettings( item.packageNameSettings );
+                                item.packageNameSettingsOverride.Add( key, settings );
+                                hasOverride = true;
+                            }
+                        }
+                        if ( foldout && hasOverride ) {
+                            selected = item;
+                            selectedKey = key;
+                            isSelected = true;
+                        } else if ( isSelected ) {
+                            selected = null;
+                            selectedKey = null;
+                            isSelected = false;
+                        }
+                        EditorGUI.EndFoldoutHeaderGroup( );
                     }
+                    if ( isSelected && hasOverride ) {
+                        var firstSettings = t.GetOverridedSettings(key);
+                        var settingList = targetlist.Select(v=>v.GetOverridedSettings(key));
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            ExporterUtils.Indent( indent + 1 );
+                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_version == v.useOverride_version );
+                            if ( !samevalue_in_all ) {
+                                ExporterUtils.DiffLabel( );
+                                EditorGUI.showMixedValue = true;
+                            }
+                            EditorGUI.BeginChangeCheck( );
+                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideVersion, firstSettings.useOverride_version );
+                            EditorGUI.showMixedValue = false;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var s in settingList ) {
+                                    s.useOverride_version = value;
+                                    s.lastUpdate_ExportVersion = 0;
+                                }
+                                foreach ( var ta in targetlist ) {
+                                    EditorUtility.SetDirty( ta );
+                                }
+                            }
+                        }
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            ExporterUtils.Indent( indent + 1 );
+                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_versionFormat == v.useOverride_versionFormat );
+                            if ( !samevalue_in_all ) {
+                                ExporterUtils.DiffLabel( );
+                                EditorGUI.showMixedValue = true;
+                            }
+                            EditorGUI.BeginChangeCheck( );
+                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideVersionFormat, firstSettings.useOverride_versionFormat );
+                            EditorGUI.showMixedValue = false;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var s in settingList ) {
+                                    s.useOverride_versionFormat = value;
+                                }
+                                foreach ( var ta in targetlist ) {
+                                    EditorUtility.SetDirty( ta );
+                                }
+                            }
+                        }
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            ExporterUtils.Indent( indent + 1 );
+                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_batchFormat == v.useOverride_batchFormat );
+                            if ( !samevalue_in_all ) {
+                                ExporterUtils.DiffLabel( );
+                                EditorGUI.showMixedValue = true;
+                            }
+                            EditorGUI.BeginChangeCheck( );
+                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideBatchFormat, firstSettings.useOverride_batchFormat );
+                            EditorGUI.showMixedValue = false;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var s in settingList ) {
+                                    s.useOverride_batchFormat = value;
+                                }
+                                foreach ( var ta in targetlist ) {
+                                    EditorUtility.SetDirty( ta );
+                                }
+                            }
+                        }
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            ExporterUtils.Indent( indent + 1 );
+                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_packageName == v.useOverride_packageName );
+                            if ( !samevalue_in_all ) {
+                                ExporterUtils.DiffLabel( );
+                                EditorGUI.showMixedValue = true;
+                            }
+                            EditorGUI.BeginChangeCheck( );
+                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverridePackageName, firstSettings.useOverride_packageName );
+                            EditorGUI.showMixedValue = false;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                foreach ( var s in settingList ) {
+                                    s.useOverride_packageName = value;
+                                }
+                                foreach ( var ta in targetlist ) {
+                                    EditorUtility.SetDirty( ta );
+                                }
+                            }
+                        }
+                        GUI_VersionFile.DrawMain( new PackageNameSettings[] { item.packageNameSettingsOverride[key] }, new MizoresPackageExporter[] { item }, indent + 1 );
+                    }
+                }
+
+                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    ExporterUtils.Indent( 1 );
+                    var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
+                    EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
+                    if ( GUILayout.Button( ExporterTexts.ButtonCleanNameOverride ) ) {
+                        foreach ( var remove in unusedOverrides ) {
+                            Debug.Log( "Override Removed: \n" + remove );
+                            item.packageNameSettingsOverride.Remove( remove );
+                        }
+                        Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
+                    }
+                    EditorGUI.EndDisabledGroup( );
                 }
             }
         }
@@ -254,9 +383,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                 }
-                if ( item.batchExportMode != BatchExportMode.Single && !item.packageNameSettings.packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) ) {
-                    var error = ExporterTexts.BatchExportNoTagError( item.name );
-                    EditorGUILayout.HelpBox( error, MessageType.Error );
+                if ( item.batchExportMode != BatchExportMode.Single ) {
+                    var packageName = item.packageNameSettings.packageName;
+                    if ( !packageName.Contains( ExporterConsts_Keys.KEY_BATCH_EXPORTER ) && !packageName.Contains( ExporterConsts_Keys.KEY_FORMATTED_BATCH_EXPORTER ) ) {
+                        var error = ExporterTexts.BatchExportNoTagError( item.name );
+                        EditorGUILayout.HelpBox( error, MessageType.Error );
+                    }
                 }
             }
         }

@@ -16,11 +16,14 @@ FoldoutBatchExportDisabled,Export Settings
 BatchExportMode,Mode
 BatchExportRegex,Regex
 BatchExportRegexError,{0}\nRegex Error:\n{1}
-BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1}
+BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1} or {2}
 BatchVariableTooltip,[Note] Replaced by Batch Export strings.
+BatchFormat,Batch Format
 
 DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
 
+ButtonAddNameOverride,Override Settings
+ButtonRemoveNameOverride,Remove Override
 ButtonCleanNameOverride,Clean Unused Overrides
 LogCleanNameOverride,Removed {0} overrides.
 

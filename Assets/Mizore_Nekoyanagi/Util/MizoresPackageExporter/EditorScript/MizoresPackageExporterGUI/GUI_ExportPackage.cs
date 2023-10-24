@@ -60,8 +60,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );
             }
             if ( GUILayout.Button( ExporterTexts.ButtonOpen, GUILayout.Width( 60 ) ) ) {
-                if ( ed.targets.Length == 1 && File.Exists( ed.t.ExportPath( ) ) ) {
-                    EditorUtility.RevealInFinder( ed.t.ExportPath( ) );
+                if ( ed.targets.Length == 1 && File.Exists( ed.t.GetExportPath( ) ) ) {
+                    EditorUtility.RevealInFinder( ed.t.GetExportPath( ) );
                 } else {
                     EditorUtility.RevealInFinder( Const.EXPORT_FOLDER_PATH );
                 }
