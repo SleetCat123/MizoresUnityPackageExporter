@@ -12,72 +12,66 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             var t = targetlist[0];
             var s = settings[0];
             var same_versionSource_valueInAllObj = settings.All( v => s.versionSource == v.versionSource );
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( indent );
-                EditorGUI.BeginChangeCheck( );
-                VersionSource versionSource;
+            var temp_indentLevel = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = indent;
 
-                EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
-                versionSource = ( VersionSource )EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, s.versionSource );
-                EditorGUI.showMixedValue = false;
-
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    for ( int i = 0; i < targetlist.Length; i++ ) {
-                        settings[i].versionSource = versionSource;
-                        targetlist[i].CurrentSettings.UpdateExportVersion( );
-                        EditorUtility.SetDirty( targetlist[i] );
-                    }
+            EditorGUI.BeginChangeCheck( );
+            EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
+            var versionSource = ( VersionSource )EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, s.versionSource );
+            EditorGUI.showMixedValue = false;
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                for ( int i = 0; i < targetlist.Length; i++ ) {
+                    settings[i].versionSource = versionSource;
+                    targetlist[i].CurrentSettings.UpdateExportVersion( );
+                    EditorUtility.SetDirty( targetlist[i] );
                 }
             }
+
             if ( same_versionSource_valueInAllObj ) {
-                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( indent );
-                    switch ( s.versionSource ) {
-                        case VersionSource.String: {
-                            var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
-                            EditorGUI.BeginChangeCheck( );
-                            string versionString;
+                switch ( s.versionSource ) {
+                    case VersionSource.String: {
+                        var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
+                        EditorGUI.BeginChangeCheck( );
+                        string versionString;
 
-                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                            versionString = EditorGUILayout.TextField( ExporterTexts.Version, s.versionString );
-                            EditorGUI.showMixedValue = false;
+                        EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                        versionString = EditorGUILayout.TextField( ExporterTexts.Version, s.versionString );
+                        EditorGUI.showMixedValue = false;
 
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                for ( int i = 0; i < targetlist.Length; i++ ) {
-                                    settings[i].versionString = versionString;
-                                    targetlist[i].CurrentSettings.UpdateExportVersion( );
-                                    EditorUtility.SetDirty( targetlist[i] );
-                                }
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            for ( int i = 0; i < targetlist.Length; i++ ) {
+                                settings[i].versionString = versionString;
+                                targetlist[i].CurrentSettings.UpdateExportVersion( );
+                                EditorUtility.SetDirty( targetlist[i] );
                             }
-                            break;
                         }
-                        case VersionSource.File: {
-                            var samevalue_in_all_obj = settings.All( v => s.versionFile.Object == v.versionFile.Object );
+                        break;
+                    }
+                    case VersionSource.File: {
+                        var samevalue_in_all_obj = settings.All( v => s.versionFile.Object == v.versionFile.Object );
 
-                            if ( !samevalue_in_all_obj ) {
-                                ExporterUtils.DiffLabel( );
-                            }
-                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                            EditorGUI.BeginChangeCheck( );
-                            PackagePrefsElementInspector.Draw<TextAsset>( s.versionFile );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                var obj = s.versionFile.Object;
-                                for ( int i = 0; i < targetlist.Length; i++ ) {
-                                    settings[i].versionFile.Object = obj;
-                                    targetlist[i].CurrentSettings.UpdateExportVersion( );
-                                    EditorUtility.SetDirty( targetlist[i] );
-                                }
-                            }
-                            break;
+                        if ( !samevalue_in_all_obj ) {
+                            ExporterUtils.DiffLabel( );
                         }
+                        EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                        EditorGUI.BeginChangeCheck( );
+                        PackagePrefsElementInspector.Draw<TextAsset>( s.versionFile );
+                        EditorGUI.showMixedValue = false;
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            var obj = s.versionFile.Object;
+                            for ( int i = 0; i < targetlist.Length; i++ ) {
+                                settings[i].versionFile.Object = obj;
+                                targetlist[i].CurrentSettings.UpdateExportVersion( );
+                                EditorUtility.SetDirty( targetlist[i] );
+                            }
+                        }
+                        break;
                     }
                 }
             }
 
             // Version Format
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( indent );
+            {
                 var samevalue_in_all = settings.All( v => s.versionFormat == v.versionFormat );
                 EditorGUI.BeginChangeCheck( );
                 string value;
@@ -95,11 +89,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
             }
-
             // Batch Format
-            if ( targetlist.Any( v => v.batchExportMode != BatchExportMode.Single ) ) {
-                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( indent );
+            {
+                if ( targetlist.Any( v => v.batchExportMode != BatchExportMode.Single ) ) {
                     var samevalue_in_all = settings.All( v => s.batchFormat == v.batchFormat );
                     EditorGUI.BeginChangeCheck( );
                     string value;
@@ -118,10 +110,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
             }
-
             // Package Name
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( indent );
+            {
                 var samevalue_in_all = settings.All( v => s.packageName == v.packageName );
                 EditorGUI.BeginChangeCheck( );
                 string value;
@@ -141,6 +131,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
             }
+
+            EditorGUI.indentLevel = temp_indentLevel;
         }
     }
 #endif

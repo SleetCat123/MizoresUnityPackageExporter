@@ -17,10 +17,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             EditorGUI.BeginChangeCheck( );
             EditorGUI.showMixedValue = !samevalue_in_all_mode;
-            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
-                t.batchExportMode = ( BatchExportMode )EditorGUILayout.EnumPopup( ExporterTexts.BatchExportMode, t.batchExportMode );
-            }
+            EditorGUI.indentLevel++;
+            t.batchExportMode = ( BatchExportMode )EditorGUILayout.EnumPopup( ExporterTexts.BatchExportMode, t.batchExportMode );
+            EditorGUI.indentLevel--;
             EditorGUI.showMixedValue = false;
             if ( EditorGUI.EndChangeCheck( ) ) {
                 var mode = t.batchExportMode;
@@ -46,13 +45,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                     samevalue_in_all = i < texts_count.min && targetlist.All( v => t.batchExportTexts[i] == v.batchExportTexts[i] );
                                 }
 
-                                ExporterUtils.Indent( 2 );
+                                EditorGUI.indentLevel += 2;
                                 if ( samevalue_in_all ) {
                                     EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                                 } else {
                                     // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                                     ExporterUtils.DiffLabel( );
                                 }
+                                EditorGUI.indentLevel -= 2;
 
                                 EditorGUI.BeginChangeCheck( );
                                 Rect textrect = EditorGUILayout.GetControlRect( );
@@ -100,16 +100,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
                             }
                         }
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 1 );
-                            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                                foreach ( var item in targetlist ) {
-                                    ExporterUtils.ResizeList( item.batchExportTexts, texts_count.max + 1, ( ) => string.Empty );
-                                    item.UpdateBatchExportKeys( );
-                                    EditorUtility.SetDirty( item );
-                                }
+                        EditorGUI.indentLevel++;
+                        if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                            foreach ( var item in targetlist ) {
+                                ExporterUtils.ResizeList( item.batchExportTexts, texts_count.max + 1, ( ) => string.Empty );
+                                item.UpdateBatchExportKeys( );
+                                EditorUtility.SetDirty( item );
                             }
                         }
+                        EditorGUI.indentLevel--;
                         break;
                     }
                     case BatchExportMode.Folders: {
@@ -121,8 +120,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.showMixedValue = !samevalue_in_all_obj;
                         EditorGUI.BeginChangeCheck( );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 1 );
+                            EditorGUI.indentLevel++;
                             EditorGUILayout.LabelField( "Folder", GUILayout.Width( 60 ) );
+                            EditorGUI.indentLevel--;
                             PackagePrefsElementInspector.Draw<DefaultAsset>( t.batchExportFolderRoot );
                         }
                         EditorGUI.showMixedValue = false;
@@ -138,10 +138,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         var samevalue_in_all_regex = targetlist.All( v => t.batchExportFolderRegex == v.batchExportFolderRegex );
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.showMixedValue = !samevalue_in_all_regex;
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 1 );
-                            t.batchExportFolderRegex = EditorGUILayout.TextField( ExporterTexts.BatchExportRegex, t.batchExportFolderRegex );
-                        }
+                        EditorGUI.indentLevel++;
+                        t.batchExportFolderRegex = EditorGUILayout.TextField( ExporterTexts.BatchExportRegex, t.batchExportFolderRegex );
+                        EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             string regex = t.batchExportFolderRegex;
@@ -161,11 +160,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         EditorGUI.showMixedValue = !samevalue_in_all_obj;
                         EditorGUI.BeginChangeCheck( );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( 1 );
-                            EditorGUILayout.LabelField( "File", GUILayout.Width( 60 ) );
-                            PackagePrefsElementInspector.Draw<TextAsset>( t.batchExportListFile );
-                        }
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.LabelField( "File", GUILayout.Width( 60 ) );
+                        PackagePrefsElementInspector.Draw<TextAsset>( t.batchExportListFile );
+                        EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             var obj = t.batchExportListFile.Object;
@@ -195,8 +193,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 if ( multiple ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         GUI.enabled = false;
-                        ExporterUtils.Indent( 1 );
+                        EditorGUI.indentLevel++;
                         EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                        EditorGUI.indentLevel--;
                         GUI.enabled = true;
                     }
                 }
@@ -204,14 +203,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 for ( int i = 0; i < list.Length; i++ ) {
                     string key = list[i];
                     bool isSelected = false;
-                    int indent = 1;
                     bool hasOverride = item.packageNameSettingsOverride.ContainsKey( key );
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        if ( multiple ) {
-                            indent = 2;
-                        }
-                        ExporterUtils.Indent( indent );
-                        Rect rect = EditorGUILayout.GetControlRect( );
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                        EditorGUI.indentLevel += 2;
+                        Rect rect = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect( ) );
+                        EditorGUI.indentLevel -= 2;
                         var label = i.ToString( ) + "   " + key;
                         GUIStyle style;
                         if ( hasOverride ) {
@@ -251,236 +247,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.EndFoldoutHeaderGroup( );
                     }
                     if ( isSelected && hasOverride ) {
-                        var firstSettings = t.GetOverridedSettings(key);
-                        var settingList = targetlist.Select(v=>v.GetOverridedSettings(key));
-
-                        var same_useOverride_version_valueInAllObj = settingList.All( v => firstSettings.useOverride_version == v.useOverride_version );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( indent + 1 );
-                            if ( !same_useOverride_version_valueInAllObj ) {
-                                ExporterUtils.DiffLabel( );
-                                EditorGUI.showMixedValue = true;
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideVersion, firstSettings.useOverride_version );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                foreach ( var s in settingList ) {
-                                    s.useOverride_version = value;
-                                    s.lastUpdate_ExportVersion = 0;
-                                }
-                                foreach ( var ta in targetlist ) {
-                                    EditorUtility.SetDirty( ta );
-                                }
-                            }
-                        }
-                        if ( same_useOverride_version_valueInAllObj && firstSettings.useOverride_version ) {
-                            var same_versionSource_valueInAllObj = settingList.All( v => firstSettings.versionSource == v.versionSource );
-                            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                ExporterUtils.Indent( indent );
-                                EditorGUI.BeginChangeCheck( );
-                                EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
-                                var versionSource = ( VersionSource )EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, firstSettings.versionSource );
-                                EditorGUI.showMixedValue = false;
-                                if ( EditorGUI.EndChangeCheck( ) ) {
-                                    foreach ( var s in settingList ) {
-                                        s.versionSource = versionSource;
-                                        s.lastUpdate_ExportVersion = 0;
-                                    }
-                                    foreach ( var ta in targetlist ) {
-                                        EditorUtility.SetDirty( ta );
-                                    }
-                                }
-                            }
-                            if ( same_versionSource_valueInAllObj ) {
-                                using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                    ExporterUtils.Indent( indent );
-                                    switch ( firstSettings.versionSource ) {
-                                        case VersionSource.String: {
-                                            var samevalue_in_all_obj = settingList.All( v => firstSettings.versionString == v.versionString );
-                                            EditorGUI.BeginChangeCheck( );
-                                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                                            string versionString = EditorGUILayout.TextField( ExporterTexts.Version, firstSettings.versionString );
-                                            EditorGUI.showMixedValue = false;
-                                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                                foreach ( var s in settingList ) {
-                                                    s.versionString = versionString;
-                                                    s.lastUpdate_ExportVersion = 0;
-                                                }
-                                                foreach ( var ta in targetlist ) {
-                                                    EditorUtility.SetDirty( ta );
-                                                }
-                                            }
-                                            break;
-                                        }
-                                        case VersionSource.File: {
-                                            var samevalue_in_all_obj = settingList.All( v => firstSettings.versionFile.Object == v.versionFile.Object );
-
-                                            if ( !samevalue_in_all_obj ) {
-                                                ExporterUtils.DiffLabel( );
-                                            }
-                                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                                            EditorGUI.BeginChangeCheck( );
-                                            PackagePrefsElementInspector.Draw<TextAsset>( firstSettings.versionFile );
-                                            EditorGUI.showMixedValue = false;
-                                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                                var obj = firstSettings.versionFile.Object;
-                                                foreach ( var s in settingList ) {
-                                                    s.versionFile.Object = obj;
-                                                    s.lastUpdate_ExportVersion = 0;
-                                                }
-                                                foreach ( var ta in targetlist ) {
-                                                    EditorUtility.SetDirty( ta );
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // Override Version Format
-                        var same_useOverride_versionFormat_valueInAllObj = settingList.All( v => firstSettings.useOverride_versionFormat == v.useOverride_versionFormat );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( indent + 1 );
-                            if ( !same_useOverride_versionFormat_valueInAllObj ) {
-                                ExporterUtils.DiffLabel( );
-                                EditorGUI.showMixedValue = true;
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideVersionFormat, firstSettings.useOverride_versionFormat );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                foreach ( var s in settingList ) {
-                                    s.useOverride_versionFormat = value;
-                                }
-                                foreach ( var ta in targetlist ) {
-                                    EditorUtility.SetDirty( ta );
-                                }
-                            }
-                        }
-                        if ( same_useOverride_versionFormat_valueInAllObj && firstSettings.useOverride_versionFormat ) {
-                            // Version Format
-                            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                ExporterUtils.Indent( indent );
-                                var samevalue_in_all = settingList.All( v => firstSettings.versionFormat == v.versionFormat );
-                                EditorGUI.BeginChangeCheck( );
-                                if ( !samevalue_in_all ) {
-                                    ExporterUtils.DiffLabel( );
-                                    EditorGUI.showMixedValue = true;
-                                }
-                                string value = EditorGUILayout.TextField( ExporterTexts.VersionFormat, firstSettings.versionFormat );
-                                EditorGUI.showMixedValue = false;
-                                if ( EditorGUI.EndChangeCheck( ) ) {
-                                    foreach ( var s in settingList ) {
-                                        s.versionFormat = value;
-                                    }
-                                    foreach ( var ta in targetlist ) {
-                                        EditorUtility.SetDirty( ta );
-                                    }
-                                }
-                            }
-                        }
-                        // Override Batch Format
-                        var same_useOverride_batchFormat_valueInAllObj = settingList.All( v => firstSettings.useOverride_batchFormat == v.useOverride_batchFormat );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( indent + 1 );
-                            if ( !same_useOverride_batchFormat_valueInAllObj ) {
-                                ExporterUtils.DiffLabel( );
-                                EditorGUI.showMixedValue = true;
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverrideBatchFormat, firstSettings.useOverride_batchFormat );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                foreach ( var s in settingList ) {
-                                    s.useOverride_batchFormat = value;
-                                }
-                                foreach ( var ta in targetlist ) {
-                                    EditorUtility.SetDirty( ta );
-                                }
-                            }
-                        }
-                        if ( same_useOverride_batchFormat_valueInAllObj && firstSettings.useOverride_batchFormat ) {
-                            // Batch Format
-                            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                ExporterUtils.Indent( indent );
-                                var samevalue_in_all = settingList.All( v => firstSettings.batchFormat == v.batchFormat );
-                                EditorGUI.BeginChangeCheck( );
-                                if ( !samevalue_in_all ) {
-                                    ExporterUtils.DiffLabel( );
-                                    EditorGUI.showMixedValue = true;
-                                }
-                                string value = EditorGUILayout.TextField( ExporterTexts.BatchFormat, firstSettings.batchFormat );
-                                EditorGUI.showMixedValue = false;
-                                if ( EditorGUI.EndChangeCheck( ) ) {
-                                    foreach ( var s in settingList ) {
-                                        s.batchFormat = value;
-                                    }
-                                    foreach ( var ta in targetlist ) {
-                                        EditorUtility.SetDirty( ta );
-                                    }
-                                }
-                            }
-                        }
-                        // Override Package Name
-                        var same_useOverride_packageName_valueInAllObj = settingList.All( v => firstSettings.useOverride_packageName == v.useOverride_packageName );
-                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                            ExporterUtils.Indent( indent + 1 );
-                            if ( !same_useOverride_packageName_valueInAllObj ) {
-                                ExporterUtils.DiffLabel( );
-                                EditorGUI.showMixedValue = true;
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            var value = EditorGUILayout.Toggle( ExporterTexts.SettingOverridePackageName, firstSettings.useOverride_packageName );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                foreach ( var s in settingList ) {
-                                    s.useOverride_packageName = value;
-                                }
-                                foreach ( var ta in targetlist ) {
-                                    EditorUtility.SetDirty( ta );
-                                }
-                            }
-                        }
-                        if ( same_useOverride_packageName_valueInAllObj && firstSettings.useOverride_packageName ) {
-                            // Package Name
-                            using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                ExporterUtils.Indent( indent );
-                                var samevalue_in_all = settingList.All( v => firstSettings.packageName == v.packageName );
-                                EditorGUI.BeginChangeCheck( );
-                                if ( !samevalue_in_all ) {
-                                    ExporterUtils.DiffLabel( );
-                                    EditorGUI.showMixedValue = true;
-                                }
-                                string value = EditorGUILayout.TextField( ExporterTexts.PackageName, firstSettings.packageName );
-                                EditorGUI.showMixedValue = false;
-                                if ( EditorGUI.EndChangeCheck( ) ) {
-                                    foreach ( var s in settingList ) {
-                                        s.packageName = value;
-                                    }
-                                    foreach ( var ta in targetlist ) {
-                                        EditorUtility.SetDirty( ta );
-                                    }
-                                }
-                            }
-                        }
+                        GUI_BatchExporter_OverrideSettings.Draw( item, key, 2 );
                     }
                 }
 
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
-                    var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
-                    EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
-                    if ( GUILayout.Button( ExporterTexts.ButtonCleanNameOverride ) ) {
-                        foreach ( var remove in unusedOverrides ) {
-                            Debug.Log( "Override Removed: \n" + remove );
-                            item.packageNameSettingsOverride.Remove( remove );
-                        }
-                        Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
+                EditorGUI.indentLevel++;
+                var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
+                EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
+                Rect buttonrect = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect( ) );
+                if ( GUI.Button( buttonrect, ExporterTexts.ButtonCleanNameOverride ) ) {
+                    foreach ( var remove in unusedOverrides ) {
+                        Debug.Log( "Override Removed: \n" + remove );
+                        item.packageNameSettingsOverride.Remove( remove );
                     }
-                    EditorGUI.EndDisabledGroup( );
+                    Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
                 }
+                EditorGUI.EndDisabledGroup( );
+                EditorGUI.indentLevel--;
             }
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
@@ -495,15 +278,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             } else {
                 foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
             }
-            if ( ExporterUtils.EditorPrefFoldout(
-    ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
+            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
                 Main( t, targetlist, samevalue_in_all_mode );
 
                 EditorGUILayout.Separator( );
                 GUI_VersionFile.DrawMain( targetlist.Select( v => v.packageNameSettings ).ToArray( ), targetlist, 1 );
 
                 if ( t.batchExportMode != BatchExportMode.Single ) {
-                    ExporterUtils.SeparateLine( 1 );
+                    EditorGUI.indentLevel++;
+                    ExporterUtils.SeparateLine( );
+                    EditorGUI.indentLevel--;
                 }
                 DrawList( targetlist );
             }

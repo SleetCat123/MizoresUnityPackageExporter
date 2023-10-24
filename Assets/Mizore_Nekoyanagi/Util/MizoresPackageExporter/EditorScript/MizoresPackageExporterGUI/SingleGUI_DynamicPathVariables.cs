@@ -6,17 +6,15 @@ using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class SingleGUI_DynamicPathVariables {
-        const int SPACE_WIDTH = 30;
         const int BUTTON_WIDTH = 15;
         static void DrawBuiltInVariable( string key, string value ) {
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                var space_width = GUILayout.Width( SPACE_WIDTH );
+            using ( new EditorGUILayout.HorizontalScope( ) ) {
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
-                EditorGUILayout.LabelField( string.Empty, space_width );
                 // key = key.Replace( "%", string.Empty );
+                EditorGUI.indentLevel++;
                 EditorGUILayout.TextField( key );
+                EditorGUI.indentLevel--;
                 EditorGUILayout.TextField( value );
-                EditorGUILayout.LabelField( string.Empty, space_width );
                 EditorGUILayout.LabelField( string.Empty, button_width );
             }
         }
@@ -24,7 +22,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( key.Length != 0 ) {
                 key = "%" + key + "%";
             }
+            EditorGUI.indentLevel++;
             key = EditorGUILayout.DelayedTextField( key );
+            EditorGUI.indentLevel--;
             key = key.Replace( "%", string.Empty );
             return key;
         }
@@ -33,7 +33,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterEditorPrefs.FOLDOUT_VARIABLES,
                 ExporterTexts.FoldoutVariables( t.variables.Count.ToString( ) )
                 ) ) {
-                var space_width = GUILayout.Width( SPACE_WIDTH );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
                 GUI.enabled = false;
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
@@ -50,8 +49,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 for ( int i = 0; i < keys.Count; i++ ) {
                     string key = keys[i];
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        EditorGUILayout.LabelField( string.Empty, space_width );
-
                         // キー名変更
                         EditorGUI.BeginChangeCheck( );
                         string temp_key = KeyTextField( key );
@@ -74,29 +71,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
 
                         // ボタン
-                        EditorGUILayout.LabelField( string.Empty, space_width );
                         if ( GUILayout.Button( "-", button_width ) ) {
                             t.variables.Remove( key );
                             EditorUtility.SetDirty( t );
                         }
                     }
                 }
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    // 新規キー追加
-                    EditorGUILayout.LabelField( string.Empty, space_width );
+                // 新規キー追加
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
                     EditorGUI.BeginChangeCheck( );
                     ed._variableKeyTemp = KeyTextField( ed._variableKeyTemp );
                     EditorGUILayout.LabelField( string.Empty );
-                    string temp = ed._variableKeyTemp;
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
-                            ed._variableKeyTemp = string.Empty;
-                        } else {
-                            // キー追加
-                            t.variables.Add( temp, string.Empty );
-                            ed._variableKeyTemp = string.Empty;
-                            EditorUtility.SetDirty( t );
-                        }
+                }
+                string temp = ed._variableKeyTemp;
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    if ( string.IsNullOrWhiteSpace( temp ) || t.variables.ContainsKey( temp ) ) {
+                        ed._variableKeyTemp = string.Empty;
+                    } else {
+                        // キー追加
+                        t.variables.Add( temp, string.Empty );
+                        ed._variableKeyTemp = string.Empty;
+                        EditorUtility.SetDirty( t );
                     }
                 }
             }

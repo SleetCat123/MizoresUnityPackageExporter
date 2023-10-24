@@ -7,10 +7,8 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
-{
-    public class FileListWindow : EditorWindow
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
+    public class FileListWindow : EditorWindow {
         TreeViewState _treeViewState;
         FileListTreeView _treeView;
 
@@ -87,15 +85,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                             case NodeType.References:
                                 if ( node.args != null && node.args.Count != 0 ) {
                                     EditorGUILayout.LabelField( ExporterTexts.FileListReferencesPathPrefix + node.path );
-                                    using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                        ExporterUtils.Indent( 1 );
-                                        EditorGUILayout.LabelField( ExporterTexts.FileListTooltipReferencedBy );
-                                    }
+                                    EditorGUI.indentLevel++;
+                                    EditorGUILayout.LabelField( ExporterTexts.FileListTooltipReferencedBy );
+                                    EditorGUI.indentLevel--;
                                     foreach ( var arg in node.args ) {
-                                        using ( new EditorGUILayout.HorizontalScope( ) ) {
-                                            ExporterUtils.Indent( 2 );
-                                            EditorGUILayout.LabelField( arg );
-                                        }
+                                        EditorGUI.indentLevel += 2;
+                                        EditorGUILayout.LabelField( arg );
+                                        EditorGUI.indentLevel -= 2;
                                     }
                                     EditorGUILayout.Separator( );
                                 } else {

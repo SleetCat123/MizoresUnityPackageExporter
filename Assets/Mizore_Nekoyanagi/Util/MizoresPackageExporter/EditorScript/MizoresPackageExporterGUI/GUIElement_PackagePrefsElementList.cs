@@ -5,10 +5,8 @@ using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
-{
-    public static class GUIElement_PackagePrefsElementList
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor {
+    public static class GUIElement_PackagePrefsElementList {
         public static void Draw<T>( MizoresPackageExporter t, MizoresPackageExporter[] targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getlist ) where T : UnityEngine.Object {
             MinMax objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );
             bool multiple = targetlist.Length > 1;
@@ -20,13 +18,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                         samevalue_in_all = i < objects_count.min && targetlist.All( v => getlist( t )[i].Object == getlist( v )[i].Object );
                     }
 
-                    ExporterUtils.Indent( 1 );
+                    EditorGUI.indentLevel++;
                     if ( samevalue_in_all ) {
                         EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                     } else {
                         // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                         DiffLabel( );
                     }
+                    EditorGUI.indentLevel--;
 
                     EditorGUI.showMixedValue = !samevalue_in_all;
                     EditorGUI.BeginChangeCheck( );
@@ -73,15 +72,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor
                     }
                 }
             }
-            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                ExporterUtils.Indent( 1 );
-                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                    foreach ( var item in targetlist ) {
-                        ExporterUtils.ResizeList( getlist( item ), objects_count.max + 1, ( ) => new PackagePrefsElement( ) );
-                        EditorUtility.SetDirty( item );
-                    }
+            EditorGUI.indentLevel++;
+            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                foreach ( var item in targetlist ) {
+                    ExporterUtils.ResizeList( getlist( item ), objects_count.max + 1, ( ) => new PackagePrefsElement( ) );
+                    EditorUtility.SetDirty( item );
                 }
             }
+            EditorGUI.indentLevel--;
         }
     }
 }

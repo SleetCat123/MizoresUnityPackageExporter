@@ -7,17 +7,8 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class ExporterUtils
-    {
-        public const int EDITOR_INDENT = 15;
-        public static void Indent( int indent ) {
-#if UNITY_EDITOR
-            EditorGUILayout.LabelField( string.Empty, GUILayout.Width( EDITOR_INDENT * indent ) );
-#endif
-        }
-
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class ExporterUtils {
         public static int UpDownButton( int index, int listLength, int buttonWidth = 15 ) {
             index = Mathf.Clamp( index, 0, listLength - 1 );
 #if UNITY_EDITOR
@@ -36,8 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return index;
         }
 
-        public enum GetIconResult
-        {
+        public enum GetIconResult {
             ExistsFile, ExistsFolder, NotExistsFile, NotExistsFolder, Dummy
         }
         public static bool IsExists( this GetIconResult value ) {
@@ -74,16 +64,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
         }
 
-        public static void SeparateLine( int indent = 0 ) {
+        public static void SeparateLine( ) {
 #if UNITY_EDITOR
-            if ( indent > 0 ) {
-                var rect = EditorGUILayout.GetControlRect( );
-                rect.width -= EDITOR_INDENT * indent;
-                rect.x += EDITOR_INDENT * indent;
-                EditorGUI.LabelField( rect, string.Empty, GUI.skin.horizontalSlider );
-            } else {
-                EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
-            }
+            EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
 #endif
         }
 
@@ -116,8 +99,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 #endif
             return false;
         }
-        public class FoldoutFuncs
-        {
+        public class FoldoutFuncs {
             public System.Func<Object[], bool> canDragDrop;
             public System.Action<Object[]> onDragPerform;
             public System.Action onRightClick;

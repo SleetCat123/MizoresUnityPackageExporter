@@ -20,6 +20,11 @@ BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must con
 BatchVariableTooltip,[Note] Replaced by Batch Export strings.
 BatchFormat,Batch Format
 
+SettingOverrideVersion,Version Override
+SettingOverrideVersionFormat,Version Format Override
+SettingOverrideBatchFormat,Batch Override
+SettingOverridePackageName,Package Name Override
+
 DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
 
 ButtonAddNameOverride,Override Settings

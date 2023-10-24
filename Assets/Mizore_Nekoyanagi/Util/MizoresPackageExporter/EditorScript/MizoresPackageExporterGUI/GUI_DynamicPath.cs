@@ -44,13 +44,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             samevalue_in_all = i < dpath_count.min && targetlist.All( v => t.dynamicpath[i] == v.dynamicpath[i] );
                         }
 
-                        ExporterUtils.Indent( 1 );
+                        EditorGUI.indentLevel++;
                         if ( samevalue_in_all ) {
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         } else {
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                             DiffLabel( );
                         }
+                        EditorGUI.indentLevel--;
 
                         EditorGUI.BeginChangeCheck( );
                         Rect textrect = EditorGUILayout.GetControlRect( );
@@ -100,15 +101,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         }
                     }
                 }
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
+                EditorGUI.indentLevel++;
                     if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.dynamicpath, dpath_count.max + 1, ( ) => string.Empty );
                             EditorUtility.SetDirty( item );
                         }
                     }
-                }
+                EditorGUI.indentLevel--;
             }
             // ↑ Dynamic Path
 
@@ -119,21 +119,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
                     if ( multiple ) {
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                             GUI.enabled = false;
-                            ExporterUtils.Indent( 1 );
+                            EditorGUI.indentLevel++;
                             EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                            EditorGUI.indentLevel--;
                             GUI.enabled = true;
-                        }
                     }
                     for ( int i = 0; i < dpath_count.max; i++ ) {
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                            var indent = EditorGUI.indentLevel;
                             if ( multiple ) {
-                                ExporterUtils.Indent( 2 );
+                                EditorGUI.indentLevel+=2;
                             } else {
-                                ExporterUtils.Indent( 1 );
+                                EditorGUI.indentLevel++;
                             }
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                            EditorGUI.indentLevel = indent;
                             if ( i < item.dynamicpath.Count ) {
                                 string previewpath = item.ConvertDynamicPath( item.dynamicpath[i] );
                                 EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );

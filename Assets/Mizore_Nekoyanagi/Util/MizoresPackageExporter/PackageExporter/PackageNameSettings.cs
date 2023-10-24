@@ -62,7 +62,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public void UpdateExportVersion( ) {
 #if UNITY_EDITOR
-            Debug.Log( $"UpdateExportVersion: \n{debug_id}\n{lastUpdate_ExportVersion}" );
+            // Debug.Log( $"UpdateExportVersion: \n{debug_id}\n{lastUpdate_ExportVersion}" );
             lastUpdate_ExportVersion = EditorApplication.timeSinceStartup;
             if ( versionSource == VersionSource.String ) {
                 _exportVersion = versionString;

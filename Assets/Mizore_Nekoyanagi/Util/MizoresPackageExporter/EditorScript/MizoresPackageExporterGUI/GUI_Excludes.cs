@@ -7,11 +7,9 @@ using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
-    public static class GUI_Excludes
-    {
+    public static class GUI_Excludes {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<SearchPath>> getList, Object[] objectReferences ) {
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
@@ -45,13 +43,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             samevalue_in_all_type = i < minmax_count.min && targetlist.All( v => t.excludes[i].searchType == v.excludes[i].searchType );
                         }
 
-                        ExporterUtils.Indent( 1 );
+                        EditorGUI.indentLevel++;
                         if ( samevalue_in_all_value && samevalue_in_all_type ) {
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         } else {
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                             DiffLabel( );
                         }
+                        EditorGUI.indentLevel--;
 
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             EditorGUI.BeginChangeCheck( );
@@ -80,10 +79,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             EditorGUI.BeginChangeCheck( );
                             SearchPathType searchType;
                             if ( samevalue_in_all_type ) {
-                                searchType = (SearchPathType)EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 70 ) );
+                                searchType = ( SearchPathType )EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 70 ) );
                             } else {
                                 EditorGUI.showMixedValue = true;
-                                searchType = (SearchPathType)EditorGUILayout.EnumPopup( SearchPathType.Exact, GUILayout.Width( 70 ) );
+                                searchType = ( SearchPathType )EditorGUILayout.EnumPopup( SearchPathType.Exact, GUILayout.Width( 70 ) );
                                 EditorGUI.showMixedValue = false;
                             }
                             if ( EditorGUI.EndChangeCheck( ) ) {
@@ -150,15 +149,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         }
                     }
                 }
-                using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                    ExporterUtils.Indent( 1 );
-                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                        foreach ( var item in targetlist ) {
-                            ExporterUtils.ResizeList( item.excludes, minmax_count.max + 1, ( ) => new SearchPath( ) );
-                            EditorUtility.SetDirty( item );
-                        }
+                EditorGUI.indentLevel++;
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    foreach ( var item in targetlist ) {
+                        ExporterUtils.ResizeList( item.excludes, minmax_count.max + 1, ( ) => new SearchPath( ) );
+                        EditorUtility.SetDirty( item );
                     }
                 }
+                EditorGUI.indentLevel--;
             }
             // ↑ Excludes
 
@@ -169,31 +167,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
                     if ( multiple ) {
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            GUI.enabled = false;
-                            ExporterUtils.Indent( 1 );
-                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                            GUI.enabled = true;
-                        }
+                        GUI.enabled = false;
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                        EditorGUI.indentLevel--;
+                        GUI.enabled = true;
                     }
                     for ( int i = 0; i < minmax_count.max; i++ ) {
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            if ( multiple ) {
-                                ExporterUtils.Indent( 2 );
-                            } else {
-                                ExporterUtils.Indent( 1 );
-                            }
-                            EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                        if ( multiple ) {
+                            EditorGUI.indentLevel += 2;
+                        } else {
+                            EditorGUI.indentLevel++;
+                        }
+                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                        if ( multiple ) {
+                            EditorGUI.indentLevel -= 2;
+                        } else {
+                            EditorGUI.indentLevel--;
+                        }
 
-                            if ( i < item.excludes.Count ) {
-                                string previewpath = item.ConvertDynamicPath( item.excludes[i].value );
-                                EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
-                                using ( new EditorGUI.DisabledGroupScope( true ) ) {
-                                    EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
-                                }
-                            } else {
-                                EditorGUILayout.LabelField( "-" );
+                        if ( i < item.excludes.Count ) {
+                            string previewpath = item.ConvertDynamicPath( item.excludes[i].value );
+                            EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                            using ( new EditorGUI.DisabledGroupScope( true ) ) {
+                                EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
                             }
+                        } else {
+                            EditorGUILayout.LabelField( "-" );
                         }
                     }
                 }

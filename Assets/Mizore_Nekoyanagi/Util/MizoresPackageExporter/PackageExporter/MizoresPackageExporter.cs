@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
+using YamlDotNet.Core.Tokens;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -57,8 +58,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public PackageNameSettings packageNameSettings = new PackageNameSettings( );
 
-        PackageNameSettings _currentSettings;
-        public PackageNameSettings CurrentSettings => _currentSettings;
+        public PackageNameSettings CurrentSettings => GetOverridedSettings( temp_batchExportCurrentKey );
 
         [SerializeField]
         PackageNameSettingsKVP[] s_packageNameSettingsOverride;
@@ -193,14 +193,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         string[] temp_batchExportKeys;
 
         [System.NonSerialized]
-        string _temp_batchExportCurrentKey;
-        string temp_batchExportCurrentKey {
-            get => _temp_batchExportCurrentKey;
-            set {
-                _temp_batchExportCurrentKey = value;
-                _currentSettings = GetOverridedSettings( value );
-            }
-        }
+        string temp_batchExportCurrentKey;
 
         double lastUpdate_BatchExportKeys;
         public string[] BatchExportKeysConverted {
