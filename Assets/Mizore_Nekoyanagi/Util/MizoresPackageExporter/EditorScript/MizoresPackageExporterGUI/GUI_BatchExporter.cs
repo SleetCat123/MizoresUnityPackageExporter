@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+using YamlDotNet.Core.Tokens;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
@@ -251,10 +253,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     if ( isSelected && hasOverride ) {
                         var firstSettings = t.GetOverridedSettings(key);
                         var settingList = targetlist.Select(v=>v.GetOverridedSettings(key));
+
+                        var same_useOverride_version_valueInAllObj = settingList.All( v => firstSettings.useOverride_version == v.useOverride_version );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( indent + 1 );
-                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_version == v.useOverride_version );
-                            if ( !samevalue_in_all ) {
+                            if ( !same_useOverride_version_valueInAllObj ) {
                                 ExporterUtils.DiffLabel( );
                                 EditorGUI.showMixedValue = true;
                             }
@@ -271,10 +274,76 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
                             }
                         }
+                        if ( same_useOverride_version_valueInAllObj && firstSettings.useOverride_version ) {
+                            var same_versionSource_valueInAllObj = settingList.All( v => firstSettings.versionSource == v.versionSource );
+                            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                                ExporterUtils.Indent( indent );
+                                EditorGUI.BeginChangeCheck( );
+                                EditorGUI.showMixedValue = !same_versionSource_valueInAllObj;
+                                var versionSource = ( VersionSource )EditorGUILayout.EnumPopup( ExporterTexts.VersionSource, firstSettings.versionSource );
+                                EditorGUI.showMixedValue = false;
+                                if ( EditorGUI.EndChangeCheck( ) ) {
+                                    foreach ( var s in settingList ) {
+                                        s.versionSource = versionSource;
+                                        s.lastUpdate_ExportVersion = 0;
+                                    }
+                                    foreach ( var ta in targetlist ) {
+                                        EditorUtility.SetDirty( ta );
+                                    }
+                                }
+                            }
+                            if ( same_versionSource_valueInAllObj ) {
+                                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                                    ExporterUtils.Indent( indent );
+                                    switch ( firstSettings.versionSource ) {
+                                        case VersionSource.String: {
+                                            var samevalue_in_all_obj = settingList.All( v => firstSettings.versionString == v.versionString );
+                                            EditorGUI.BeginChangeCheck( );
+                                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                                            string versionString = EditorGUILayout.TextField( ExporterTexts.Version, firstSettings.versionString );
+                                            EditorGUI.showMixedValue = false;
+                                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                                foreach ( var s in settingList ) {
+                                                    s.versionString = versionString;
+                                                    s.lastUpdate_ExportVersion = 0;
+                                                }
+                                                foreach ( var ta in targetlist ) {
+                                                    EditorUtility.SetDirty( ta );
+                                                }
+                                            }
+                                            break;
+                                        }
+                                        case VersionSource.File: {
+                                            var samevalue_in_all_obj = settingList.All( v => firstSettings.versionFile.Object == v.versionFile.Object );
+
+                                            if ( !samevalue_in_all_obj ) {
+                                                ExporterUtils.DiffLabel( );
+                                            }
+                                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                                            EditorGUI.BeginChangeCheck( );
+                                            PackagePrefsElementInspector.Draw<TextAsset>( firstSettings.versionFile );
+                                            EditorGUI.showMixedValue = false;
+                                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                                var obj = firstSettings.versionFile.Object;
+                                                foreach ( var s in settingList ) {
+                                                    s.versionFile.Object = obj;
+                                                    s.lastUpdate_ExportVersion = 0;
+                                                }
+                                                foreach ( var ta in targetlist ) {
+                                                    EditorUtility.SetDirty( ta );
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // Override Version Format
+                        var same_useOverride_versionFormat_valueInAllObj = settingList.All( v => firstSettings.useOverride_versionFormat == v.useOverride_versionFormat );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( indent + 1 );
-                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_versionFormat == v.useOverride_versionFormat );
-                            if ( !samevalue_in_all ) {
+                            if ( !same_useOverride_versionFormat_valueInAllObj ) {
                                 ExporterUtils.DiffLabel( );
                                 EditorGUI.showMixedValue = true;
                             }
@@ -290,10 +359,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
                             }
                         }
+                        if ( same_useOverride_versionFormat_valueInAllObj && firstSettings.useOverride_versionFormat ) {
+                            // Version Format
+                            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                                ExporterUtils.Indent( indent );
+                                var samevalue_in_all = settingList.All( v => firstSettings.versionFormat == v.versionFormat );
+                                EditorGUI.BeginChangeCheck( );
+                                if ( !samevalue_in_all ) {
+                                    ExporterUtils.DiffLabel( );
+                                    EditorGUI.showMixedValue = true;
+                                }
+                                string value = EditorGUILayout.TextField( ExporterTexts.VersionFormat, firstSettings.versionFormat );
+                                EditorGUI.showMixedValue = false;
+                                if ( EditorGUI.EndChangeCheck( ) ) {
+                                    foreach ( var s in settingList ) {
+                                        s.versionFormat = value;
+                                    }
+                                    foreach ( var ta in targetlist ) {
+                                        EditorUtility.SetDirty( ta );
+                                    }
+                                }
+                            }
+                        }
+                        // Override Batch Format
+                        var same_useOverride_batchFormat_valueInAllObj = settingList.All( v => firstSettings.useOverride_batchFormat == v.useOverride_batchFormat );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( indent + 1 );
-                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_batchFormat == v.useOverride_batchFormat );
-                            if ( !samevalue_in_all ) {
+                            if ( !same_useOverride_batchFormat_valueInAllObj ) {
                                 ExporterUtils.DiffLabel( );
                                 EditorGUI.showMixedValue = true;
                             }
@@ -309,10 +401,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
                             }
                         }
+                        if ( same_useOverride_batchFormat_valueInAllObj && firstSettings.useOverride_batchFormat ) {
+                            // Batch Format
+                            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                                ExporterUtils.Indent( indent );
+                                var samevalue_in_all = settingList.All( v => firstSettings.batchFormat == v.batchFormat );
+                                EditorGUI.BeginChangeCheck( );
+                                if ( !samevalue_in_all ) {
+                                    ExporterUtils.DiffLabel( );
+                                    EditorGUI.showMixedValue = true;
+                                }
+                                string value = EditorGUILayout.TextField( ExporterTexts.BatchFormat, firstSettings.batchFormat );
+                                EditorGUI.showMixedValue = false;
+                                if ( EditorGUI.EndChangeCheck( ) ) {
+                                    foreach ( var s in settingList ) {
+                                        s.batchFormat = value;
+                                    }
+                                    foreach ( var ta in targetlist ) {
+                                        EditorUtility.SetDirty( ta );
+                                    }
+                                }
+                            }
+                        }
+                        // Override Package Name
+                        var same_useOverride_packageName_valueInAllObj = settingList.All( v => firstSettings.useOverride_packageName == v.useOverride_packageName );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             ExporterUtils.Indent( indent + 1 );
-                            var samevalue_in_all = settingList.All( v => firstSettings.useOverride_packageName == v.useOverride_packageName );
-                            if ( !samevalue_in_all ) {
+                            if ( !same_useOverride_packageName_valueInAllObj ) {
                                 ExporterUtils.DiffLabel( );
                                 EditorGUI.showMixedValue = true;
                             }
@@ -328,7 +443,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
                             }
                         }
-                        GUI_VersionFile.DrawMain( new PackageNameSettings[] { item.packageNameSettingsOverride[key] }, new MizoresPackageExporter[] { item }, indent + 1 );
+                        if ( same_useOverride_packageName_valueInAllObj && firstSettings.useOverride_packageName ) {
+                            // Package Name
+                            using ( new EditorGUILayout.HorizontalScope( ) ) {
+                                ExporterUtils.Indent( indent );
+                                var samevalue_in_all = settingList.All( v => firstSettings.packageName == v.packageName );
+                                EditorGUI.BeginChangeCheck( );
+                                if ( !samevalue_in_all ) {
+                                    ExporterUtils.DiffLabel( );
+                                    EditorGUI.showMixedValue = true;
+                                }
+                                string value = EditorGUILayout.TextField( ExporterTexts.PackageName, firstSettings.packageName );
+                                EditorGUI.showMixedValue = false;
+                                if ( EditorGUI.EndChangeCheck( ) ) {
+                                    foreach ( var s in settingList ) {
+                                        s.packageName = value;
+                                    }
+                                    foreach ( var ta in targetlist ) {
+                                        EditorUtility.SetDirty( ta );
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
