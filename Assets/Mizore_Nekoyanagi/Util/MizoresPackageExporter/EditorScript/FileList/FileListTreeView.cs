@@ -6,10 +6,8 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
-{
-    public class FileListTreeView : TreeView
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
+    public class FileListTreeView : TreeView {
         FileListNode _root;
         Dictionary<int, FileListNode> table_id_node = new Dictionary<int, FileListNode>( );
         Dictionary<FileListNode, int> table_node_id = new Dictionary<FileListNode, int>( );
@@ -218,29 +216,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 }
             }
 
-            Rect iconRect = args.rowRect;
-            iconRect.x += GetContentIndent( args.item );
-            iconRect.y += ICON_MARGIN_HALF;
-            iconRect.width = rowHeight - ICON_MARGIN;
-            iconRect.height -= ICON_MARGIN;
+            Rect rect = args.rowRect;
+            rect.x += GetContentIndent( args.item );
+
+            rect.x = rect.xMax;
+            rect.width = rowHeight - ICON_MARGIN;
+            rect.y += ICON_MARGIN_HALF;
+            rect.height -= ICON_MARGIN;
             if ( icon == null ) {
                 icon = IconCache.HelpIcon;
             }
-            GUI.DrawTexture( iconRect, icon );
+            GUI.DrawTexture( rect, icon );
+            rect.y -= ICON_MARGIN_HALF;
+            rect.height += ICON_MARGIN;
 
-            Rect spaceRect = args.rowRect;
-            spaceRect.x = iconRect.x;
-            spaceRect.width = iconRect.width + 2;
-
-            Rect labelRect1 = spaceRect;
             if ( subLabel != null ) {
                 var c = GUI.contentColor;
                 GUI.contentColor = subLabelColor;
-                labelRect1 = DrawLabel( labelRect1, subLabel, _boldStyle );
+                rect.x = rect.xMax;
+                rect = DrawLabel( rect, subLabel, _boldStyle );
                 GUI.contentColor = c;
             }
 
-            Rect labelRect2 = labelRect1;
             if ( viewFullPath || isRoot || args.selected || node.type == NodeType.NotFound ) {
                 var c = GUI.contentColor;
                 if ( !isRoot ) {
@@ -249,23 +246,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 var directoryName = Path.GetDirectoryName( path );
                 if ( directoryName.Length != 0 ) {
                     directoryName = directoryName + "\\";
-                    labelRect2 = DrawLabel( labelRect2, directoryName, _style );
+                    rect.x = rect.xMax;
+                    rect = DrawLabel( rect, directoryName, _style );
                 }
                 GUI.contentColor = c;
             }
 
-            Rect labelRect3 = DrawLabel( labelRect2, Path.GetFileName( path ), _style );
+            rect.x = rect.xMax;
+            DrawLabel( rect, Path.GetFileName( path ), _style );
 
             GUI.contentColor = temp_contentColor;
         }
-        static Rect DrawLabel( Rect prevRect, string label, GUIStyle style ) {
-            Rect result = prevRect;
-            result.x = prevRect.x + prevRect.width;
-            //if ( width > 0 ) {
-            //    result.width = width;
-            //} else {
+        static Rect DrawLabel( Rect rect, string label, GUIStyle style ) {
+            Rect result = rect;
             result.width = style.CalcSize( new GUIContent( label ) ).x;
-            //}
             EditorGUI.LabelField( result, label, style );
             return result;
         }
