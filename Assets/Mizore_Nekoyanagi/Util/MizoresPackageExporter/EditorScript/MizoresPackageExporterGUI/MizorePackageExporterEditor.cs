@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
+using BestHTTP.SecureProtocol.Org.BouncyCastle.Utilities.Collections;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -79,19 +81,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             logs.DrawUI( );
         }
-        public static void Export( ExporterEditorLogs logs, Object[] targets ) {
-            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
-            Export( logs, targetlist );
-        }
-        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets ) {
+        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, HashSet<string> ignorePaths ) {
             logs.Clear( );
             for ( int i = 0; i < targets.Length; i++ ) {
                 var item = targets[i];
-                item.Export( logs );
+                item.Export( logs, ignorePaths );
             }
         }
-        public void Export( ) {
-            Export( logs, targets );
+        public void Export( HashSet<string> ignorePaths ) {
+            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
+            Export( logs, targetlist, ignorePaths );
         }
     }
 #endif

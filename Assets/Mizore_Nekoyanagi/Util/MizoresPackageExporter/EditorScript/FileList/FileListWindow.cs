@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using static MizoreNekoyanagi.PublishUtil.PackageExporter.FileList.CreateFileList;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
     public class FileListWindow : EditorWindow {
@@ -14,22 +15,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
         MizoresPackageExporter[] _targets;
         ExporterEditorLogs _logs;
-        FileListNode _root;
 
         Vector2 _tooltipScroll;
+
+        List<string> exportPaths;
 
         public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets ) {
             var window = CreateInstance<FileListWindow>( );
 
             window._targets = targets;
             window._logs = logs;
-            window._root = CreateFileList.Create( targets );
-            window.InitTreeView( );
+            var data = CreateFileList.Create( targets );
+            window.InitTreeView( data );
             window.ShowAuxWindow( );
         }
-        void InitTreeView( ) {
+        void InitTreeView( FileListData data ) {
             _treeViewState = new TreeViewState( );
-            _treeView = new FileListTreeView( _treeViewState, _root );
+            _treeView = new FileListTreeView( _treeViewState, data.rootNode );
+            _treeView.ignorePaths.Clear( );
+            exportPaths = data.packages;
             ReloadTreeView( );
             _treeView.ExpandAll( );
         }
@@ -105,6 +109,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             }
 
             using ( new EditorGUILayout.VerticalScope( EditorStyles.helpBox ) ) {
+                using ( new EditorGUILayout.HorizontalScope( ) ) {
+                    if ( GUILayout.Button( ExporterTexts.ButtonExportAll, GUILayout.Width( 70 ) ) ) {
+                        _treeView.ignorePaths.Clear( );
+                    }
+                    if ( GUILayout.Button( ExporterTexts.ButtonExportNone, GUILayout.Width( 70 ) ) ) {
+                        _treeView.ignorePaths = new HashSet<string>( exportPaths );
+                    }
+                }
+
+
                 EditorGUI.BeginChangeCheck( );
                 bool treeView = EditorGUILayout.Toggle( ExporterTexts.FileListTreeView, ExporterEditorPrefs.FileListTreeView );
                 if ( EditorGUI.EndChangeCheck( ) ) {
@@ -128,22 +142,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                     }
                 }
 
-                EditorGUI.BeginChangeCheck( );
-                bool referencedFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewReferencedFiles, ExporterEditorPrefs.FileListViewReferencedFiles );
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    ExporterEditorPrefs.FileListViewReferencedFiles = referencedFiles;
-                    ReloadTreeView( );
+                if ( _treeView.HasReferencedFile ) {
+                    EditorGUI.BeginChangeCheck( );
+                    bool referencedFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewReferencedFiles, ExporterEditorPrefs.FileListViewReferencedFiles );
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        ExporterEditorPrefs.FileListViewReferencedFiles = referencedFiles;
+                        ReloadTreeView( );
+                    }
                 }
 
-                EditorGUI.BeginChangeCheck( );
-                bool excludeFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewExcludeFiles, ExporterEditorPrefs.FileListViewExcludeFiles );
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    ExporterEditorPrefs.FileListViewExcludeFiles = excludeFiles;
-                    ReloadTreeView( );
+                if ( _treeView.HasExcludeFile ) {
+                    EditorGUI.BeginChangeCheck( );
+                    bool excludeFiles = EditorGUILayout.Toggle( ExporterTexts.FileListViewExcludeFiles, ExporterEditorPrefs.FileListViewExcludeFiles );
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        ExporterEditorPrefs.FileListViewExcludeFiles = excludeFiles;
+                        ReloadTreeView( );
+                    }
                 }
 
-                if ( GUILayout.Button( ExporterTexts.ButtonExportPackage ) ) {
-                    MizoresPackageExporterEditor.Export( _logs, _targets );
+                if ( GUILayout.Button( ExporterTexts.ButtonExportPackage, GUILayout.Height( 50 ) ) ) {
+                    MizoresPackageExporterEditor.Export( _logs, _targets, _treeView.ignorePaths );
                     this.Close( );
                 }
             }

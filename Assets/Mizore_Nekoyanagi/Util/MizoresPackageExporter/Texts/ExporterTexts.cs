@@ -96,6 +96,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string SettingOverridePackageName => Get( "SettingOverridePackageName" );
         public static string LogCleanNameOverride( int count ) => Get( "LogCleanNameOverride", count );
         public static string ButtonCheck => Get( "ButtonCheck" );
+        public static string ButtonExportNone => Get( "ButtonExportNone" );
+        public static string ButtonExportAll => Get( "ButtonExportAll" );
         public static string ButtonExportPackage => Get( "ButtonExportPackage" );
         public static string ButtonExportPackages => Get( "ButtonExportPackages" );
         public static string ButtonOpen => Get( "ButtonOpen" );

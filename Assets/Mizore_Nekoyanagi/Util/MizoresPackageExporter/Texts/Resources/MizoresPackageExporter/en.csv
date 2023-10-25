@@ -37,6 +37,8 @@ VersionSource,Source
 VersionFormat,Format
 PackageName,unitypackage name
 ButtonCheck,Check
+ButtonExportAll,All
+ButtonExportNone,None
 LabelExportPackage,Export to unitypackage
 ButtonExportPackage,Export to unitypackage
 ButtonExportPackages,Export to unitypackages

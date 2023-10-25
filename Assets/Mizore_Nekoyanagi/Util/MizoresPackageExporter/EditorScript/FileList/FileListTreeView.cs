@@ -14,10 +14,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
         public FileListNode GetNode( int id ) {
             return table_id_node[id];
         }
+        /// <summary>
+        /// エクスポート対象から除外するパス
+        /// </summary>
+        public HashSet<string> ignorePaths = new HashSet<string>();
         public bool viewFullPath;
         public bool viewExcludeFiles;
         public bool viewReferencedFiles;
         public bool hierarchyView;
+
+        public bool HasExcludeFile { private set; get; }
+        public bool HasReferencedFile { private set; get; }
 
         GUIStyle _style;
         GUIStyle _boldStyle;
@@ -73,6 +80,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             } else {
                 rows.Clear( );
             }
+            HasExcludeFile = false;
+            HasReferencedFile = false;
 
             AddChildrenRecursive( _root, root, rows );
 
@@ -84,11 +93,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             foreach ( var child in node.childrenTable.Values ) {
                 switch ( child.type ) {
                     case NodeType.Excludes:
+                        HasExcludeFile = true;
                         if ( !viewExcludeFiles ) {
                             continue;
                         }
                         break;
                     case NodeType.References:
+                        HasReferencedFile = true;
                         if ( !viewReferencedFiles ) {
                             continue;
                         }
@@ -218,6 +229,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
             Rect rect = args.rowRect;
             rect.x += GetContentIndent( args.item );
+            if ( isRoot ) {
+                rect.width = 20;
+                EditorGUI.BeginChangeCheck( );
+                bool export = EditorGUI.Toggle( rect, !ignorePaths.Contains(path) );
+                if (EditorGUI.EndChangeCheck()) {
+                    if ( export ) {
+                        ignorePaths.Remove(path);
+                    } else {
+                        ignorePaths.Add(path);
+                    }
+                }
+            } else {
+                rect.width = 0;
+            }
 
             rect.x = rect.xMax;
             rect.width = rowHeight - ICON_MARGIN;

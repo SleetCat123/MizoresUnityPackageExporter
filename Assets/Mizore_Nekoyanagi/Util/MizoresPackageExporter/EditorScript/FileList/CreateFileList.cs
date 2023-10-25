@@ -5,8 +5,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
 {
     public class CreateFileList
     {
-        public static FileListNode Create( MizoresPackageExporter[] exporters ) {
+        public class FileListData {
+            public FileListNode rootNode;
+            public List<string> packages;
+
+            public FileListData( FileListNode rootNode, List<string> packages ) {
+                this.rootNode = rootNode;
+                this.packages = packages;
+            }
+        }
+        public static FileListData Create( MizoresPackageExporter[] exporters ) {
             var root = new FileListNode( );
+            var packages = new List<string>();
             for ( int i = 0; i < exporters.Length; i++ ) {
                 var item = exporters[i];
                 var table = item.GetAllPath_Batch( );
@@ -17,6 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                         //_action?.filelist_postprocessing?.Invoke( item, i );
                         continue;
                     }
+                    packages.Add( exportPath );
                     ExporterUtils.DebugLog( exportPath );
                     var list = kvp.Value;
 
@@ -37,7 +48,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                     root.Add( node );
                 }
             }
-            return root;
+            return new FileListData( root, packages);
         }
     }
 }

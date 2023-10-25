@@ -538,7 +538,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             Debug.Log( exportPath + "をエクスポートしました。" );
 #endif
         }
-        public void Export( ExporterEditorLogs logs ) {
+        public void Export( ExporterEditorLogs logs, HashSet<string> ignorePaths ) {
 #if UNITY_EDITOR
             logs.Clear( );
             UpdateAllExportVersions( );
@@ -547,6 +547,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var table = GetAllPath_Batch( );
             foreach ( var kvp in table ) {
                 string exportPath = kvp.Key;
+                if ( ignorePaths.Contains( exportPath ) ) {
+                    ExporterUtils.DebugLog( "Ignore Export: " + exportPath );
+                    continue;
+                }
                 var list = kvp.Value;
                 Export_Internal( logs, exportPath, list.paths );
             }
