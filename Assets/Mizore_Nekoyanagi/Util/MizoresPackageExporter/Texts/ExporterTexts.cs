@@ -118,6 +118,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PasteTargetNoValue => Get( "PasteTargetNoValue" );
         public static string IncompatibleVersion( string name ) => Get( "IncompatibleVersion", name );
         public static string IncompatibleVersionForceOpen => Get( "IncompatibleVersionForceOpen" );
+        public static string FileListWindowTitle => Get( "FileListWindowTitle" );
         public static string FileListViewFullPath => Get( "FileListViewFullPath" );
         public static string FileListTreeView => Get( "FileListTreeView" );
         public static string FileListViewReferencedFiles => Get( "FileListViewReferencedFiles" );

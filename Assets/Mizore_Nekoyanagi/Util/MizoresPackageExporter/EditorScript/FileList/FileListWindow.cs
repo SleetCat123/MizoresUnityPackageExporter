@@ -22,7 +22,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
         public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets ) {
             var window = CreateInstance<FileListWindow>( );
-
+            window.titleContent = new GUIContent( ExporterTexts.FileListWindowTitle );
             window._targets = targets;
             window._logs = logs;
             var data = CreateFileList.Create( targets );
