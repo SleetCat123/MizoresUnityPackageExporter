@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
-using YamlDotNet.Core.Tokens;
+#endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
