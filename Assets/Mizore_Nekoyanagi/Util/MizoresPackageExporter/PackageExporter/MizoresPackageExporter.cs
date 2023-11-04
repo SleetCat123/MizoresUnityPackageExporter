@@ -294,16 +294,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 path = path.Replace( key, kvp.Value );
             }
 
-            if ( batchExportMode != BatchExportMode.Single ) {
-                key = Const_Keys.KEY_BATCH_EXPORTER;
-                path = path.Replace( key, temp_batchExportCurrentKey );
-                key = Const_Keys.KEY_FORMATTED_BATCH_EXPORTER;
-                if ( path.Contains( key ) ) {
-                    if ( string.IsNullOrWhiteSpace( temp_batchExportCurrentKey ) ) {
-                        path = path.Replace( key, string.Empty );
-                    } else {
-                        path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.batchFormat, recursiveCount ) );
-                    }
+            key = Const_Keys.KEY_BATCH_EXPORTER;
+            path = path.Replace( key, temp_batchExportCurrentKey );
+            key = Const_Keys.KEY_FORMATTED_BATCH_EXPORTER;
+            if ( path.Contains( key ) ) {
+                if ( string.IsNullOrWhiteSpace( temp_batchExportCurrentKey ) ) {
+                    path = path.Replace( key, string.Empty );
+                } else {
+                    path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.batchFormat, recursiveCount ) );
                 }
             }
 
