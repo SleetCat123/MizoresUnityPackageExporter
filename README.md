@@ -36,6 +36,7 @@ Package Managerで導入するときは以下のURLを使用してください�
 このパスの文字列中にある%で囲まれた文字列は下記DynamicPathVariablesで定義された文字列に置き換えられます。  
 （例：`%name%`はMizoresPackageExporterのファイル名で置換されます）
 
+### ★Dynamic Path設定の活用例
 例えば、**A　B　C**という名前の３つのMizoresPackageExporterのDynamic Pathに  
 `Assets/Mizore_Nekoyanagi/%name%`  
 というパスを書いた場合、それぞれ  
@@ -82,7 +83,8 @@ Excludesの文字列を除外パスの検索で実際に使用される文字列
 ***
 
 ### ◇Version File
-指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。  
+指定したテキストファイルにバージョンを記述することでunitypackage名にバージョンを付加できます。 
+jsonファイルを指定した場合、"version"の文字列をバージョンとして使用します。  
 Format欄を編集することでバージョンの表記方法を変更できます。
 Format欄にある%で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
 ***
@@ -91,8 +93,72 @@ Format欄にある%で囲まれた文字列はDynamicPathVariablesの文字列�
 %で囲まれた文字列はDynamicPathVariablesの文字列に置き換えられます。
 ***
 
-### ◇Check
-上記の設定項目で指定したファイル／フォルダが存在するかどうかを確認します。  
+### ◇Batch Export（一括エクスポート）
+v7で追加されました。  
+指定したリストの文字列を順番に参照し、エクスポート処理を連続で行います。  
+文字列は %batch% や %batchf% にセットされ、Dynamic PathやPackage Name内で使用できます。  
+
+この機能を使用することで、複数のバリエーションがあるデータを一括でunitypackage化することができます。  
+
+Batch Exportの有効時にはPackage Nameに %batch% または %batchf% を含める必要があります。
+
+- Disable：Batch Exportを無効化します。
+- Texts：リストの内容を文字列で指定します。
+- Folder：指定したフォルダ内にあるファイル／フォルダの一覧をリストとして扱います。  
+対象となるファイル／フォルダの名前は正規表現でフィルタリング可能です。
+- File：指定したテキストファイルの内容をリストとして扱います。
+
+
+### ★Folder設定の活用例
+- Assets/Mizore_Nekoyanagi/Materials
+- Assets/Mizore_Nekoyanagi/Red
+- Assets/Mizore_Nekoyanagi/Green
+- Assets/Mizore_Nekoyanagi/Blue
+
+上記のような構成のフォルダを、以下のような内容のunitypackageとして出力したい場合を考えてみます。  
+- Red.unitypackage
+  - Materials
+  - Red
+- Green.unitypackage
+  - Materials
+  - Green
+- Blue.unitypackage
+  - Materials
+  - Blue
+
+`Materials`は全てのunitypackageに含まれて欲しく、それ以外の`Red` `Green` `Blue`は別々のunitypackageとして出力したいという状況です。
+
+この例の場合、以下の設定にすることで上記のようなエクスポートを実現できます。
+- Objects to export
+  - `Assets/Mizore_Nekoyanagi/Materials`
+- Dynamic Export Path
+  - `%batch%`
+- エクスポート設定
+  - モード:`Folders`
+  - フォルダ: `Assets/Mizore_Nekoyanagi`
+  - 対象: `All`
+  - 正規表現: `^(?!Materials).+$`
+  - unitypackage名: `%batch%`
+
+正規表現でMaterialsを除外することで、Batch Listに`Materials`が入ることを防いでいます。  
+このとき、Batch Listは以下のようになっています。
+- Red
+- Green
+- Blue
+
+Dynamic Export Pathとunitypackage名に`%batch%`を指定し、Batch Listの文字列が順番に入るようにしています。  
+この状態でエクスポートを行うことで、`Red.unitypackage` `Green.unitypackage` `Blue.unitypackage`という3つのunitypackageがエクスポートされます。  
+
+（上記の設定は一例です。使用する際は実際のフォルダ構成に合わせて設定を行ってください）  
+  
+  
+なおエクスポート一覧には、エクスポート設定の「フォルダ」内にある最新のファイル名／フォルダ名が自動的に反映されます。  
+例えば、新たに`Purple` `Orange`という名前のファイルを`Assets/Mizore_Nekoyanagi/`に追加した場合、上記のような設定を行っていれば、追加設定を行うことなく`Purple.unitypackage` `Orange.unitypackage`がエクスポートされるようになります。
+
+### ◇Override Settings
+v7で追加されました。  
+Batch Exportのリストの要素の設定を上書きできます。  
+unitypackageごとにバージョン情報を個別で管理したり、出力ファイルの命名を変えるといったことが可能です。  
 ***
 
 ### ◇Export to unitypackage
