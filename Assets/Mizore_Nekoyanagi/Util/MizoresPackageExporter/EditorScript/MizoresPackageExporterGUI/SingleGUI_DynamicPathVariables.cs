@@ -41,7 +41,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.GetPackageName( ) );
                 if ( t.batchExportMode != BatchExportMode.Single ) {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
-                    DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, t.FormattedBatch );
+                    DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, ExporterTexts.FormattedBatchVariableTooltip );
                 }
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
                 GUI.enabled = true;
