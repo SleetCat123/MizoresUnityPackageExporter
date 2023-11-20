@@ -62,6 +62,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string Undo => Get( "Undo" );
         public static string BatchExportFolder => Get( "BatchExportFolder" );
+        public static string BatchExportListLabel => Get( "BatchExportListLabel" );
         public static string BatchExportListFile => Get( "BatchExportListFile" );
         public static string BatchExportFolderMode => Get( "BatchExportFolderMode" );
         public static string BatchExportRegex => Get( "BatchExportRegex" );

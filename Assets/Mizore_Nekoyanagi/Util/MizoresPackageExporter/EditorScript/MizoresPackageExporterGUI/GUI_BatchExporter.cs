@@ -200,7 +200,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 if ( item.batchExportMode == BatchExportMode.Single ) {
                     continue;
                 }
-                if ( first == false ) {
+                if ( first ) {
+                    EditorGUI.indentLevel++;
+                    ExporterUtils.SeparateLine( );
+                    EditorGUI.indentLevel--;
+                    EditorGUILayout.LabelField( ExporterTexts.BatchExportListLabel, EditorStyles.boldLabel );
+                } else {
                     EditorGUILayout.Separator( );
                 }
                 first = false;
@@ -298,11 +303,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.Separator( );
                 GUI_VersionFile.DrawMain( targetlist.Select( v => v.packageNameSettings ).ToArray( ), targetlist, 1 );
 
-                if ( t.batchExportMode != BatchExportMode.Single ) {
-                    EditorGUI.indentLevel++;
-                    ExporterUtils.SeparateLine( );
-                    EditorGUI.indentLevel--;
-                }
                 DrawList( targetlist );
             }
 

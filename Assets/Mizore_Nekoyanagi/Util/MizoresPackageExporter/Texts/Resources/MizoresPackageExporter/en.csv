@@ -23,6 +23,7 @@ BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must con
 BatchVariableTooltip,[Note] Replaced by Batch Export string.
 FBatchVariableTooltip,[Note] Replaced by formatted batch string. If %batch% is empty\. it will be empty.
 BatchFormat,Batch Format
+BatchExportListLabel,Batch List
 
 SettingOverrideVersion,Version Override
 SettingOverrideVersionFormat,Version Format Override
@@ -38,7 +39,7 @@ LogCleanNameOverride,Removed {0} overrides.
 
 Version,Version
 VersionSource,Source
-VersionFormat,Format
+VersionFormat,Version Format
 PackageName,unitypackage name
 ButtonCheck,Check
 ButtonExportAll,All
