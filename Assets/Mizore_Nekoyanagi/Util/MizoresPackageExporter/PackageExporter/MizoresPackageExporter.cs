@@ -544,12 +544,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( Directory.Exists( exportPath ) == false ) {
                 Directory.CreateDirectory( Path.GetDirectoryName( exportPath ) );
             }
-            string[] pathNames = list.ToArray( );
-            AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
-            EditorUtility.RevealInFinder( exportPath );
+            if ( list.Any( ) ) {
+                string[] pathNames = list.ToArray( );
+                AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
+                EditorUtility.RevealInFinder( exportPath );
 
-            logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess( exportPath ) );
-            Debug.Log( exportPath + "をエクスポートしました。" );
+                logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess( exportPath ) );
+                Debug.Log( exportPath + "\nをエクスポートしました。" );
+            } else {
+                logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.ExportLogFailedTargetEmpty( exportPath ) );
+                Debug.LogWarning( exportPath + "\nにエクスポートするファイルが何もありませんでした。" );
+            }
 #endif
         }
         public void Export( ExporterEditorLogs logs, HashSet<string> ignorePaths ) {

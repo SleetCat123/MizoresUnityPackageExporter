@@ -111,6 +111,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ButtonFolder => Get( "ButtonFolder" );
         public static string ButtonFile => Get( "ButtonFile" );
         public static string ExportLogNotFound( string path ) => Get( "ExportLogNotFound", path );
+        public static string ExportLogFailedTargetEmpty( string path ) => Get( "ExportLogFailedTargetEmpty", path );
         public static string ExportLogFailed( string path ) => Get( "ExportLogFailed", path );
         public static string ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
         public static string ExportLogSuccess( string path ) => Get( "ExportLogSuccess", path );

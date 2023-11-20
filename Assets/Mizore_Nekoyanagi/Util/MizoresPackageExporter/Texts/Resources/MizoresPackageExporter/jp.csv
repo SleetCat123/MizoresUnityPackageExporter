@@ -18,6 +18,7 @@ Version,バージョン
 VersionSource,バージョン参照元
 DiffTooltip,一部のオブジェクトの値が異なっています。
 ExportLogNotFound,[{0}]は存在しません。
+ExportLogFailedTargetEmpty,{0}\nエクスポート対象ファイルが何もありません。
 ExportLogFailed,{0}\nエクスポートは中断されました。
 ExportLogAllFileExists,ファイル／フォルダの存在チェックが完了しました。
 ExportLogSuccess,[{0}]のエクスポートに成功しました。\n

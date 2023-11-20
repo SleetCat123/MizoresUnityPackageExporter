@@ -53,6 +53,7 @@ DiffTooltip,Some values are different.
 ButtonFolder,Folder
 ButtonFile,File
 ExportLogNotFound,[{0}] is not exists.
+ExportLogFailedTargetEmpty,{0}\nThere are no files to export.
 ExportLogFailed,{0}\nExport has been cancelled.
 ExportLogAllFileExists,All files or directories exist.\n
 ExportLogSuccess,[{0}] export completed.\n
