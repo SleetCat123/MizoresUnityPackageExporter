@@ -5,7 +5,7 @@ using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class GUIElement_CopyPasteTable {
         static bool TableIsPerfectMatch<TKey, TValue>( IEnumerable<MizoresPackageExporter> targets, Func<MizoresPackageExporter, Dictionary<TKey, TValue>> getList ) {
             if ( targets.Count( ) == 1 ) {

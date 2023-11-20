@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
-using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using System.Collections.Generic;
-using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -29,8 +27,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
             // ↓ Dynamic Path
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_DYNAMICPATH,
-                ExporterTexts.FoldoutDynamicPath( dpath_count.GetRangeString( ) ),
-                new FoldoutFuncs( ) {
+                ExporterTexts.FoldoutDynamicPath( dpath_count.ToString( ) ),
+                new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.FoldoutDynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
@@ -49,7 +47,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                         } else {
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
-                            DiffLabel( );
+                            ExporterUtils.DiffLabel( );
                         }
                         EditorGUI.indentLevel--;
 

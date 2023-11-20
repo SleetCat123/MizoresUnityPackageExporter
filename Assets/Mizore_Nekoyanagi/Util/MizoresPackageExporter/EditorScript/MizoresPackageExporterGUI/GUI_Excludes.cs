@@ -2,7 +2,6 @@
 using System.Linq;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using System.Collections.Generic;
-using MizoreNekoyanagi.PublishUtil.PackageExporter.MultipleEditor;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,7 +24,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             // ↓ Excludes
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDES,
-                ExporterTexts.FoldoutExcludes( minmax_count.GetRangeString( ) ),
+                ExporterTexts.FoldoutExcludes( minmax_count.ToString( ) ),
                 new FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),

@@ -76,6 +76,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
+        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getList, Object[] objectReferences ) {
+#if UNITY_EDITOR
+            var add = objectReferences.
+                Where( v => EditorUtility.IsPersistent( v ) ).
+                Select( v => new PackagePrefsElement( v ) );
+            foreach ( var item in targetlist ) {
+                getList( item ).AddRange( add );
+                EditorUtility.SetDirty( item );
+            }
+#endif
+        }
+
         public static bool Filter_HasPersistentObject( Object[] objectReferences ) {
 #if UNITY_EDITOR
             return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
@@ -108,7 +120,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return EditorPrefFoldout( key, new GUIContent( label ), null );
         }
         public static bool EditorPrefFoldout( string key, string label, FoldoutFuncs funcs ) {
-            return EditorPrefFoldout( key, new GUIContent( label ), null );
+            return EditorPrefFoldout( key, new GUIContent( label ), funcs );
         }
         public static bool EditorPrefFoldout( string key, GUIContent label ) {
             return EditorPrefFoldout( key, label, null );

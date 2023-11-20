@@ -15,7 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             this.max = max;
         }
 
-        public string GetRangeString( ) {
+        public override string ToString( ) {
             if ( SameValue ) {
                 return min.ToString( );
             } else {

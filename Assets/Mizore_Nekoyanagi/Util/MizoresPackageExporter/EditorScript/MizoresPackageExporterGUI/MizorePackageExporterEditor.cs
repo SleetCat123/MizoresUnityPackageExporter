@@ -77,7 +77,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
 
             // エディタ本体
-            MultipleEditor.MizoresPackageExporterEditorMain.EditMultiple( this );
+            MizoresPackageExporterEditorMain.EditMultiple( this );
 
             logs.DrawUI( );
         }
