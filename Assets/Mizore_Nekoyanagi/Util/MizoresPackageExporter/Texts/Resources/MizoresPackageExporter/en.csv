@@ -77,9 +77,11 @@ FileListNotFoundPathPrefix,[ ! not found ! ]
 FileListExcludesPathPrefix,[Excludes] 
 FileListReferencesPathPrefix,[Referenced] 
 
+FileListCategoryExport,Actual Export Target Files
+FileListCategoryExportEmpty,(Empty) Actual Export Target Files
 FileListCategoryNotFound,Not Found Files
-FileListCategoryExcludes,Exclude Files (Do not export)
-FileListCategoryReferences,Referenced Files (Export target) 
+FileListCategoryExcludes,Exclude Files
+FileListCategoryReferences,Referenced Files
 
 FileListTooltipReferencedBy,Referenced by
 

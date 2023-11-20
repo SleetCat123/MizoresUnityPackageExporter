@@ -1,9 +1,5 @@
 FoldoutObjectsTooltip,エクスポートの対象となるファイル／フォルダ
-FoldoutReferences,参照されているときだけエクスポート ({0})
 FoldoutReferencesTooltip,この項目に指定されているファイル／フォルダが\nエクスポート対象の他Assetに参照されている場合、該当するファイルは自動的にエクスポート対象に追加されます。
-FoldoutExcludeObjects,除外するオブジェクト ({0})
-FoldoutExcludes,除外する場所 ({0})
-FoldoutExcludesPreview,除外する場所のプレビュー
 
 FoldoutBatchExportEnabled,エクスポート設定（一括エクスポート有効）
 FoldoutBatchExportDisabled,エクスポート設定
@@ -32,3 +28,9 @@ PackageName,unitypackage名
 ExportListEmpty,エクスポートできるunitypackageがありません。\n一括エクスポートの設定を確認してください。
 
 FileListTreeView,階層表示
+
+FileListCategoryExport,エクスポートされるファイル
+FileListCategoryExportEmpty,エクスポートされるファイルがありません
+FileListCategoryNotFound,ファイルが見つかりません
+FileListCategoryExcludes,除外されたファイル
+FileListCategoryReferences,参照されているファイル（エクスポート対象に含まれます）

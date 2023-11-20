@@ -8,14 +8,11 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
-{
-    public enum NodeType
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
+    public enum NodeType {
         Default, NotFound, Excludes, References
     }
-    public class FileListNode
-    {
+    public class FileListNode {
         public FileListNode parent;
         public string id;
         public string path;
@@ -30,6 +27,49 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
         public bool Contains( string path ) {
             return childrenTable.ContainsKey( path );
         }
+        public FileListNode AddOrGetCategoryNode( NodeType type ) {
+            string prefix;
+            switch ( type ) {
+                default:
+                case NodeType.Default:
+                    prefix = ExporterConsts.PATH_PREFIX_EXPORT;
+                    break;
+                case NodeType.NotFound:
+                    prefix = ExporterConsts.PATH_PREFIX_NOTFOUND;
+                    break;
+                case NodeType.References:
+                    prefix = ExporterConsts.PATH_PREFIX_REFERENCED;
+                    break;
+                case NodeType.Excludes:
+                    prefix = ExporterConsts.PATH_PREFIX_EXCLUDES;
+                    break;
+            }
+            FileListNode categoryNode;
+            if ( !childrenTable.TryGetValue( prefix, out categoryNode ) ) {
+                categoryNode = new FileListNode( );
+                categoryNode.path = prefix;
+                categoryNode.id = prefix;
+                categoryNode.iconResult = ExporterUtils.GetIconResult.Dummy;
+                switch ( type ) {
+                    default:
+                    case NodeType.Default:
+                        categoryNode.icon = IconCache.UnityLogoIcon;
+                        break;
+                    case NodeType.NotFound:
+                        categoryNode.icon = IconCache.ErrorIcon;
+                        break;
+                    case NodeType.References:
+                        categoryNode.icon = IconCache.AddIcon;
+                        break;
+                    case NodeType.Excludes:
+                        categoryNode.icon = IconCache.RemoveIcon;
+                        break;
+                }
+                categoryNode.type = type;
+                Add( categoryNode );
+            }
+            return categoryNode;
+        }
         public void Add( FileListNode node ) {
             node.parent = this;
             childrenTable.Add( node.id, node );
@@ -40,35 +80,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
             if ( !node.iconResult.IsExists( ) ) {
                 type = NodeType.NotFound;
             }
-            if ( type != NodeType.Default ) {
-                Texture icon = null;
-                string prefix = null;
-                switch ( type ) {
-                    case NodeType.NotFound:
-                        icon = IconCache.ErrorIcon;
-                        prefix = ExporterConsts.PATH_PREFIX_NOTFOUND;
-                        break;
-                    case NodeType.References:
-                        icon = IconCache.AddIcon;
-                        prefix = ExporterConsts.PATH_PREFIX_REFERENCED;
-                        break;
-                    case NodeType.Excludes:
-                        icon = IconCache.RemoveIcon;
-                        prefix = ExporterConsts.PATH_PREFIX_EXCLUDES;
-                        break;
-                }
-                FileListNode categoryNode;
-                if ( !node.childrenTable.TryGetValue( prefix, out categoryNode ) ) {
-                    categoryNode = new FileListNode( );
-                    categoryNode.path = prefix;
-                    categoryNode.id = prefix;
-                    categoryNode.iconResult = ExporterUtils.GetIconResult.Dummy;
-                    categoryNode.icon = icon;
-                    categoryNode.type = type;
-                    node.Add( categoryNode );
-                }
-                node = categoryNode;
-            }
+            node = AddOrGetCategoryNode( type );
 
             path = path.Replace( '\\', '/' );
             var splittedPath = path.Split( '/' );

@@ -132,9 +132,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FileListNotFoundPathPrefix => Get( "FileListNotFoundPathPrefix" );
         public static string FileListExcludesPathPrefix => Get( "FileListExcludesPathPrefix" );
         public static string FileListReferencesPathPrefix => Get( "FileListReferencesPathPrefix" );
+
+        public static string FileListCategoryExport => Get( "FileListCategoryExport" );
+        public static string FileListCategoryExportEmpty => Get( "FileListCategoryExportEmpty" );
         public static string FileListCategoryNotFound => Get( "FileListCategoryNotFound" );
         public static string FileListCategoryExcludes => Get( "FileListCategoryExcludes" );
         public static string FileListCategoryReferences => Get( "FileListCategoryReferences" );
+
         public static string FileListTooltipReferencedBy => Get( "FileListTooltipReferencedBy" );
 
         public static string ExportListEmpty => Get( "ExportListEmpty" );

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
@@ -32,14 +33,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                     var list = kvp.Value;
 
                     FileListNode node = new FileListNode( );
+                    node.AddOrGetCategoryNode( NodeType.Default );
+                    node.AddOrGetCategoryNode( NodeType.References );
+                    node.AddOrGetCategoryNode( NodeType.Excludes );
                     foreach ( var path in list.paths ) {
                         node.Add( path, NodeType.Default );
                     }
-                    foreach ( var refkvp in list.referencedPaths ) {
+
+                    var referencedPaths = list.referencedPaths;
+                    foreach ( var path in list.excludePaths ) {
+                        referencedPaths.Remove( path );
+                    }
+                    foreach ( var refkvp in referencedPaths ) {
                         var path = refkvp.Key;
                         var referenceFrom = refkvp.Value;
                         node.Add( path, NodeType.References, referenceFrom );
                     }
+
                     foreach ( var path in list.excludePaths ) {
                         node.Add( path, NodeType.Excludes );
                     }

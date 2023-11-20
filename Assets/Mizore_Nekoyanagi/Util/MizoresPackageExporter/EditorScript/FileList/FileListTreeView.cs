@@ -185,6 +185,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             } else if ( path[0] == '[' ) {
                 icon = node.icon;
                 switch ( path ) {
+                    case ExporterConsts.PATH_PREFIX_EXPORT:
+                        if ( node.ChildCount == 0 ) {
+                            path = ExporterTexts.FileListCategoryExportEmpty;
+                        } else {
+                            path = ExporterTexts.FileListCategoryExport;
+                        }
+                        break;
                     case ExporterConsts.PATH_PREFIX_NOTFOUND:
                         path = ExporterTexts.FileListCategoryNotFound;
                         break;
