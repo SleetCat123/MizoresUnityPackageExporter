@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
-    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable
-    {
+    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable {
         public SearchPathType searchType;
         public string value;
 
@@ -39,7 +38,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             return this.value == other.value && this.searchType == other.searchType;
         }
         public override bool Equals( object obj ) {
-            return Equals( (SearchPath)obj );
+            return Equals( ( SearchPath )obj );
         }
         public static bool operator ==( SearchPath a, SearchPath b ) {
             return a.Equals( b );
@@ -66,6 +65,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
         public IEnumerable<string> Filter( IEnumerable<string> paths, bool exclude, bool includeSubfiles ) {
+            ExporterUtils.DebugLog( ToString( ) );
+            ExporterUtils.DebugLog( "Paths: \n" + string.Join( "\n", paths ) + "\n" );
             Regex regex = null;
             if ( searchType == SearchPathType.Regex || searchType == SearchPathType.Regex_IgnoreCase ) {
                 try {
@@ -99,14 +100,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 result = new List<string>( );
             }
             if ( searchType == SearchPathType.Exact ) {
-                if ( paths.Contains( value ) ) {
+                if ( Directory.Exists( value ) && paths.Any( v => v.StartsWith( value ) ) ) {
                     if ( exclude ) {
                         result.Remove( value );
                     } else {
                         result.Add( value );
                     }
                     if ( includeSubfiles ) {
+                        ExporterUtils.DebugLog( "Folder: " + value + "/" );
                         folders.Add( value + "/" );
+                    }
+                } else if ( paths.Contains( value ) ) {
+                    if ( exclude ) {
+                        result.Remove( value );
+                    } else {
+                        result.Add( value );
                     }
                 }
             } else {
@@ -149,7 +157,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
             }
             if ( includeSubfiles ) {
-                var subfiles = paths.Where( v1 => folders.Any( v2 => v2.StartsWith( v1 ) ) );
+                ExporterUtils.DebugLog( "Folders: \n" + string.Join( "\n", folders ) + "\n" );
+                var subfiles = paths.Where( v1 => folders.Any( v2 => v1.StartsWith( v2 ) ) );
+                ExporterUtils.DebugLog( "Subfiles: \n" + string.Join( "\n", subfiles ) + "\n" );
                 if ( exclude ) {
                     return result.Except( subfiles );
                 } else {
@@ -160,8 +170,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
     }
-    public enum SearchPathType
-    {
+    public enum SearchPathType {
         Disabled,
         /// <summary>
         /// 完全一致
@@ -184,8 +193,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         /// </summary>
         Regex_IgnoreCase,
     }
-    public static class SearchPathTypeExtensions
-    {
+    public static class SearchPathTypeExtensions {
         public static string GetString( this SearchPathType value ) {
             switch ( value ) {
                 case SearchPathType.Disabled: return "Disabled";

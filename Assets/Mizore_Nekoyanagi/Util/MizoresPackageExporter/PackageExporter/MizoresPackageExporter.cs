@@ -458,10 +458,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             // 除外指定されたファイル・フォルダを処理
+            ExporterUtils.DebugLog( "Before Exclude: \n" + string.Join( "\n", result ) + "\n" );
             IEnumerable<string> result_enumerable = result;
             foreach ( var item in excludeObjects ) {
                 if ( item == null || item.Object == null ) continue;
-                var exclude = new SearchPath( SearchPathType.Exact, ConvertDynamicPath( item.Path ) );
+                var exclude = new SearchPath( SearchPathType.Exact, item.Path );
                 result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
             }
             foreach ( var item in excludes ) {
@@ -470,7 +471,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             var excludeResults = result.Except( result_enumerable );
             if ( excludeResults.Any( ) ) {
-                ExporterUtils.DebugLog( "Excludes: \n" + string.Join( "\n", excludeResults ) + "\n" );
+                ExporterUtils.DebugLog( "Excludes Result: \n" + string.Join( "\n", excludeResults ) + "\n" );
             } else {
                 ExporterUtils.DebugLog( ExporterTexts.ExcludesWereEmpty );
             }
