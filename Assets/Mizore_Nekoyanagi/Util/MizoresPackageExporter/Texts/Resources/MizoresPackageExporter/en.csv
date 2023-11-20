@@ -1,0 +1,89 @@
+Undo,PackagePrefs
+
+FoldoutObjects,Objects to export ({0})
+FoldoutObjectsTooltip,Objects to export
+FoldoutReferences,References ({0})
+FoldoutReferencesTooltip,If the files/folders in this list is referenced by another Asset to be exported\. corresponding files are automatically added to the export target.
+FoldoutExcludes,Excludes Path ({0})
+FoldoutExcludesPreview,Excludes Path Preview
+FoldoutExcludeObjects,Exclude Objects ({0})
+FoldoutDynamicPath,Dynamic Export Path ({0})
+FoldoutDynamicPathPreview,Dynamic Export Path Preview
+FoldoutVariables,Variables ({0})
+
+FoldoutBatchExportEnabled,Export Settings (Batch Export Enabled)
+FoldoutBatchExportDisabled,Export Settings
+BatchExportMode,Mode
+BatchExportFolderMode,Target
+BatchExportFolder,Folder
+BatchExportListFile,File
+BatchExportRegex,Regex
+BatchExportRegexError,{0}\nRegex Error:\n{1}
+BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1} or {2}
+BatchVariableTooltip,[Note] Replaced by Batch Export string.
+FBatchVariableTooltip,[Note] Replaced by formatted batch string. If %batch% is empty\. it will be empty.
+BatchFormat,Batch Format
+BatchExportListLabel,Batch List
+
+SettingOverrideVersion,Version Override
+SettingOverrideVersionFormat,Version Format Override
+SettingOverrideBatchFormat,Batch Override
+SettingOverridePackageName,Package Name Override
+
+DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
+
+ButtonAddNameOverride,Override Settings
+ButtonRemoveNameOverride,Remove Override
+ButtonCleanNameOverride,Clean Unused Overrides
+LogCleanNameOverride,Removed {0} overrides.
+
+Version,Version
+VersionSource,Source
+VersionFormat,Version Format
+PackageName,unitypackage name
+ButtonCheck,Check
+ButtonExportAll,All
+ButtonExportNone,None
+LabelExportPackage,Export to unitypackage
+ButtonExportPackage,Export to unitypackage
+ButtonExportPackages,Export to unitypackages
+ButtonOpen,Open
+DiffLabel,?
+DiffTooltip,Some values are different.
+ButtonFolder,Folder
+ButtonFile,File
+ExportLogNotFound,[{0}] is not exists.
+ExportLogFailedTargetEmpty,{0}\nThere are no files to export.
+ExportLogFailed,{0}\nExport has been cancelled.
+ExportLogAllFileExists,All files or directories exist.\n
+ExportLogSuccess,[{0}] export completed.\n
+ExcludesWereEmpty,No files were excluded.
+CopyTarget,Copy {0}
+CopyTargetWithValue,Copy [{1}] ({0})
+CopyTargetNoValue,Copy
+PasteTarget,Paste {0}
+PasteTargetWithValue,Paste [{1}] ({0})
+PasteTargetNoValue,Paste
+IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
+IncompatibleVersionForceOpen,Force open
+
+FileListWindowTitle,Export unitypackages
+FileListViewFullPath,FullPath
+FileListTreeView,TreeView
+FileListViewReferencedFiles,View Referenced Files
+FileListViewExcludeFiles,View Excludes Files
+FileListClose,Close
+
+FileListNotFoundPathPrefix,[ ! not found ! ] 
+FileListExcludesPathPrefix,[Excludes] 
+FileListReferencesPathPrefix,[Referenced] 
+
+FileListCategoryExport,Actual Export Target Files
+FileListCategoryExportEmpty,(Empty) Actual Export Target Files
+FileListCategoryNotFound,Not Found Files
+FileListCategoryExcludes,Exclude Files
+FileListCategoryReferences,Referenced Files
+
+FileListTooltipReferencedBy,Referenced by
+
+ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.

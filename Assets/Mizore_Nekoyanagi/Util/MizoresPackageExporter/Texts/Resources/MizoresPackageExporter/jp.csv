@@ -1,0 +1,37 @@
+FoldoutObjectsTooltip,エクスポートの対象となるファイル／フォルダ
+FoldoutReferencesTooltip,この項目に指定されているファイル／フォルダが\nエクスポート対象の他Assetに参照されている場合、該当するファイルは自動的にエクスポート対象に追加されます。
+
+FoldoutBatchExportEnabled,エクスポート設定（一括エクスポート有効）
+FoldoutBatchExportDisabled,エクスポート設定
+BatchExportFolderMode,対象
+BatchExportMode,モード
+BatchExportFolder,フォルダ
+BatchExportListFile,ファイル
+BatchExportRegex,正規表現
+BatchExportNoTagError,{0}\n\n一括エクスポートの使用時、unitypackage名には {1} または {2} を含める必要があります。
+BatchVariableTooltip,注：Batch Exportの文字列と置き換わります。
+FBatchVariableTooltip,注：Batch Formatで変換された文字列が使用されます。%batch%が無い場合は空になります。
+
+DateVariableTooltip,注：現在の日時と置き換わります。(ex: {0})
+
+Version,バージョン
+VersionSource,バージョン参照元
+DiffTooltip,一部のオブジェクトの値が異なっています。
+ExportLogNotFound,[{0}]は存在しません。
+ExportLogFailedTargetEmpty,{0}\nエクスポート対象ファイルが何もありません。
+ExportLogFailed,{0}\nエクスポートは中断されました。
+ExportLogAllFileExists,ファイル／フォルダの存在チェックが完了しました。
+ExportLogSuccess,[{0}]のエクスポートに成功しました。\n
+IncompatibleVersion,[{0}]は現在のバージョンのMizoresPackageExporterとの互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。
+ButtonCheck,エクスポートするファイルの有無を確認
+PackageName,unitypackage名
+
+ExportListEmpty,エクスポートできるunitypackageがありません。\n一括エクスポートの設定を確認してください。
+
+FileListTreeView,階層表示
+
+FileListCategoryExport,エクスポートされるファイル
+FileListCategoryExportEmpty,エクスポートされるファイルがありません
+FileListCategoryNotFound,ファイルが見つかりません
+FileListCategoryExcludes,除外されたファイル
+FileListCategoryReferences,参照されているファイル（エクスポート対象に含まれます）

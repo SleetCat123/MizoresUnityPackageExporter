@@ -12,12 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70f33364524408d429dc66dcafe03b01, type: 3}
   m_Name: MizoresPackageExporter
   m_EditorClassIdentifier: 
+  packageExporterVersion: 1
   objects:
   - obj: {fileID: 102900000, guid: ddaa8dea533dfa14d80f5cf82f808732, type: 3}
     path: Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter
   dynamicpath: []
   s_variables: []
+  excludeObjects: []
+  excludes: []
+  references: []
   versionFile:
-    obj: {fileID: 4900000, guid: 576d863475544c046b0f68d3c7db78e1, type: 3}
-    path: Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter/package.json
-  versionPrefix: -v
+    obj: {fileID: 0}
+    path: 
+  versionFormat: 
+  packageName: 
+  packageNameSettings:
+    versionSource: 1
+    versionFile:
+      obj: {fileID: 4900000, guid: 576d863475544c046b0f68d3c7db78e1, type: 3}
+      path: Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter/package.json
+    versionString: 
+    versionFormat: -%version%
+    batchFormat: _%batch%
+    packageName: '%name%%batchf%%versionf%'
+    useOverride_version: 1
+    useOverride_versionFormat: 0
+    useOverride_batchFormat: 0
+    useOverride_packageName: 0
+  s_packageNameSettingsOverride: []
+  batchExportMode: 0
+  batchExportFolderMode: 0
+  batchExportTexts: []
+  batchExportFolderRoot:
+    obj: {fileID: 0}
+    path: 
+  batchExportListFile:
+    obj: {fileID: 0}
+    path: 
+  batchExportFolderRegex: 

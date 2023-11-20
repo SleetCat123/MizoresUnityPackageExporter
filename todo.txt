@@ -1,0 +1,12 @@
+variablesのコピペ対応
+インデックスの数字を1から始めるようにする
+複数編集で編集できない項目があることを表示する（variables）
+variablesの複数編集対応
+エクスポート実行前後に独自処理を挟める機能
+　ScriptableObjectを継承？
+各項目のtooltip
+Readme書く
+filelist上でチェックボックスを使ってエクスポートするpackageを指定できるようにする
+batchexportのpackageごとにバージョンを指定
+条件を満たすunitypackage名を置換する　ファイル指定
+export成功ログのformatがおかしい　{0}とかのformat前提のテキストはexportertextで引数を取るように
