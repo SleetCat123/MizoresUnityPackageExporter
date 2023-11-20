@@ -23,9 +23,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
         }
 
+        public const int INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION = 0;
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
         [SerializeField]
-        private int packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
+        private int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
         public int PackageExporterVersion { get => packageExporterVersion; }
         public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
         public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
@@ -130,35 +131,35 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             bool converted = false;
-            // packageExporterVersion実装前のオブジェクトからの変換
-            switch ( packageExporterVersion ) {
-                case 0:
-                case 1:
+            // 初回実行時
+            if ( packageExporterVersion == INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION ) {
+                ExporterUtils.DebugLog( "Initialize" );
 #pragma warning disable 612
-                    if ( versionFile != null && !string.IsNullOrEmpty( versionFile.Path ) ) {
-                        // versionFileの場所変更
-                        ExporterUtils.DebugLog( "Convert: versionFile" );
-                        packageNameSettings.versionSource = VersionSource.File;
-                        packageNameSettings.versionFile = versionFile;
-                        versionFile = null;
-                        converted = true;
-                    }
-                    if ( !string.IsNullOrEmpty( versionFormat ) ) {
-                        // versionFormatの場所変更
-                        ExporterUtils.DebugLog( "Convert: versionFormat" );
-                        packageNameSettings.versionFormat = versionFormat;
-                        versionFormat = null;
-                        converted = true;
-                    }
-                    if ( !string.IsNullOrEmpty( packageName ) ) {
-                        // packageNameの場所変更
-                        ExporterUtils.DebugLog( "Convert: packageName" );
-                        packageNameSettings.packageName = packageName;
-                        packageName = null;
-                        converted = true;
-                    }
+                // packageExporterVersion実装前のオブジェクトからの変換
+                if ( versionFile != null && !string.IsNullOrEmpty( versionFile.Path ) ) {
+                    // versionFileの場所変更
+                    ExporterUtils.DebugLog( "Convert: versionFile" );
+                    packageNameSettings.versionSource = VersionSource.File;
+                    packageNameSettings.versionFile = versionFile;
+                    versionFile = null;
+                    converted = true;
+                }
+                if ( !string.IsNullOrEmpty( versionFormat ) ) {
+                    // versionFormatの場所変更
+                    ExporterUtils.DebugLog( "Convert: versionFormat" );
+                    packageNameSettings.versionFormat = versionFormat;
+                    versionFormat = null;
+                    converted = true;
+                }
+                if ( !string.IsNullOrEmpty( packageName ) ) {
+                    // packageNameの場所変更
+                    ExporterUtils.DebugLog( "Convert: packageName" );
+                    packageNameSettings.packageName = packageName;
+                    packageName = null;
+                    converted = true;
+                }
 #pragma warning restore 612
-                    break;
+                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
             }
 
             if ( IsCurrentVersion ) {
