@@ -119,7 +119,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.BeginChangeCheck( );
                         using ( new EditorGUILayout.HorizontalScope( ) ) {
                             EditorGUI.indentLevel++;
-                            EditorGUILayout.LabelField( "Folder", GUILayout.Width( 60 ) );
+                            EditorGUILayout.LabelField( ExporterTexts.BatchExportFolder, GUILayout.Width( 60 ) );
                             EditorGUI.indentLevel--;
                             PackagePrefsElementInspector.Draw<DefaultAsset>( t.batchExportFolderRoot );
                         }
@@ -128,6 +128,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             var obj = t.batchExportFolderRoot.Object;
                             foreach ( var item in targetlist ) {
                                 item.batchExportFolderRoot.Object = obj;
+                                item.UpdateBatchExportKeys( );
+                                EditorUtility.SetDirty( item );
+                            }
+                        }
+
+                        var samevalue_in_all_foldermode = targetlist.All( v => t.batchExportFolderMode == v.batchExportFolderMode );
+                        EditorGUI.BeginChangeCheck( );
+                        EditorGUI.showMixedValue = !samevalue_in_all_foldermode;
+                        EditorGUI.indentLevel++;
+                        t.batchExportFolderMode = ( BatchExportFolderMode )EditorGUILayout.EnumPopup( ExporterTexts.BatchExportFolderMode, t.batchExportFolderMode );
+                        EditorGUI.indentLevel--;
+                        EditorGUI.showMixedValue = false;
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            var mode = t.batchExportFolderMode;
+                            foreach ( var item in targetlist ) {
+                                item.batchExportFolderMode = mode;
                                 item.UpdateBatchExportKeys( );
                                 EditorUtility.SetDirty( item );
                             }
@@ -159,7 +175,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.showMixedValue = !samevalue_in_all_obj;
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.indentLevel++;
-                        EditorGUILayout.LabelField( "File", GUILayout.Width( 60 ) );
+                        EditorGUILayout.LabelField( ExporterTexts.BatchExportListFile, GUILayout.Width( 60 ) );
                         PackagePrefsElementInspector.Draw<TextAsset>( t.batchExportListFile );
                         EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;

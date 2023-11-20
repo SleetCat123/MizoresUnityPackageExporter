@@ -7,10 +7,14 @@ FoldoutExcludesPreview,除外する場所のプレビュー
 
 FoldoutBatchExportEnabled,エクスポート設定（一括エクスポート有効）
 FoldoutBatchExportDisabled,エクスポート設定
+BatchExportFolderMode,対象
 BatchExportMode,モード
+BatchExportFolder,フォルダ
+BatchExportListFile,ファイル
 BatchExportRegex,正規表現
 BatchExportNoTagError,{0}\n\n一括エクスポートの使用時、unitypackage名には {1} または {2} を含める必要があります。
 BatchVariableTooltip,注：Batch Exportの文字列と置き換わります。
+FBatchVariableTooltip,注：Batch Formatで変換された文字列が使用されます。%batch%が無い場合は空になります。
 
 DateVariableTooltip,注：現在の日時と置き換わります。(ex: {0})
 

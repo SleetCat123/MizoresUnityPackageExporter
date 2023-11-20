@@ -14,10 +14,14 @@ FoldoutVariables,Variables ({0})
 FoldoutBatchExportEnabled,Export Settings (Batch Export Enabled)
 FoldoutBatchExportDisabled,Export Settings
 BatchExportMode,Mode
+BatchExportFolderMode,Target
+BatchExportFolder,Folder
+BatchExportListFile,File
 BatchExportRegex,Regex
 BatchExportRegexError,{0}\nRegex Error:\n{1}
 BatchExportNoTagError,{0}\n\nwhen use batch export\.\nunitypackage name must contain {1} or {2}
-BatchVariableTooltip,[Note] Replaced by Batch Export strings.
+BatchVariableTooltip,[Note] Replaced by Batch Export string.
+FBatchVariableTooltip,[Note] Replaced by formatted batch string. If %batch% is empty\. it will be empty.
 BatchFormat,Batch Format
 
 SettingOverrideVersion,Version Override

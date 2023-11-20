@@ -184,7 +184,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         #region BatchExport
         public BatchExportMode batchExportMode;
-        public List<string> batchExportTexts;
+        public BatchExportFolderMode batchExportFolderMode;
+        public List<string> batchExportTexts = new List<string>();
         public PackagePrefsElement batchExportFolderRoot;
         public PackagePrefsElement batchExportListFile;
         public string batchExportFolderRegex;
@@ -246,7 +247,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     } catch ( System.ArgumentException ) {
                         regex = new Regex( string.Empty );
                     }
-                    temp_batchExportKeys = Directory.GetDirectories( path ).Select( v => Path.GetFileName( v ) ).Where( v => regex.IsMatch( v ) ).Distinct( ).ToArray( );
+                    IEnumerable<string> files;
+                    switch ( batchExportFolderMode ) {
+                        default:
+                        case BatchExportFolderMode.All:
+                            files = Directory.GetFileSystemEntries( path );
+                            break;
+                        case BatchExportFolderMode.Files:
+                            files = Directory.GetFiles( path );
+                            break;
+                        case BatchExportFolderMode.Folders:
+                            files = Directory.GetDirectories( path );
+                            break;
+                    }
+                    files = files.Where( v => Path.GetExtension( v ) != ".meta" ).Select( v => Path.GetFileName( v ) );
+                    files = files.Select( v => Path.GetFileNameWithoutExtension( v ) ).Where( v => regex.IsMatch( v ) );
+                    temp_batchExportKeys = files.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.ListFile:
                     if ( batchExportFolderRoot == null || batchExportFolderRoot.Object == null ) {

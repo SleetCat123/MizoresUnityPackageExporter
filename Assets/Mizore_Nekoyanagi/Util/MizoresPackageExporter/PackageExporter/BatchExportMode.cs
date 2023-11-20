@@ -5,4 +5,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
     {
         Single, Texts, Folders, ListFile
     }
+    public enum BatchExportFolderMode {
+        All, Files, Folders
+    }
 }

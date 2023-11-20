@@ -61,11 +61,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public static string Undo => Get( "Undo" );
+        public static string BatchExportFolder => Get( "BatchExportFolder" );
+        public static string BatchExportListFile => Get( "BatchExportListFile" );
+        public static string BatchExportFolderMode => Get( "BatchExportFolderMode" );
         public static string BatchExportRegex => Get( "BatchExportRegex" );
         public static string BatchExportRegexError( string name, string message ) => Get( "BatchExportRegexError", name, message );
         public static string BatchExportMode => Get( "BatchExportMode" );
         public static string BatchExportNoTagError( string name ) => Get( "BatchExportNoTagError", name, ExporterConsts_Keys.KEY_BATCH_EXPORTER, ExporterConsts_Keys.KEY_FORMATTED_BATCH_EXPORTER );
         public static string BatchVariableTooltip => Get( "BatchVariableTooltip" );
+        public static string FormattedBatchVariableTooltip => Get( "FBatchVariableTooltip" );
 
         public static string DateVariableTooltip( string example ) => Get( "DateVariableTooltip", example );
 
