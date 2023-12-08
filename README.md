@@ -11,8 +11,11 @@
 といったミスが起こる可能性を軽減してくれるかもしれません。
   
 Package Managerで導入するときは以下のURLを使用してください。  
-`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Assets/Mizore_Nekoyanagi/Util/MizoresPackageExporter`  
-（2022-05-14：URLが変わりました）
+`https://github.com/SleetCat123/MizoresUnityPackageExporter.git?path=Packages\com.mizore-nekoyanagi.utils.mizore-package-exporter`  
+（2023-12-08：URLが変わりました）  
+
+VRC CreatorCompanion (VPM)での導入はこちらから  
+https://sleetcat123.github.io/vpm-packages/
 
 ## ◆使い方
 （[Releases](https://github.com/SleetCat123/MizoresUnityPackageExporter/releases)からスクリプトのunitypackageをダウンロードしてインポート）  
