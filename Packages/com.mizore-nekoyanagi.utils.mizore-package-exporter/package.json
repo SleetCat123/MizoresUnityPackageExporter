@@ -17,6 +17,8 @@
     "Assets\\Mizore_Nekoyanagi\\Util\\MizoresPackageExporter" : "ddaa8dea533dfa14d80f5cf82f808732"
   },
   "legacyFiles" : {
-    "Assets\\Mizore_Nekoyanagi\\Util\\MizoresPackageExporter.cs" : "70f33364524408d429dc66dcafe03b01"
+    "Assets\\Mizore_Nekoyanagi\\Util\\MizoresPackageExporter.cs" : "70f33364524408d429dc66dcafe03b01",
+    "Assets\\Mizore_Nekoyanagi\\Util\\MizoresPackageExporter.asmdef" : "94ee9215751ac594fb01b9e74251c1ac",
+    "Assets\\Mizore_Nekoyanagi\\Util\\package.json" : "576d863475544c046b0f68d3c7db78e1"
   }
 }
