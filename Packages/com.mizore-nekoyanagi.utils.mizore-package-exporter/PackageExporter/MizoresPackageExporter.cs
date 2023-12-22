@@ -349,6 +349,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return path;
         }
         #endregion
+
+        public string GetDirectoryPath( ) {
+            return Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ) + "/";
+        }
+
         /// <summary>
         /// Referencesの候補を取得
         /// </summary>
@@ -399,7 +404,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             IEnumerable<string> list;
             {
                 var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
-                var list2 = dynamicpath.Where( v => !string.IsNullOrWhiteSpace( v ) ).Select( v => ConvertDynamicPath( v ) );
+                var list2 = dynamicpath
+                    .Where( v => !string.IsNullOrWhiteSpace( v ) )
+                    .Select( v => {
+                        v = ConvertDynamicPath( v );
+                        if ( PathUtils.IsRelativePath( v ) ) {
+                            v = PathUtils.GetProjectAbsolutePath( GetDirectoryPath(), v );
+                        }
+                        return v;
+                    });
                 list = list1.Concat( list2 );
                 list = list.Select( v => v.Replace( '\\', '/' ) );
             }

@@ -87,3 +87,9 @@ FileListCategoryReferences,Referenced Files
 FileListTooltipReferencedBy,Referenced by
 
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.
+
+ConvertToRelativePath,Convert to relative path
+ConvertToAbsolutePath,Convert to absolute path
+ConvertAllPathsToRelative,Convert all paths to relative
+ConvertAllPathsToAbsolute,Convert all paths to absolute
+UseRelativePath,Use relative path as default

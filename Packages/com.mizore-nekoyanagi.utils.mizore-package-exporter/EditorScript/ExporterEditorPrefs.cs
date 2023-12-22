@@ -100,6 +100,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get => EditorPrefsCache.GetBool( FILELIST_TREEVIEW, true );
             set => EditorPrefsCache.SetBool( FILELIST_TREEVIEW, value );
         }
+
+        private const string USE_RELATIVE_PATH = PREFIX + "UseRelativePath";
+        public static bool UseRelativePath {
+            get => EditorPrefsCache.GetBool( USE_RELATIVE_PATH, false );
+            set => EditorPrefsCache.SetBool( USE_RELATIVE_PATH, value );
+        }
     }
 }
 #endif

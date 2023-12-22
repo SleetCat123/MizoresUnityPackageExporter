@@ -143,5 +143,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FileListTooltipReferencedBy => Get( "FileListTooltipReferencedBy" );
 
         public static string ExportListEmpty => Get( "ExportListEmpty" );
+
+        public static string ConvertToRelativePath => Get( "ConvertToRelativePath" );
+        public static string ConvertToAbsolutePath => Get( "ConvertToAbsolutePath" );
+        public static string ConvertAllPathsToAbsolute => Get( "ConvertAllPathsToAbsolute" );
+        public static string ConvertAllPathsToRelative => Get( "ConvertAllPathsToRelative" );
+        public static string UseRelativePath => Get( "UseRelativePath" );
     }
 }
