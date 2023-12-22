@@ -351,7 +351,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #endregion
 
         public string GetDirectoryPath( ) {
+#if UNITY_EDITOR
             return Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ) + "/";
+#else
+            return string.Empty;
+#endif
         }
 
         /// <summary>

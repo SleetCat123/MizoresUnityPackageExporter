@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using UnityEditor;
 using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
@@ -11,7 +8,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( IsRelativePath( path ) ) {
                 return path;
             }
-            // ƒhƒ‰ƒCƒu•\‹L‚ª‚È‚¢‚ÆƒGƒ‰[‚ªo‚é‚Ì‚Å‘Îô‚Æ‚µ‚ÄD:/‚ğ•t‚¯‚é
+            // ãƒ‰ãƒ©ã‚¤ãƒ–è¡¨è¨˜ãŒãªã„ã¨ã‚¨ãƒ©ãƒ¼ãŒå‡ºã‚‹ã®ã§å¯¾ç­–ã¨ã—ã¦D:/ã‚’ä»˜ã‘ã‚‹
             basePath = "D:/" + basePath;
             path = "D:/" + path.Replace( "%", "%25" );
             var baseUri = new System.Uri( basePath );
@@ -27,7 +24,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( !IsRelativePath( path ) ) {
                 return path;
             }
-            // ƒhƒ‰ƒCƒu•\‹L‚ª‚È‚¢‚ÆƒGƒ‰[‚ªo‚é‚Ì‚Å‘Îô‚Æ‚µ‚ÄD:/‚ğ•t‚¯‚é
+            // ãƒ‰ãƒ©ã‚¤ãƒ–è¡¨è¨˜ãŒãªã„ã¨ã‚¨ãƒ©ãƒ¼ãŒå‡ºã‚‹ã®ã§å¯¾ç­–ã¨ã—ã¦D:/ã‚’ä»˜ã‘ã‚‹
             basePath = "D:/" + basePath;
             path = path.Replace( "%", "%25" );
             var baseUri = new System.Uri( basePath );
@@ -51,7 +48,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         //}
         public static string ToValidPath( string path ) {
             path = path.Replace( "\\", "/" );
-            // AssetDatabase‚ÌƒpƒX‚É•ÏŠ·
+            // AssetDatabaseã®ãƒ‘ã‚¹ã«å¤‰æ›
             var dataPath = Path.GetDirectoryName( Application.dataPath).Replace( "\\", "/" );
             if ( path.StartsWith( dataPath ) ) {
                 path = path.Substring( dataPath.Length + 1 );
