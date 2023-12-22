@@ -1,4 +1,9 @@
 # ChangeLog
+## [v7.1.0] (2023-12-22)
+- add: DynamicPathを相対パスに対応。
+Dynamic Export Pathのタイトル部分か、各項目の数字部分を右クリックすることで相対パス／絶対パスを相互に変換できます。
+- change: Folder／Fileボタンでの選択時、フォルダ／ファイルが存在しない場合はPackageExporterがあるフォルダを表示するようにした
+
 ## [v7.0.1] (2023-12-08)
 - change: Package Manager対応に伴いフォルダ構成を変更
 

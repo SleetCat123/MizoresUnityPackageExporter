@@ -25,8 +25,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
             return true;
         }
-        public static void OnRightClickFoldout<T>( IEnumerable<MizoresPackageExporter> targets, Func<string, string> labelFormat, Func<MizoresPackageExporter, List<T>> getList, Action<MizoresPackageExporter, List<T>> setList ) {
-            GenericMenu menu = new GenericMenu( );
+        public static void OnRightClickFoldout<T>( IEnumerable<MizoresPackageExporter> targets, Func<string, string> labelFormat, Func<MizoresPackageExporter, List<T>> getList, Action<MizoresPackageExporter, List<T>> setList, GenericMenu menu = null ) {
+            if ( menu == null ) {
+                menu = new GenericMenu( );
+            }
             var firstList = getList( targets.First( ) );
             bool perfectMatch = ListIsPerfectMatch( targets, getList );
             if ( perfectMatch ) {

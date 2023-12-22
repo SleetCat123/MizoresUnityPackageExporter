@@ -39,6 +39,11 @@ https://sleetcat123.github.io/vpm-packages/
 このパスの文字列中にある%で囲まれた文字列は下記DynamicPathVariablesで定義された文字列に置き換えられます。  
 （例：`%name%`はMizoresPackageExporterのファイル名で置換されます）
 
+7.1.0からは相対パスにも対応しています。  
+`./`から始まるパスを書くことで、PackageExporterがあるフォルダを基準とした相対パスを指定できます。  
+また、Dynamic Export Pathのタイトル部分か、各項目の数字部分を右クリックすることで相対パス／絶対パスを相互に変換できます。  
+###### 注：ここでの絶対パスはプロジェクトフォルダを基準としたパスのことを指します。
+
 ### ★Dynamic Path設定の活用例
 例えば、**A　B　C**という名前の３つのMizoresPackageExporterのDynamic Pathに  
 `Assets/Mizore_Nekoyanagi/%name%`  

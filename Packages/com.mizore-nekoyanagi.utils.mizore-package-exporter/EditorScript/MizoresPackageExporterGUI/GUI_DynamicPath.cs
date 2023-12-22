@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
-    public static class GUI_DynamicPath
-    {
+    public static class GUI_DynamicPath {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<string>> getList, Object[] objectReferences ) {
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
@@ -31,7 +31,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.FoldoutDynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list )
+                    onRightClick = ( ) => {
+                        var menu = new GenericMenu( );
+                        menu.AddItem( new GUIContent( ExporterTexts.ConvertAllPathsToAbsolute ), false, ( ) => {
+                            foreach ( var item in targetlist ) {
+                                for ( int i = 0; i < item.dynamicpath.Count; i++ ) {
+                                    var dir = item.GetDirectoryPath( );
+                                    item.dynamicpath[i] = PathUtils.GetProjectAbsolutePath( dir, item.dynamicpath[i] );
+                                }
+                                EditorUtility.SetDirty( item );
+                            }
+                        } );
+                        menu.AddItem( new GUIContent( ExporterTexts.ConvertAllPathsToRelative ), false, ( ) => {
+                            foreach ( var item in targetlist ) {
+                                for ( int i = 0; i < item.dynamicpath.Count; i++ ) {
+                                    var dir = item.GetDirectoryPath( );
+                                    item.dynamicpath[i] = PathUtils.GetRelativePath( dir, item.dynamicpath[i] );
+                                }
+                                EditorUtility.SetDirty( item );
+                            }
+                        } );
+                        GUIElement_CopyPasteList.OnRightClickFoldout<string>( targetlist, ExporterTexts.FoldoutDynamicPath, ( ex ) => ex.dynamicpath, ( ex, list ) => ex.dynamicpath = list, menu );
+                        }
                 }
                 ) ) {
                 for ( int i = 0; i < dpath_count.max; i++ ) {
@@ -44,7 +65,42 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
 
                         EditorGUI.indentLevel++;
                         if ( samevalue_in_all ) {
-                            EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                            Rect rect = EditorGUILayout.GetControlRect(GUILayout.Width( 30 ) );
+                            EditorGUI.LabelField( rect, i.ToString( ) );
+
+                            Event currentEvent = Event.current;
+                            if ( currentEvent.type == EventType.ContextClick && rect.Contains( currentEvent.mousePosition ) ) {
+                                // 絶対パス／相対パスの変換
+                                GenericMenu menu = new GenericMenu( );
+                                int index= i;
+                                if ( PathUtils.IsRelativePath( t.dynamicpath[i] ) ) {
+                                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToAbsolutePath ), false, ( ) => {
+                                        foreach ( var item in targetlist ) {
+                                            if ( index < item.dynamicpath.Count ) {
+                                                var dir = item.GetDirectoryPath( );
+                                                item.dynamicpath[index] = PathUtils.GetProjectAbsolutePath( dir, item.dynamicpath[index] );
+                                                EditorUtility.SetDirty( item );
+                                            }
+                                        }
+                                        GUI.FocusControl( null );
+                                        EditorGUI.FocusTextInControl( null );
+                                    } );
+                                } else {
+                                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToRelativePath ), false, ( ) => {
+                                        foreach ( var item in targetlist ) {
+                                            if ( index < item.dynamicpath.Count ) {
+                                                var dir = item.GetDirectoryPath( );
+                                                item.dynamicpath[index] = PathUtils.GetRelativePath( dir, item.dynamicpath[index] );
+                                                EditorUtility.SetDirty( item );
+                                            }
+                                        }
+                                        GUI.FocusControl( null );
+                                        EditorGUI.FocusTextInControl( null );
+                                    } );
+                                }
+                                menu.ShowAsContext( );
+                                currentEvent.Use( );
+                            }
                         } else {
                             // 一部オブジェクトの値が異なっていたらTextFieldの左に?を表示
                             ExporterUtils.DiffLabel( );
@@ -65,9 +121,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                         if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                             GUI.changed = true;
                             path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                            if ( ExporterEditorPrefs.UseRelativePath ) {
+                                var dir = t.GetDirectoryPath( );
+                                path = PathUtils.GetRelativePath( dir, path );
+                            }
                         }
 
                         if ( EditorGUI.EndChangeCheck( ) ) {
+                            path = PathUtils.ToValidPath( path );
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath, Mathf.Max( i + 1, item.dynamicpath.Count ) );
                                 item.dynamicpath[i] = path;
@@ -100,12 +161,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     }
                 }
                 EditorGUI.indentLevel++;
-                    if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
-                        foreach ( var item in targetlist ) {
-                            ExporterUtils.ResizeList( item.dynamicpath, dpath_count.max + 1, ( ) => string.Empty );
-                            EditorUtility.SetDirty( item );
-                        }
+                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                    foreach ( var item in targetlist ) {
+                        ExporterUtils.ResizeList( item.dynamicpath, dpath_count.max + 1, ( ) => string.Empty );
+                        EditorUtility.SetDirty( item );
                     }
+                }
                 EditorGUI.indentLevel--;
             }
             // ↑ Dynamic Path
@@ -117,17 +178,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
                     if ( multiple ) {
-                            GUI.enabled = false;
-                            EditorGUI.indentLevel++;
-                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                            EditorGUI.indentLevel--;
-                            GUI.enabled = true;
+                        GUI.enabled = false;
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                        EditorGUI.indentLevel--;
+                        GUI.enabled = true;
                     }
                     for ( int i = 0; i < dpath_count.max; i++ ) {
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                             var indent = EditorGUI.indentLevel;
                             if ( multiple ) {
-                                EditorGUI.indentLevel+=2;
+                                EditorGUI.indentLevel += 2;
                             } else {
                                 EditorGUI.indentLevel++;
                             }
@@ -135,6 +196,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor
                             EditorGUI.indentLevel = indent;
                             if ( i < item.dynamicpath.Count ) {
                                 string previewpath = item.ConvertDynamicPath( item.dynamicpath[i] );
+                                if ( PathUtils.IsRelativePath( previewpath ) ) {
+                                    var dir = item.GetDirectoryPath( );
+                                    previewpath = PathUtils.GetProjectAbsolutePath( dir, previewpath );
+                                }
                                 EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
                             } else {
                                 EditorGUILayout.LabelField( "-" );

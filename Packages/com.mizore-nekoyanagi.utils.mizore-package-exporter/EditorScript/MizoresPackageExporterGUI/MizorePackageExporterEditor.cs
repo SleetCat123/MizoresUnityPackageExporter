@@ -56,6 +56,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterEditorPrefs.Language = ExporterTexts.LanguageList[languageIndex];
             }
 
+            // デフォルトで相対パスを使用するか
+            EditorGUI.BeginChangeCheck( );
+            bool useRelativePath = EditorGUILayout.Toggle( ExporterTexts.UseRelativePath, ExporterEditorPrefs.UseRelativePath );
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                ExporterEditorPrefs.UseRelativePath = useRelativePath;
+            }
+
             ExporterUtils.SeparateLine( );
 
             // Exporterのファイルバージョンの互換性チェック
