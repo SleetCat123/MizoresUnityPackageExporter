@@ -162,47 +162,54 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     EditorGUILayout.HelpBox( "Can't get value: " + fieldName, MessageType.Error );
                     break;
                 }
+                GUIContent content;
+                var tooltip = field.GetCustomAttributes( typeof( TooltipAttribute ), false ).FirstOrDefault( ) as TooltipAttribute;
+                if ( tooltip == null ) {
+                    content = new GUIContent( fieldName );
+                } else {
+                    content = new GUIContent( fieldName, tooltip.tooltip );
+                }
                 EditorGUI.BeginChangeCheck( );
                 if ( field.FieldType == typeof( string ) ) {
-                    value = EditorGUILayout.TextField( fieldName, ( string )value );
+                    value = EditorGUILayout.TextField( content, ( string )value );
                 } else if ( field.FieldType == typeof( bool ) ) {
-                    value = EditorGUILayout.Toggle( fieldName, ( bool )value );
+                    value = EditorGUILayout.Toggle( content, ( bool )value );
                 } else if ( field.FieldType == typeof( int ) ) {
                     var slider = field.GetCustomAttributes( typeof( RangeAttribute ), false ).FirstOrDefault( ) as RangeAttribute;
                     if ( slider == null ) {
-                        value = EditorGUILayout.IntField( fieldName, ( int )value );
+                        value = EditorGUILayout.IntField( content, ( int )value );
                     } else {
-                        value = EditorGUILayout.IntSlider( fieldName, ( int )value, ( int )slider.min, ( int )slider.max );
+                        value = EditorGUILayout.IntSlider( content, ( int )value, ( int )slider.min, ( int )slider.max );
                     }
                 } else if ( field.FieldType == typeof( float ) ) {
                     var slider = field.GetCustomAttributes( typeof( RangeAttribute ), false ).FirstOrDefault( ) as RangeAttribute;
                     if ( slider == null ) {
-                        value = EditorGUILayout.FloatField( fieldName, ( float )value );
+                        value = EditorGUILayout.FloatField( content, ( float )value );
                     } else {
-                        value = EditorGUILayout.Slider( fieldName, ( float )value, slider.min, slider.max );
+                        value = EditorGUILayout.Slider( content, ( float )value, slider.min, slider.max );
                     }
                 } else if ( field.FieldType == typeof( Vector2 ) ) {
-                    value = EditorGUILayout.Vector2Field( fieldName, ( Vector2 )value );
+                    value = EditorGUILayout.Vector2Field( content, ( Vector2 )value );
                 } else if ( field.FieldType == typeof( Vector3 ) ) {
-                    value = EditorGUILayout.Vector3Field( fieldName, ( Vector3 )value );
+                    value = EditorGUILayout.Vector3Field( content, ( Vector3 )value );
                 } else if ( field.FieldType == typeof( Vector4 ) ) {
-                    value = EditorGUILayout.Vector4Field( fieldName, ( Vector4 )value );
+                    value = EditorGUILayout.Vector4Field( content, ( Vector4 )value );
                 } else if ( field.FieldType == typeof( Color ) ) {
-                    value = EditorGUILayout.ColorField( fieldName, ( Color )value );
+                    value = EditorGUILayout.ColorField( content, ( Color )value );
                 } else if ( field.FieldType == typeof( AnimationCurve ) ) {
-                    value = EditorGUILayout.CurveField( fieldName, ( AnimationCurve )value );
+                    value = EditorGUILayout.CurveField( content, ( AnimationCurve )value );
                 } else if ( field.FieldType == typeof( Bounds ) ) {
-                    value = EditorGUILayout.BoundsField( fieldName, ( Bounds )value );
+                    value = EditorGUILayout.BoundsField( content, ( Bounds )value );
                 } else if ( field.FieldType == typeof( Rect ) ) {
-                    value = EditorGUILayout.RectField( fieldName, ( Rect )value );
+                    value = EditorGUILayout.RectField( content, ( Rect )value );
                 } else if ( field.FieldType == typeof( LayerMask ) ) {
-                    value = EditorGUILayout.LayerField( fieldName, ( LayerMask )value );
+                    value = EditorGUILayout.LayerField( content, ( LayerMask )value );
                 } else if ( field.FieldType == typeof( System.Enum ) ) {
-                    value = EditorGUILayout.EnumPopup( fieldName, ( System.Enum )value );
+                    value = EditorGUILayout.EnumPopup( content, ( System.Enum )value );
                 } else if ( field.FieldType == typeof( Object ) ) {
-                    value = EditorGUILayout.ObjectField( fieldName, ( Object )value, typeof( Object ), true );
+                    value = EditorGUILayout.ObjectField( content, ( Object )value, typeof( Object ), true );
                 } else {
-                    EditorGUILayout.LabelField( fieldName, "Unsupported Type: " + field.FieldType );
+                    EditorGUILayout.LabelField( content, "Unsupported Type: " + field.FieldType );
                 }
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     postProcessTempValues[fieldName] = value;
