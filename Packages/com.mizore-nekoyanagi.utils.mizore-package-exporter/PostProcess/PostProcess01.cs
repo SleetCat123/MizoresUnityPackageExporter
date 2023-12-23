@@ -10,8 +10,13 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
     public class PostProcess01 : IExportPostProcess {
         [Tooltip( "エクスポート対象のfbxファイルをfbxフォルダにコピーするか" )]
         public bool copyFbx = true;
+
+        [Space]
         public bool createZip = true;
         public System.IO.Compression.CompressionLevel compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
+        public string zipFolderName = "_zip";
+
+        [Space]
         [Tooltip( "PackageExporterと同じパスにあるフォルダ" )]
         public string releaseFolderName = "_release";
         [Tooltip( "PackageExporterの1つ上の階層にあるフォルダ" )]
@@ -104,7 +109,16 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
 
             if ( createZip ) {
                 // zip化
-                var zipPath = Path.Combine( dir, packageName + ".zip" );
+                string zipDir;
+                if ( string.IsNullOrEmpty( zipFolderName ) ) {
+                    zipDir = dir;
+                } else {
+                    zipDir = Path.Combine( dir, zipFolderName );
+                    if ( !Directory.Exists( zipDir ) ) {
+                        Directory.CreateDirectory( zipDir );
+                    }
+                }
+                var zipPath = Path.Combine( zipDir, packageName + ".zip" );
                 if ( File.Exists( zipPath ) ) {
                     File.Delete( zipPath );
                 }

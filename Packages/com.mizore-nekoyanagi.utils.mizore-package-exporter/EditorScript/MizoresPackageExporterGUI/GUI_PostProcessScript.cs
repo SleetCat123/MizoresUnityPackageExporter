@@ -162,6 +162,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     EditorGUILayout.HelpBox( "Can't get value: " + fieldName, MessageType.Error );
                     break;
                 }
+                var space = field.GetCustomAttributes( typeof( SpaceAttribute ), false ).FirstOrDefault( ) as SpaceAttribute;
+                if ( space != null ) {
+                    EditorGUILayout.Space( );
+                }
                 GUIContent content;
                 var tooltip = field.GetCustomAttributes( typeof( TooltipAttribute ), false ).FirstOrDefault( ) as TooltipAttribute;
                 if ( tooltip == null ) {
