@@ -204,12 +204,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     value = EditorGUILayout.RectField( content, ( Rect )value );
                 } else if ( field.FieldType == typeof( LayerMask ) ) {
                     value = EditorGUILayout.LayerField( content, ( LayerMask )value );
-                } else if ( field.FieldType == typeof( System.Enum ) ) {
+                } else if ( field.FieldType.IsEnum ) {
                     value = EditorGUILayout.EnumPopup( content, ( System.Enum )value );
-                } else if ( field.FieldType == typeof( Object ) ) {
-                    value = EditorGUILayout.ObjectField( content, ( Object )value, typeof( Object ), true );
+                } else if ( field.FieldType.IsSubclassOf( typeof( Object ) ) ) {
+                    value = EditorGUILayout.ObjectField( content, ( Object )value, field.FieldType, true );
                 } else {
-                    EditorGUILayout.LabelField( content, "Unsupported Type: " + field.FieldType );
+                    EditorGUILayout.LabelField( content, new GUIContent( "Unsupported Type: " + field.FieldType ) );
                 }
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     postProcessTempValues[fieldName] = value;
