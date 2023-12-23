@@ -12,12 +12,10 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
         public bool copyFbx = true;
         public bool createZip = true;
         public System.IO.Compression.CompressionLevel compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
-        [Tooltip( "PackageExporterと同じパスにあるファイル" )]
-        public string readmeTextName = "readme.txt";
         [Tooltip( "PackageExporterと同じパスにあるフォルダ" )]
-        public string releaseFolderName = "release";
+        public string releaseFolderName = "_release";
         [Tooltip( "PackageExporterの1つ上の階層にあるフォルダ" )]
-        public string commonFolderName = "common";
+        public string commonFolderName = "_common";
         public void OnExported( string exporterPath, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
             var paths = list.paths;
 
@@ -59,16 +57,6 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                     Debug.Log( "Copy fbx: " + fbx );
                     logs.Add( "Copy fbx: " + fbx );
                     File.Copy( fbx, Path.Combine( fbxDir, Path.GetFileName( fbx ) ) );
-                }
-            }
-
-            if ( !string.IsNullOrEmpty( readmeTextName ) ) {
-                // packageexporterと同じパスにreadmeTextNameがあったらコピー
-                var readmePath = Path.Combine( exporterPath, readmeTextName );
-                if ( File.Exists( readmePath ) ) {
-                    Debug.Log( "Copy readme: " + readmePath );
-                    logs.Add( "Copy readme: " + readmePath );
-                    File.Copy( readmePath, Path.Combine( folderPath, readmeTextName ) );
                 }
             }
 
