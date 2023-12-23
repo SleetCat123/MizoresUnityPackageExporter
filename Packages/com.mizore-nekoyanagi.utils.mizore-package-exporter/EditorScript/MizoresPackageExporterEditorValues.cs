@@ -4,16 +4,12 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public class ExporterEditorLogs
-    {
-        public enum LogType
-        {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public class ExporterEditorLogs {
+        public enum LogType {
             Info, Warning, Error, Separator
         }
-        public class LogElement
-        {
+        public class LogElement {
             public LogType type;
             public Texture icon;
             public string text;
@@ -65,6 +61,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public List<LogElement> logs = new List<LogElement>( );
 
+        public void Add( ) {
+            logs.Add( new LogElement( LogType.Info, string.Empty ) );
+        }
+        public void Add( string text ) {
+            logs.Add( new LogElement( LogType.Info, text ) );
+        }
         public void Add( LogType type, string text ) {
             logs.Add( new LogElement( type, text ) );
         }

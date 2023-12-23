@@ -602,12 +602,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 var list = kvp.Value;
                 bool exported = Export_Internal( logs, exportPath, list.paths );
                 if ( exported ) {
-                    CallPostProcessScript( this, exportPath, list );
+                    CallPostProcessScript( this, exportPath, list, logs );
                 }
             }
 #endif
         }
-        public static void CallPostProcessScript( MizoresPackageExporter p, string exportPath, FilePathList list ) {
+        public static void CallPostProcessScript( MizoresPackageExporter p, string exportPath, FilePathList list, ExporterEditorLogs logs ) {
 #if UNITY_EDITOR
             if ( p.postProcessScript == null ) {
                 return;
@@ -645,7 +645,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     }
                 }
                 Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
-                instance.OnExported( p.GetDirectoryPath( ), exportPath, list );
+                logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
+                instance.OnExported( p.GetDirectoryPath( ), exportPath, list, logs );
+                Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
+                logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
             }
 #endif
         }
