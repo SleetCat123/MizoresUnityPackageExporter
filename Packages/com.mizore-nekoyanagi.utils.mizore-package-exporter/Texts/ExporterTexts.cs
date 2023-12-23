@@ -42,12 +42,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                             if ( values.Length >= 2 ) {
                                 var registerText = values[1].Replace( "\\.", "," );
                                 t[values[0]] = registerText.Replace( "\\n", "\n" );
-                                ExporterUtils.DebugLog( $"[{values[0]}] = {registerText}" );
+                                // ExporterUtils.DebugLog( $"[{values[0]}] = {registerText}" );
                             }
                         }
                     }
                     _table.Add( language, t );
-                    ExporterUtils.DebugLog( "Load finish: " + path );
+                    // ExporterUtils.DebugLog( "Load finish: " + path );
                 }
             }
             string result;

@@ -240,7 +240,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public void UpdateBatchExportKeys( ) {
 #if UNITY_EDITOR
-            ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
+            //ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
             switch ( batchExportMode ) {
                 default:

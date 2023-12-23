@@ -101,10 +101,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     if ( postProcessScript == null ) {
                         error = false;
                     } else if ( postProcessScript.GetClass( ) == null ) {
-                        Debug.LogError( "PostProcessScript is not class: " + postProcessScript.name );
+                        Debug.LogError( "Script is not class: " + postProcessScript.name );
                         error = true;
                     } else if ( !postProcessScript.GetClass( ).GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
-                        Debug.LogError( "PostProcessScript is not IExportPostProcess: " + postProcessScript.name );
+                        Debug.LogError( "Script is not inherit IExportPostProcess: " + postProcessScript.name );
                         error = true;
                     } else {
                         error = false;
