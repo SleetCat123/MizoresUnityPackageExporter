@@ -22,6 +22,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 this.value = value;
             }
         }
+        [System.Serializable]
+        public class StringPair {
+            public string key;
+            public string value;
+            public StringPair( string key, string value ) {
+                this.key = key;
+                this.value = value;
+            }
+        }
 
         public const int INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION = 0;
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
@@ -41,6 +50,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
         public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
+
+        public Object postProcessScript;
+        [System.NonSerialized]
+        public Dictionary<string, string> postProcessScriptFieldValues = new Dictionary<string, string>( );
+        [SerializeField]
+        StringPair[] s_postProcessScriptFieldValues;
 
         #region PackageName
         /// <summary>互換性のため残しておく。今後はpackageNameSettings.versionFileを使用</summary>
@@ -375,11 +390,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
             return result.Select( v => v.Replace( '\\', '/' ) );
         }
-        public class FilePathList {
-            public IEnumerable<string> paths;
-            public IEnumerable<string> excludePaths;
-            public Dictionary<string, HashSet<string>> referencedPaths;
-        }
         public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
             var result = new Dictionary<string, FilePathList>( );
             if ( batchExportMode == BatchExportMode.Single ) {
@@ -546,7 +556,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
             return result;
         }
-        static void Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
+        static bool Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
 #if UNITY_EDITOR
             Debug.Log( exportPath + "\n" + "Start Export: " + string.Join( "/n", list ) );
             // ファイルが存在するか確認
@@ -555,7 +565,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 string failedText = ExporterTexts.ExportLogFailed( exportPath );
                 Debug.LogError( failedText );
                 logs.Add( ExporterEditorLogs.LogType.Error, failedText );
-                return;
+                return false;
             }
 
             if ( Directory.Exists( exportPath ) == false ) {
@@ -568,9 +578,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
                 logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess( exportPath ) );
                 Debug.Log( exportPath + "\nをエクスポートしました。" );
+                return true;
             } else {
                 logs.Add( ExporterEditorLogs.LogType.Error, ExporterTexts.ExportLogFailedTargetEmpty( exportPath ) );
                 Debug.LogWarning( exportPath + "\nにエクスポートするファイルが何もありませんでした。" );
+                return false;
             }
 #endif
         }
@@ -588,7 +600,52 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     continue;
                 }
                 var list = kvp.Value;
-                Export_Internal( logs, exportPath, list.paths );
+                bool exported = Export_Internal( logs, exportPath, list.paths );
+                if ( exported ) {
+                    CallPostProcessScript( this, exportPath, list );
+                }
+            }
+#endif
+        }
+        public static void CallPostProcessScript( MizoresPackageExporter p, string exportPath, FilePathList list ) {
+#if UNITY_EDITOR
+            if ( p.postProcessScript == null ) {
+                return;
+            }
+            // 後処理スクリプトを実行
+            var script = p.postProcessScript as MonoScript;
+            if ( script == null ) {
+                Debug.LogError( ExporterTexts.PostProcessScriptNotFound );
+            } else {
+                var type = script.GetClass( );
+                if ( !type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
+                    Debug.LogError( ExporterTexts.PostProcessScriptNotImplement );
+                    return;
+                }
+                var fields = type.GetFields( System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance );
+                // インスタンス化
+                var instance = System.Activator.CreateInstance( type ) as IExportPostProcess;
+                // フィールドに値を設定
+                foreach ( var field in fields ) {
+                    string valueStr;
+                    if ( p.postProcessScriptFieldValues.TryGetValue( field.Name, out valueStr ) ) {
+                        try {
+                            Debug.Log( $"Set field value: {field.Name} = {valueStr} ({field.FieldType})" );
+                            object value;
+                            if ( field.FieldType == typeof( string ) ) {
+                                value = p.ConvertDynamicPath( valueStr );
+                            } else {
+                                value = JsonUtility.FromJson( valueStr, field.FieldType );
+                            }
+                            field.SetValue( instance, value );
+                        } catch ( System.Exception e ) {
+                            Debug.LogError( $"Failed to set field value: {field.Name} = {valueStr} ({field.FieldType})" );
+                            Debug.LogError( e );
+                        }
+                    }
+                }
+                Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
+                instance.OnExported( p.GetDirectoryPath( ), exportPath, list );
             }
 #endif
         }
@@ -596,6 +653,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public void OnBeforeSerialize( ) {
             s_variables = variables.Select( kvp => new DynamicPathVariable( kvp.Key, kvp.Value ) ).ToArray( );
             s_packageNameSettingsOverride = packageNameSettingsOverride.Select( kvp => new PackageNameSettingsKVP( kvp.Key, kvp.Value ) ).ToArray( );
+            s_postProcessScriptFieldValues = postProcessScriptFieldValues.Select( kvp => new StringPair( kvp.Key, kvp.Value ) ).ToArray( );
         }
 
         public void OnAfterDeserialize( ) {
@@ -604,6 +662,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             if ( s_packageNameSettingsOverride != null ) {
                 packageNameSettingsOverride = s_packageNameSettingsOverride.ToDictionary( v => v.key, v => v.value );
+            }
+            if ( s_postProcessScriptFieldValues != null ) {
+                postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary( v => v.key, v => v.value );
             }
         }
 

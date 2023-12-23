@@ -10,6 +10,7 @@ FoldoutExcludeObjects,Exclude Objects ({0})
 FoldoutDynamicPath,Dynamic Export Path ({0})
 FoldoutDynamicPathPreview,Dynamic Export Path Preview
 FoldoutVariables,Variables ({0})
+Variables,Variables
 
 FoldoutBatchExportEnabled,Export Settings (Batch Export Enabled)
 FoldoutBatchExportDisabled,Export Settings
@@ -93,3 +94,15 @@ ConvertToAbsolutePath,Convert to absolute path
 ConvertAllPathsToRelative,Convert all paths to relative
 ConvertAllPathsToAbsolute,Convert all paths to absolute
 UseRelativePath,Use relative path as default
+
+AdvancedMode,Advanced
+FoldoutPostProcessScript,[Advanced] Post Process Script
+PostProcessScript,Script
+PostProcessScriptTooltip,Script must inherit IExportPostProcess.
+PostProcessScriptFields,Fields
+PostProcessScriptResetAllFields,Reset All Fields
+PostProcessScriptCleanUnusedFields,Clean Unused Fields
+PostProcessScriptNotFound,Script not found.
+PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
+
+EditOnlySingle,{0} can only be edited in single selection mode.

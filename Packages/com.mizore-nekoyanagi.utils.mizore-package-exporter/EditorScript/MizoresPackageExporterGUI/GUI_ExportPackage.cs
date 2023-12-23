@@ -3,14 +3,12 @@ using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
-#if UNITY_EDITOR
     public static class GUI_ExportPackage {
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
+            var t = targetlist[0];
             bool multiple = targetlist.Length > 1;
             EditorGUILayout.LabelField( ExporterTexts.LabelExportPackage, EditorStyles.boldLabel );
             // Check Button
@@ -72,5 +70,4 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
         }
     }
-#endif
 }

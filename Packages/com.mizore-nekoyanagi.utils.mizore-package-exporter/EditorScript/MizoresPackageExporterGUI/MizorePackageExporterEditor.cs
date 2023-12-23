@@ -63,6 +63,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterEditorPrefs.UseRelativePath = useRelativePath;
             }
 
+            // 上級者向け
+            EditorGUI.BeginChangeCheck( );
+            bool advanced = EditorGUILayout.Toggle( ExporterTexts.AdvancedMode, ExporterEditorPrefs.AdvancedMode);
+            if ( EditorGUI.EndChangeCheck( ) ) {
+                ExporterEditorPrefs.AdvancedMode = advanced;
+            }
+
             ExporterUtils.SeparateLine( );
 
             // Exporterのファイルバージョンの互換性チェック

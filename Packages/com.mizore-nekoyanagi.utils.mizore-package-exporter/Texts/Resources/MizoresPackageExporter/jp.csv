@@ -41,3 +41,5 @@ ConvertToAbsolutePath,絶対パスに変換
 ConvertAllPathsToRelative,全てのパスを相対パスに変換
 ConvertAllPathsToAbsolute,全てのパスを絶対パスに変換
 UseRelativePath,デフォルトで相対パスを使用
+
+PostProcessScriptTooltip,スクリプトはIExportPostProcessを実装している必要があります。

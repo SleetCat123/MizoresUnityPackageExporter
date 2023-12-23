@@ -86,6 +86,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FoldoutVariables( string range ) => Get( "FoldoutVariables", range );
         public static string FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
         public static string FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
+        public static string FoldoutPostProcessScript => Get( "FoldoutPostProcessScript" );
+        public static string Variables => Get( "Variables" );
         public static string Version => Get( "Version" );
         public static string VersionSource => Get( "VersionSource" );
         public static string VersionFormat => Get( "VersionFormat" );
@@ -149,5 +151,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ConvertAllPathsToAbsolute => Get( "ConvertAllPathsToAbsolute" );
         public static string ConvertAllPathsToRelative => Get( "ConvertAllPathsToRelative" );
         public static string UseRelativePath => Get( "UseRelativePath" );
+
+        public static string AdvancedMode => Get( "AdvancedMode" );
+
+        public static string PostProcessScript => Get( "PostProcessScript" );
+        public static string PostProcessScriptTooltip => Get( "PostProcessScriptTooltip" );
+        public static string PostProcessScriptResetAllFields => Get( "PostProcessScriptResetAllFields" );
+        public static string PostProcessScriptFields => Get( "PostProcessScriptFields" );
+        public static string PostProcessScriptNotFound => Get( "PostProcessScriptNotFound" );
+        public static string PostProcessScriptNotImplement => Get( "PostProcessScriptNotImplement" );
+        public static string PostProcessScriptCleanUnusedFields => Get( "PostProcessScriptCleanUnusedFields" );
+
+        public static string EditOnlySingle(string text) => string.Format( Get( "EditOnlySingle" ), text );
     }
 }

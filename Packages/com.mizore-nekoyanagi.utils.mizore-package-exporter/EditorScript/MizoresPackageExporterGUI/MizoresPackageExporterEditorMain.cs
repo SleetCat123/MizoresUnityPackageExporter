@@ -7,8 +7,7 @@ using UnityEditor;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
-    public static class MizoresPackageExporterEditorMain
-    {
+    public static class MizoresPackageExporterEditorMain {
         /// <summary>
         /// 複数オブジェクトの編集
         /// </summary>
@@ -33,7 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             GUI_DynamicPath.Draw( ed, t, targetlist );
 
             ExporterUtils.SeparateLine( );
-           
+
             GUI_ReferencesObjects.Draw( ed, t, targetlist );
 
             ExporterUtils.SeparateLine( );
@@ -44,10 +43,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
                 SingleGUI_DynamicPathVariables.Draw( ed, t );
+            } else {
+                ExporterUtils.SeparateLine( );
+                EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.Variables ), MessageType.Info );
             }
 
             ExporterUtils.SeparateLine( );
             GUI_BatchExporter.Draw( ed, t, targetlist );
+
+            if ( ExporterEditorPrefs.AdvancedMode ) {
+                ExporterUtils.SeparateLine( );
+                GUI_PostProcessScript.Draw( ed, t, targetlist );
+            }
 
             // ExportPackage
             ExporterUtils.SeparateLine( );

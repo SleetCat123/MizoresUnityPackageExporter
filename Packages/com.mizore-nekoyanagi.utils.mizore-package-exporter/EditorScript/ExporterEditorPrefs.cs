@@ -71,6 +71,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         //    set => EditorPrefsCache.SetBool( FOLDOUT_BATCHEXPORT, value );
         //}
 
+        public const string FOLDOUT_POST_PROCESS_SCRIPT = PREFIX + "Foldout_PostProcessScript";
+
         private const string FILELIST_TREEVIEW_FULLPATH = PREFIX + "FileList_FullPath";
         public static bool FileListTreeViewFullPath {
             get => EditorPrefsCache.GetBool( FILELIST_TREEVIEW_FULLPATH, false );
@@ -105,6 +107,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static bool UseRelativePath {
             get => EditorPrefsCache.GetBool( USE_RELATIVE_PATH, false );
             set => EditorPrefsCache.SetBool( USE_RELATIVE_PATH, value );
+        }
+
+        private const string ADVANCED_MODE = PREFIX + "AdvancedMode";
+        public static bool AdvancedMode {
+            get => EditorPrefsCache.GetBool( ADVANCED_MODE, false );
+            set => EditorPrefsCache.SetBool( ADVANCED_MODE, value );
         }
     }
 }
