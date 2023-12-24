@@ -1,8 +1,6 @@
 ﻿#if UNITY_EDITOR
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class ExporterEditorPrefs
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class ExporterEditorPrefs {
         private const string PREFIX = "MizorePackageExporter_";
 
         private const string DEBUG = PREFIX + "DebugMode";
@@ -113,6 +111,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public static bool AdvancedMode {
             get => EditorPrefsCache.GetBool( ADVANCED_MODE, false );
             set => EditorPrefsCache.SetBool( ADVANCED_MODE, value );
+        }
+        private const string USE_POST_PROCESS_SCRIPT = PREFIX + "UsePostProcessScript";
+        public static bool UsePostProcessScript {
+            get => AdvancedMode && EditorPrefsCache.GetBool( USE_POST_PROCESS_SCRIPT, false );
+            set => EditorPrefsCache.SetBool( USE_POST_PROCESS_SCRIPT, value );
         }
     }
 }

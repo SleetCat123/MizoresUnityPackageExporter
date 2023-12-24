@@ -42,4 +42,5 @@ ConvertAllPathsToRelative,全てのパスを相対パスに変換
 ConvertAllPathsToAbsolute,全てのパスを絶対パスに変換
 UseRelativePath,デフォルトで相対パスを使用
 
+UsePostProcessScriptConfirm,Post Process Scriptは記述されたスクリプトを無制限に実行できるため、セキュリティ上の問題が発生する可能性があります。\n実行するスクリプトが信頼できるものであることを確認して使用してください。\n\nPost Process Scriptを有効化しますか？
 PostProcessScriptTooltip,スクリプトはIExportPostProcessを実装している必要があります。

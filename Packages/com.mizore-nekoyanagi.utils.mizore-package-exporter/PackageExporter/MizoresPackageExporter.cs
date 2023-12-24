@@ -601,7 +601,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
                 var list = kvp.Value;
                 bool exported = Export_Internal( logs, exportPath, list.paths );
-                if ( exported ) {
+                if ( exported && ExporterEditorPrefs.UsePostProcessScript ) {
                     CallPostProcessScript( this, exportPath, list, logs );
                 }
             }

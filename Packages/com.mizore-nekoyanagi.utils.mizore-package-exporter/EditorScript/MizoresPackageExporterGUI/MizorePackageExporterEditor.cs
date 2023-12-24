@@ -69,6 +69,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( EditorGUI.EndChangeCheck( ) ) {
                 ExporterEditorPrefs.AdvancedMode = advanced;
             }
+            if ( advanced ) {
+                // PostProcessScriptを使用するか
+                EditorGUI.BeginChangeCheck( );
+                EditorGUI.indentLevel++;
+                bool usePostProcessScript = EditorGUILayout.Toggle( ExporterTexts.UsePostProcessScript, ExporterEditorPrefs.UsePostProcessScript );
+                EditorGUI.indentLevel--;
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    // trueにするときは確認メッセージを出す
+                    if ( usePostProcessScript ) {
+                        if ( !EditorUtility.DisplayDialog( ExporterTexts.UsePostProcessScript, ExporterTexts.UsePostProcessScriptConfirm, ExporterTexts.Yes, ExporterTexts.No ) ) {
+                            usePostProcessScript = false;
+                        }
+                    }
+                    ExporterEditorPrefs.UsePostProcessScript = usePostProcessScript;
+                }
+            }
 
             ExporterUtils.SeparateLine( );
 

@@ -1,4 +1,6 @@
 Undo,PackagePrefs
+Yes,Yes
+No,No
 
 FoldoutObjects,Objects to export ({0})
 FoldoutObjectsTooltip,Objects to export
@@ -96,6 +98,8 @@ ConvertAllPathsToAbsolute,Convert all paths to absolute
 UseRelativePath,Use relative path as default
 
 AdvancedMode,Advanced
+UsePostProcessScript,Use Post Process Script
+UsePostProcessScriptConfirm,Post Process Script can execute any script written, so there is a possibility of security issues.\nPlease make sure that the script to be executed is trustworthy and use it.\n\nDo you want to enable Post Process Script?
 FoldoutPostProcessScript,[Advanced] Post Process Script
 PostProcessScript,Script
 PostProcessScriptTooltip,Script must inherit IExportPostProcess.

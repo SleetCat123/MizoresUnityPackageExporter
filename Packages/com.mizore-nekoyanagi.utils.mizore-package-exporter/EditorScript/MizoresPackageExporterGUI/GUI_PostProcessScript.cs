@@ -121,6 +121,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
             // PostProcessArgs
             if ( multiple ) {
+                EditorGUILayout.LabelField( ExporterTexts.PostProcessScriptFields, EditorStyles.boldLabel );
                 EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostProcessScriptFields ), MessageType.Info );
                 return;
             }

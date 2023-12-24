@@ -61,6 +61,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public static string Undo => Get( "Undo" );
+        public static string Yes => Get( "Yes" );
+        public static string No => Get( "No" );
         public static string BatchExportFolder => Get( "BatchExportFolder" );
         public static string BatchExportListLabel => Get( "BatchExportListLabel" );
         public static string BatchExportListFile => Get( "BatchExportListFile" );
@@ -154,6 +156,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string AdvancedMode => Get( "AdvancedMode" );
 
+        public static string UsePostProcessScript => Get( "UsePostProcessScript" );
+        public static string UsePostProcessScriptConfirm => Get( "UsePostProcessScriptConfirm" );
         public static string PostProcessScript => Get( "PostProcessScript" );
         public static string PostProcessScriptTooltip => Get( "PostProcessScriptTooltip" );
         public static string PostProcessScriptResetAllFields => Get( "PostProcessScriptResetAllFields" );

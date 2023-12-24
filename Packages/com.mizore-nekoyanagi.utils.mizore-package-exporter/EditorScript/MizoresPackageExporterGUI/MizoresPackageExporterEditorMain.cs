@@ -42,6 +42,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
+                EditorGUILayout.LabelField( ExporterTexts.Variables, EditorStyles.boldLabel );
                 SingleGUI_DynamicPathVariables.Draw( ed, t );
             } else {
                 ExporterUtils.SeparateLine( );
@@ -51,7 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             ExporterUtils.SeparateLine( );
             GUI_BatchExporter.Draw( ed, t, targetlist );
 
-            if ( ExporterEditorPrefs.AdvancedMode ) {
+            if ( ExporterEditorPrefs.UsePostProcessScript ) {
                 ExporterUtils.SeparateLine( );
                 GUI_PostProcessScript.Draw( ed, t, targetlist );
             }
