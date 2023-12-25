@@ -3,6 +3,6 @@
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public interface IExportPostProcess {
-        void OnExported( string exporterPath, string packagePath, FilePathList list, ExporterEditorLogs logs );
+        void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs );
     }
 }

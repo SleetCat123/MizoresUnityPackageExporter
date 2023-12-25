@@ -17,11 +17,8 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
         public string zipFolderName = "_zip";
 
         [Space]
-        [Tooltip( "PackageExporterと同じパスにあるフォルダ" )]
-        public string releaseFolderName = "_release";
-        [Tooltip( "PackageExporterの1つ上の階層にあるフォルダ" )]
-        public string commonFolderName = "_common";
-        public void OnExported( string exporterPath, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
+        public List<string> copyFolders = new List<string>{"./../_common","./_release"};
+        public void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
             var paths = list.paths;
 
             Debug.Log( "!!! OnExported: " + packagePath );
@@ -65,44 +62,32 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                 }
             }
 
-            if ( !string.IsNullOrEmpty( releaseFolderName ) ) {
-                // packageexporterと同じパスにreleaseFolderNameフォルダがあったら、その中身をコピー
-                var releaseFolderPath = Path.Combine( exporterPath,releaseFolderName );
-                if ( Directory.Exists( releaseFolderPath ) ) {
-                    Debug.Log( "Copy release folder: " + releaseFolderPath );
-                    logs.Add( "Copy release folder: " + releaseFolderPath );
-                    var files = Directory.GetFiles( releaseFolderPath, "*", SearchOption.AllDirectories );
+            var packageExporterFolder = packageExporter.GetDirectoryPath( );
+            foreach ( var copyFolder in copyFolders ) {
+                if ( string.IsNullOrWhiteSpace( copyFolder ) ) {
+                    continue;
+                }
+                // 指定されたフォルダの中身をコピー
+                string copyFolderActualPath = packageExporter.ConvertDynamicPath( copyFolder );
+                if ( PathUtils.IsRelativePath( copyFolderActualPath ) ) {
+                    copyFolderActualPath = PathUtils.GetProjectAbsolutePath( packageExporterFolder, copyFolderActualPath );
+                }
+                if ( Directory.Exists( copyFolderActualPath ) ) {
+                    Debug.Log( "Copy Folder: " + copyFolderActualPath );
+                    logs.Add( "Copy Folder: " + copyFolderActualPath );
+                    var files = Directory.GetFiles( copyFolderActualPath, "*", SearchOption.AllDirectories );
                     foreach ( var file in files ) {
                         // .metaファイルはコピーしない
                         if ( Path.GetExtension( file ) == ".meta" ) {
                             continue;
                         }
                         // フォルダ構造を維持してコピー
-                        var relativePath = file.Substring( releaseFolderPath.Length + 1 );
+                        var relativePath = file.Substring( copyFolderActualPath.Length + 1 );
                         var destPath = Path.Combine( folderPath, relativePath );
                         Directory.CreateDirectory( Path.GetDirectoryName( destPath ) );
                         File.Copy( file, destPath );
-                        Debug.Log( "Copy release file: " + file );
-                        logs.Add( "Copy release file: " + file );
-                    }
-                }
-            }
-
-            if ( !string.IsNullOrEmpty( commonFolderName ) ) {
-                // packageexporterの1つ上の階層にcommonFolderNameフォルダがあったら、その中身をコピー
-                var commonFolderPath = Path.Combine( Path.GetDirectoryName( exporterPath ),commonFolderName );
-                if ( Directory.Exists( commonFolderPath ) ) {
-                    Debug.Log( "Copy common folder: " + commonFolderPath );
-                    logs.Add( "Copy common folder: " + commonFolderPath );
-                    var files = Directory.GetFiles( commonFolderPath );
-                    foreach ( var license in files ) {
-                        // .metaファイルはコピーしない
-                        if ( Path.GetExtension( license ) == ".meta" ) {
-                            continue;
-                        }
-                        File.Copy( license, Path.Combine( folderPath, Path.GetFileName( license ) ) );
-                        Debug.Log( "Copy common file: " + license );
-                        logs.Add( "Copy common file: " + license );
+                        Debug.Log( "Copy File: " + file );
+                        logs.Add( "Copy File: " + file );
                     }
                 }
             }

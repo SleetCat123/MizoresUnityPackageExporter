@@ -161,11 +161,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PostProcessScript => Get( "PostProcessScript" );
         public static string PostProcessScriptTooltip => Get( "PostProcessScriptTooltip" );
         public static string PostProcessScriptResetAllFields => Get( "PostProcessScriptResetAllFields" );
+        public static string PostProcessScriptResetField( string fieldName ) => string.Format( Get( "PostProcessScriptResetField" ), fieldName );
         public static string PostProcessScriptFields => Get( "PostProcessScriptFields" );
         public static string PostProcessScriptNotFound => Get( "PostProcessScriptNotFound" );
         public static string PostProcessScriptNotImplement => Get( "PostProcessScriptNotImplement" );
         public static string PostProcessScriptCleanUnusedFields => Get( "PostProcessScriptCleanUnusedFields" );
 
-        public static string EditOnlySingle(string text) => string.Format( Get( "EditOnlySingle" ), text );
+        public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );
     }
 }

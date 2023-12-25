@@ -104,6 +104,7 @@ FoldoutPostProcessScript,[Advanced] Post Process Script
 PostProcessScript,Script
 PostProcessScriptTooltip,Script must inherit IExportPostProcess.
 PostProcessScriptFields,Fields
+PostProcessScriptResetField,Reset {0}
 PostProcessScriptResetAllFields,Reset All Fields
 PostProcessScriptCleanUnusedFields,Clean Unused Fields
 PostProcessScriptNotFound,Script not found.

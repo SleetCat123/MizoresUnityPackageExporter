@@ -9,12 +9,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         static MizoresPackageExporter editInstance;
         static FieldInfo[] fieldInfos;
         static Dictionary<string, object> postProcessTempValues = new Dictionary<string, object>( );
+        static List<string> errorField = new List<string>( );
         static void UpdatePostProcessScript( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             var t = targetlist[0];
             bool multiple = targetlist.Length > 1;
             editInstance = t;
             postProcessTempValues.Clear( );
             fieldInfos = null;
+            errorField.Clear( );
             if ( multiple ) {
                 return;
             }
@@ -33,21 +35,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         string valueStr;
                         var fieldName = field.Name;
                         if ( t.postProcessScriptFieldValues.TryGetValue( fieldName, out valueStr ) ) {
-                            if ( field.FieldType.IsPrimitive ) {
-                                // 基本型の場合は文字列から変換
-                                try {
-                                    postProcessTempValues[fieldName] = System.Convert.ChangeType( valueStr, field.FieldType );
-                                } catch ( System.Exception ) {
-                                    Debug.LogError( $"Can't convert value: {fieldName} ({valueStr})" );
-                                    // 変換に失敗したら初期値を取得
-                                    postProcessTempValues[fieldName] = field.GetValue( postProcessTemp );
-                                }
-                            } else if ( field.FieldType == typeof( string ) ) {
-                                // string型の場合はそのまま
-                                postProcessTempValues[fieldName] = valueStr;
+                            object obj;
+                            if ( ExporterUtils.FromJson( valueStr, field.FieldType, out obj ) ) {
+                                postProcessTempValues[fieldName] = obj;
                             } else {
-                                // その他の場合はJsonから変換
-                                postProcessTempValues[fieldName] = JsonUtility.FromJson( valueStr, field.FieldType );
+                                postProcessTempValues[fieldName] = field.GetValue( postProcessTemp );
+                                errorField.Add( fieldName );
                             }
                         } else {
                             // 初期値を取得
@@ -161,71 +154,32 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 var fieldName = field.Name;
                 if ( !postProcessTempValues.TryGetValue( fieldName, out value ) ) {
                     EditorGUILayout.HelpBox( "Can't get value: " + fieldName, MessageType.Error );
-                    break;
+                    continue;
                 }
-                var space = field.GetCustomAttributes( typeof( SpaceAttribute ), false ).FirstOrDefault( ) as SpaceAttribute;
-                if ( space != null ) {
-                    EditorGUILayout.Space( );
+                if ( errorField.Contains( fieldName ) ) {
+                    EditorGUILayout.HelpBox( "Can't get value: " + fieldName, MessageType.Error );
                 }
-                GUIContent content;
-                var tooltip = field.GetCustomAttributes( typeof( TooltipAttribute ), false ).FirstOrDefault( ) as TooltipAttribute;
-                if ( tooltip == null ) {
-                    content = new GUIContent( fieldName );
-                } else {
-                    content = new GUIContent( fieldName, tooltip.tooltip );
-                }
+
                 EditorGUI.BeginChangeCheck( );
-                if ( field.FieldType == typeof( string ) ) {
-                    value = EditorGUILayout.TextField( content, ( string )value );
-                } else if ( field.FieldType == typeof( bool ) ) {
-                    value = EditorGUILayout.Toggle( content, ( bool )value );
-                } else if ( field.FieldType == typeof( int ) ) {
-                    var slider = field.GetCustomAttributes( typeof( RangeAttribute ), false ).FirstOrDefault( ) as RangeAttribute;
-                    if ( slider == null ) {
-                        value = EditorGUILayout.IntField( content, ( int )value );
-                    } else {
-                        value = EditorGUILayout.IntSlider( content, ( int )value, ( int )slider.min, ( int )slider.max );
-                    }
-                } else if ( field.FieldType == typeof( float ) ) {
-                    var slider = field.GetCustomAttributes( typeof( RangeAttribute ), false ).FirstOrDefault( ) as RangeAttribute;
-                    if ( slider == null ) {
-                        value = EditorGUILayout.FloatField( content, ( float )value );
-                    } else {
-                        value = EditorGUILayout.Slider( content, ( float )value, slider.min, slider.max );
-                    }
-                } else if ( field.FieldType == typeof( Vector2 ) ) {
-                    value = EditorGUILayout.Vector2Field( content, ( Vector2 )value );
-                } else if ( field.FieldType == typeof( Vector3 ) ) {
-                    value = EditorGUILayout.Vector3Field( content, ( Vector3 )value );
-                } else if ( field.FieldType == typeof( Vector4 ) ) {
-                    value = EditorGUILayout.Vector4Field( content, ( Vector4 )value );
-                } else if ( field.FieldType == typeof( Color ) ) {
-                    value = EditorGUILayout.ColorField( content, ( Color )value );
-                } else if ( field.FieldType == typeof( AnimationCurve ) ) {
-                    value = EditorGUILayout.CurveField( content, ( AnimationCurve )value );
-                } else if ( field.FieldType == typeof( Bounds ) ) {
-                    value = EditorGUILayout.BoundsField( content, ( Bounds )value );
-                } else if ( field.FieldType == typeof( Rect ) ) {
-                    value = EditorGUILayout.RectField( content, ( Rect )value );
-                } else if ( field.FieldType == typeof( LayerMask ) ) {
-                    value = EditorGUILayout.LayerField( content, ( LayerMask )value );
-                } else if ( field.FieldType.IsEnum ) {
-                    value = EditorGUILayout.EnumPopup( content, ( System.Enum )value );
-                } else if ( field.FieldType.IsSubclassOf( typeof( Object ) ) ) {
-                    value = EditorGUILayout.ObjectField( content, ( Object )value, field.FieldType, true );
-                } else {
-                    EditorGUILayout.LabelField( content, new GUIContent( "Unsupported Type: " + field.FieldType ) );
-                }
+                Rect fieldRect;
+                value = FieldEditor.Field( field, value, out fieldRect );
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     postProcessTempValues[fieldName] = value;
-                    if ( field.FieldType.IsPrimitive ) {
-                        // 基本型の場合は文字列に変換
-                        t.postProcessScriptFieldValues[fieldName] = value.ToString( );
-                    } else {
-                        // その他の場合はJsonに変換
-                        t.postProcessScriptFieldValues[fieldName] = JsonUtility.ToJson( value );
-                    }
+                    t.postProcessScriptFieldValues[fieldName] = ExporterUtils.ToJson( field.FieldType, value );
                     EditorUtility.SetDirty( t );
+                }
+
+                if ( currentEvent.type == EventType.ContextClick && fieldRect.Contains( currentEvent.mousePosition ) ) {
+                    // リセット
+                    var menu = new GenericMenu( );
+                    menu.AddItem( new GUIContent( ExporterTexts.PostProcessScriptResetField( fieldName ) ), false, ( ) => {
+                        t.postProcessScriptFieldValues.Remove( fieldName );
+                        Debug.Log( $"Reset field: {fieldName}" );
+                        UpdatePostProcessScript( ed, targetlist );
+                        EditorUtility.SetDirty( t );
+                    } );
+                    menu.ShowAsContext( );
+                    currentEvent.Use( );
                 }
             }
             EditorGUI.indentLevel--;

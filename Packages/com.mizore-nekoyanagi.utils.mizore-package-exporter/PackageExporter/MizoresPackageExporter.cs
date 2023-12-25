@@ -629,24 +629,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 foreach ( var field in fields ) {
                     string valueStr;
                     if ( p.postProcessScriptFieldValues.TryGetValue( field.Name, out valueStr ) ) {
-                        try {
-                            Debug.Log( $"Set field value: {field.Name} = {valueStr} ({field.FieldType})" );
-                            object value;
-                            if ( field.FieldType == typeof( string ) ) {
-                                value = p.ConvertDynamicPath( valueStr );
-                            } else {
-                                value = JsonUtility.FromJson( valueStr, field.FieldType );
-                            }
+                        Debug.Log( $"Set field value: {field.Name} = {valueStr} ({field.FieldType})" );
+                        object value;
+                        if ( ExporterUtils.FromJson( valueStr, field.FieldType, out value ) ) {
                             field.SetValue( instance, value );
-                        } catch ( System.Exception e ) {
-                            Debug.LogError( $"Failed to set field value: {field.Name} = {valueStr} ({field.FieldType})" );
-                            Debug.LogError( e );
                         }
                     }
                 }
                 Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
                 logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
-                instance.OnExported( p.GetDirectoryPath( ), exportPath, list, logs );
+                instance.OnExported( p, exportPath, list, logs );
                 Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
                 logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
             }
