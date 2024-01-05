@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Linq;
 using UnityEditor;
 using System.Reflection;
@@ -181,3 +182,4 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         }
     }
 }
+#endif

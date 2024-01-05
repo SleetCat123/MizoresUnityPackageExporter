@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,3 +72,4 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         }
     }
 }
+#endif

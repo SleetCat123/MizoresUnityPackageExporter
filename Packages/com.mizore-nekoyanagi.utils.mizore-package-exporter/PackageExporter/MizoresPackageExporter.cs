@@ -584,6 +584,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 Debug.LogWarning( exportPath + "\nにエクスポートするファイルが何もありませんでした。" );
                 return false;
             }
+#else
+            return false;
 #endif
         }
         public void Export( ExporterEditorLogs logs, HashSet<string> ignorePaths ) {
