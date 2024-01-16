@@ -251,11 +251,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     temp_batchExportKeys = batchExportTexts.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.Folders:
+                    string path;
                     if ( batchExportFolderRoot == null || batchExportFolderRoot.Object == null ) {
-                        temp_batchExportKeys = new string[0];
-                        break;
+                        // Objectが空ならExporterの場所をルートにする
+                        path = GetDirectoryPath( );
+                    } else {
+                        path = AssetDatabase.GetAssetPath( batchExportFolderRoot.Object );
                     }
-                    string path = AssetDatabase.GetAssetPath( batchExportFolderRoot.Object );
                     Regex regex;
                     try {
                         regex = new Regex( batchExportFolderRegex );
