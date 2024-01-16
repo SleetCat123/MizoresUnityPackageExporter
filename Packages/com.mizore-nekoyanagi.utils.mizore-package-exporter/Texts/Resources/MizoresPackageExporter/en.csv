@@ -111,3 +111,6 @@ PostProcessScriptNotFound,Script not found.
 PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
 
 EditOnlySingle,{0} can only be edited in single selection mode.
+
+SearchReference,Search Reference
+SearchReferenceTooltip,If this Asset is reference an Asset in "References", the corresponding Asset is automatically added to the export target.

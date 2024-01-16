@@ -41,7 +41,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
 
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
-        public List<string> dynamicpath = new List<string>( );
+
+        [System.Obsolete, SerializeField]
+        List<string> dynamicpath = new List<string>( );
+        public List<DynamicPathElement> dynamicpath2 = new List<DynamicPathElement>( );
+
         [SerializeField]
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
@@ -182,6 +186,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 // referencesの場所変更
                 references2 = references.Select( v => new ReferenceElement( v, ReferenceMode.Include ) ).ToList( );
                 references.Clear( );
+
+                // dynamicpathの場所変更
+                dynamicpath2 = dynamicpath.Select( v => new DynamicPathElement( v ) ).ToList( );
+                dynamicpath.Clear( );
+
                 converted = true;
             }
             if ( converted ) {
@@ -459,47 +468,51 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", referencesPath ) );
             bool useReference = referencesPath.Any( );
 
-            IEnumerable<string> list;
+            IEnumerable<FilePath> list;
             {
-                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => v.Path );
-                var list2 = dynamicpath
-                    .Where( v => !string.IsNullOrWhiteSpace( v ) )
+                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath(v.Path, true) );
+                var list2 = dynamicpath2
+                    .Where( v => !string.IsNullOrWhiteSpace( v.path ) )
                     .Select( v => {
-                        v = ConvertDynamicPath( v );
-                        if ( PathUtils.IsRelativePath( v ) ) {
-                            v = PathUtils.GetProjectAbsolutePath( GetDirectoryPath(), v );
+                        var path = ConvertDynamicPath( v.path );
+                        if ( PathUtils.IsRelativePath( path ) ) {
+                            path = PathUtils.GetProjectAbsolutePath( GetDirectoryPath(), path );
                         }
-                        return v;
+                        return new FilePath( path, v.searchReference);
                     });
                 list = list1.Concat( list2 );
-                list = list.Select( v => v.Replace( '\\', '/' ) );
             }
 
-            var list_include_sub = new HashSet<string>( );
+            var list_include_sub = new List<FilePath>( );
             foreach ( var item in list ) {
-                if ( Directory.Exists( item ) ) {
+                if ( Directory.Exists( item.path ) ) {
                     list_include_sub.Add( item );
                     // サブファイル・フォルダを取得
-                    var subdirs = Directory.GetFileSystemEntries( item, "*", SearchOption.AllDirectories );
+                    var subdirs = Directory.GetFileSystemEntries( item.path, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
                         var path = sub.Replace( '\\', '/' );
-                        list_include_sub.Add( path );
+                        if ( !list_include_sub.Any( v => v.path == path ) ) {
+                            list_include_sub.Add( new FilePath( path, item.searchReference ) );
+                        }
                     }
                 } else {
-                    list_include_sub.Add( item );
+                    if ( !list_include_sub.Any( v => v.path == item.path ) ) {
+                        list_include_sub.Add( item );
+                    }
                 }
             }
             // .metaファイルを除外
-            list_include_sub = new HashSet<string>( list_include_sub.Where( v => Path.GetExtension( v ) != ".meta" ) );
+            list_include_sub = list_include_sub.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
 
             var result = new HashSet<string>( );
             var referencesResults = new Dictionary<string, HashSet<string>>( );
             foreach ( var item in list_include_sub ) {
-                if ( Path.GetExtension( item ).Length != 0 ) {
-                    if ( useReference ) {
-                        var dependencies = AssetDatabase.GetDependencies( item, true );
+                if ( Path.GetExtension( item.path ).Length != 0 ) {
+                    // notSearchに含まれていたら参照Assetを検索しない
+                    if ( useReference && item.searchReference ) {
+                        var dependencies = AssetDatabase.GetDependencies( item.path, true );
                         foreach ( var dp in dependencies ) {
-                            if ( dp == item ) {
+                            if ( dp == item.path ) {
                                 result.Add( dp );
                             } else if ( referencesPath.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
@@ -510,7 +523,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                                     referenceFrom = new HashSet<string>( );
                                     referencesResults.Add( dp, referenceFrom );
                                 }
-                                referenceFrom.Add( item );
+                                referenceFrom.Add( item.path );
 
                                 ExporterUtils.DebugLog( "Dependency: " + dp );
                                 ExporterUtils.DebugLog( "Referenced by: " + item );
@@ -519,12 +532,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                             }
                         }
                     } else {
-                        result.Add( item );
+                        result.Add( item.path );
                     }
-                } else if ( Directory.Exists( item ) ) {
+                } else if ( Directory.Exists( item.path ) ) {
                     // 何もしない
                 } else {
-                    result.Add( item );
+                    result.Add( item.path );
                 }
             }
 

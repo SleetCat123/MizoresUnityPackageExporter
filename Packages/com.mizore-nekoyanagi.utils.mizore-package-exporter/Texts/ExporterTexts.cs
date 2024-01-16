@@ -168,5 +168,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PostProcessScriptCleanUnusedFields => Get( "PostProcessScriptCleanUnusedFields" );
 
         public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );
+
+        public static string SearchReference => Get( "SearchReference" );
+        public static string SearchReferenceTooltip => Get( "SearchReferenceTooltip" );
     }
 }
