@@ -41,7 +41,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         var obj = element.Object;
                         foreach ( var item in targetlist ) {
                             // 全ての選択中インスタンスに対してオブジェクトを設定
-                            // DynamicPathの要素数が足りなかったらリサイズ
+                            // 要素数が足りなかったらリサイズ
                             ExporterUtils.ResizeList( getlist( item ), Mathf.Max( i + 1, getlist( item ).Count ), ( ) => new PackagePrefsElement( ) );
                             getlist( item )[i].Object = obj;
                             objects_count = MinMax.Create( targetlist, v => getlist( v ).Count );

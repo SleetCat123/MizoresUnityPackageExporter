@@ -33,7 +33,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public const int INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION = 0;
-        public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
+        public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 2;
         [SerializeField]
         private int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
         public int PackageExporterVersion { get => packageExporterVersion; }
@@ -49,7 +49,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
-        public List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
+
+        [System.Obsolete, SerializeField]
+        List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
+
+        public List<ReferenceElement> references2 = new List<ReferenceElement>( );
+
 
         public Object postProcessScript;
         [System.NonSerialized]
@@ -141,10 +146,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public bool ConvertToCurrentVersion( bool force = false ) {
-            if ( !force && !IsCompatible ) {
-                throw new System.Exception( "互換性のないバージョンで作成されたオブジェクトです。\nThis object is not compatible." );
+            if ( force ) {
+                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
+                return true;
             }
-
             bool converted = false;
             // 初回実行時
             if ( packageExporterVersion == INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION ) {
@@ -157,43 +162,34 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     packageNameSettings.versionSource = VersionSource.File;
                     packageNameSettings.versionFile = versionFile;
                     versionFile = null;
-                    converted = true;
                 }
                 if ( !string.IsNullOrEmpty( versionFormat ) ) {
                     // versionFormatの場所変更
                     ExporterUtils.DebugLog( "Convert: versionFormat" );
                     packageNameSettings.versionFormat = versionFormat;
                     versionFormat = null;
-                    converted = true;
                 }
                 if ( !string.IsNullOrEmpty( packageName ) ) {
                     // packageNameの場所変更
                     ExporterUtils.DebugLog( "Convert: packageName" );
                     packageNameSettings.packageName = packageName;
                     packageName = null;
-                    converted = true;
                 }
-#pragma warning restore 612
+                converted = true;
+            }
+            if ( packageExporterVersion < 2 ) {
+                ExporterUtils.DebugLog( "Convert: references" );
+                // referencesの場所変更
+                references2 = references.Select( v => new ReferenceElement( v, ReferenceMode.Include ) ).ToList( );
+                references.Clear( );
+                converted = true;
+            }
+            if ( converted ) {
+                Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
                 packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
             }
-
-            if ( IsCurrentVersion ) {
-                return converted;
-            }
-            if ( force ) {
-                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
-                return converted;
-            }
-
-            switch ( packageExporterVersion ) {
-                case 0:
-                case 1:
-                    break;
-            }
-
-            Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
-            packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
             return converted;
+#pragma warning restore 612
         }
         #endregion
 
@@ -409,17 +405,34 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         /// </summary>
         /// <returns></returns>
         IEnumerable<string> GetReferencesPath( ) {
-            List<string> result = new List<string>( );
-            foreach ( var v in references ) {
-                if ( string.IsNullOrWhiteSpace( v.Path ) ) continue;
-                if ( File.Exists( v.Path ) ) {
-                    result.Add( v.Path );
-                } else if ( Directory.Exists( v.Path ) ) {
-                    result.AddRange( Directory.GetFiles( v.Path, "*", SearchOption.AllDirectories ) );
+            List<string> references = new List<string>( );
+            List<string> excludeReferences = new List<string>( );
+            foreach ( var v in references2 ) {
+                var path = v.element.Path;
+                if ( string.IsNullOrWhiteSpace( path ) ) {
+                    continue;
+                }
+                List<string> list;
+                switch ( v.mode ) {
+                    default:
+                    case ReferenceMode.Include:
+                        list = references;
+                        break;
+                    case ReferenceMode.Exclude:
+                        list = excludeReferences;
+                        break;
+                }
+                if ( File.Exists( path ) ) {
+                    list.Add( path );
+                } else if ( Directory.Exists( path ) ) {
+                    list.AddRange( Directory.GetFiles( path, "*", SearchOption.AllDirectories ) );
                 }
             }
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
-            return result.Select( v => v.Replace( '\\', '/' ) );
+            references = references.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
+            excludeReferences = excludeReferences.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
+            // includeからexcludeを除外
+            return references.Except( excludeReferences );
         }
         public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
             var result = new Dictionary<string, FilePathList>( );
@@ -442,9 +455,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public FilePathList GetAllPath( ) {
 #if UNITY_EDITOR
-            var references_path = GetReferencesPath( );
-            ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", references_path ) );
-            bool useReference = references_path.Any( );
+            var referencesPath = GetReferencesPath( );
+            ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", referencesPath ) );
+            bool useReference = referencesPath.Any( );
 
             IEnumerable<string> list;
             {
@@ -488,7 +501,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         foreach ( var dp in dependencies ) {
                             if ( dp == item ) {
                                 result.Add( dp );
-                            } else if ( references_path.Contains( dp ) ) {
+                            } else if ( referencesPath.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
                                 result.Add( dp );
 
