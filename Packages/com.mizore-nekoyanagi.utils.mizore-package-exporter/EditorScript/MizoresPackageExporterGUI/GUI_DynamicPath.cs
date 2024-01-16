@@ -199,7 +199,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
                             EditorGUI.indentLevel = indent;
                             if ( i < item.dynamicpath.Count ) {
-                                string previewpath = item.ConvertDynamicPath( item.dynamicpath[i] );
+                                string previewpath = item.ConvertDynamicPath( item.dynamicpath[i], true );
                                 if ( PathUtils.IsRelativePath( previewpath ) ) {
                                     var dir = item.GetDirectoryPath( );
                                     previewpath = PathUtils.GetProjectAbsolutePath( dir, previewpath );

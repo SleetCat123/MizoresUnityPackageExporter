@@ -310,10 +310,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var date = System.DateTime.Now;
             return dateFormatRegex.Replace( key, m => date.ToString( m.Groups[1].Value ) );
         }
-        public string ConvertDynamicPath( string path ) {
-            return ConvertDynamicPath_Main( path, 0 );
+        public string ConvertDynamicPath( string path, bool preview = false ) {
+            return ConvertDynamicPath_Main( path, 0, preview );
         }
-        string ConvertDynamicPath_Main( string path, int recursiveCount ) {
+        string ConvertDynamicPath_Main( string path, int recursiveCount, bool preview ) {
             if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
             if ( 2 < recursiveCount ) {
                 return path;
@@ -327,13 +327,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             key = Const_Keys.KEY_BATCH_EXPORTER;
-            path = path.Replace( key, temp_batchExportCurrentKey );
+            if ( preview ) {
+                path = path.Replace( key, "BATCH" );
+            } else {
+                path = path.Replace( key, temp_batchExportCurrentKey );
+            }
             key = Const_Keys.KEY_FORMATTED_BATCH_EXPORTER;
             if ( path.Contains( key ) ) {
-                if ( string.IsNullOrWhiteSpace( temp_batchExportCurrentKey ) ) {
-                    path = path.Replace( key, string.Empty );
+                if ( preview ) {
+                    path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.batchFormat, recursiveCount, preview ) );
                 } else {
-                    path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.batchFormat, recursiveCount ) );
+                    if ( string.IsNullOrWhiteSpace( temp_batchExportCurrentKey ) ) {
+                        path = path.Replace( key, string.Empty );
+                    } else {
+                        path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.batchFormat, recursiveCount, preview ) );
+                    }
                 }
             }
 
@@ -349,13 +357,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 if ( string.IsNullOrWhiteSpace( CurrentSettings.GetExportVersion( ) ) ) {
                     path = path.Replace( key, string.Empty );
                 } else {
-                    path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.versionFormat, recursiveCount ) );
+                    path = path.Replace( key, ConvertDynamicPath_Main( CurrentSettings.versionFormat, recursiveCount, preview ) );
                 }
             }
 
             key = Const_Keys.KEY_PACKAGE_NAME;
             if ( path.Contains( key ) ) {
-                var str = ConvertDynamicPath_Main( CurrentSettings.packageName, recursiveCount );
+                var str = ConvertDynamicPath_Main( CurrentSettings.packageName, recursiveCount, preview );
                 // ファイル名に使用できない文字を_に置き換え
                 str = ExporterUtils.InvalidFileCharsRegex.Replace( str, "_" );
                 path = path.Replace( key, str );
