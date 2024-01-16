@@ -11,10 +11,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
     public static class GUI_DynamicPath {
-        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<string>> getList, Object[] objectReferences ) {
+        public static void AddObjects( MizoresPackageExporter t, IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<string>> getList, Object[] objectReferences ) {
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
                 Select( v => AssetDatabase.GetAssetPath( v ) );
+            if ( ExporterEditorPrefs.UseRelativePath ) {
+                var dir = t.GetDirectoryPath( );
+                add = add.Select( v => PathUtils.GetRelativePath( dir, v ) );
+            }
             foreach ( var item in targetlist ) {
                 getList( item ).AddRange( add );
                 EditorUtility.SetDirty( item );
@@ -30,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterTexts.FoldoutDynamicPath( dpath_count.ToString( ) ),
                 new ExporterUtils.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
-                    onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.dynamicpath, objectReferences ),
+                    onDragPerform = ( objectReferences ) => AddObjects( t, targetlist, v => v.dynamicpath, objectReferences ),
                     onRightClick = ( ) => {
                         var menu = new GenericMenu( );
                         menu.AddItem( new GUIContent( ExporterTexts.ConvertAllPathsToAbsolute ), false, ( ) => {
