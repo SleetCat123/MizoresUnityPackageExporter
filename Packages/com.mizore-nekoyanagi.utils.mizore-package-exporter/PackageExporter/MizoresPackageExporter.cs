@@ -307,10 +307,29 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #endregion
 
         #region DynamicPath
-        static Regex dateFormatRegex = new Regex( "%date:([^%]+)%" );
+        public string ReplaceRelativeName( string key ) {
+            return Const_Keys.REGEX_RELATIVE_NAME.Replace( key, m => {
+                var value = m.Groups[1].Value;
+                // 現在のパスから.の個数だけ上の階層にあるフォルダの名前を取得
+                var path = GetDirectoryPath( );
+                var count = value.Length;
+                for ( int i = 0; i < count; i++ ) {
+                    if ( path.Length == 0 ) {
+                        break;
+                    }
+                    path = Path.GetDirectoryName( path );
+                }
+                if ( path.Length == 0 ) {
+                    // 上の階層が無い場合はそのまま返す
+                    return key;
+                }
+                return Path.GetFileName( path );
+            }
+            );
+        }
         public static string ReplaceDate( string key ) {
             var date = System.DateTime.Now;
-            return dateFormatRegex.Replace( key, m => date.ToString( m.Groups[1].Value ) );
+            return Const_Keys.REGEX_DATE_FORMAT.Replace( key, m => date.ToString( m.Groups[1].Value ) );
         }
         public string ConvertDynamicPath( string path, bool preview = false ) {
             return ConvertDynamicPath_Main( path, 0, preview );
@@ -352,6 +371,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             key = Const_Keys.KEY_NAME;
             path = path.Replace( key, name );
 
+            path = ReplaceRelativeName( path );
+
             key = Const_Keys.KEY_VERSION;
             path = path.Replace( key, CurrentSettings.GetExportVersion( ) );
             key = Const_Keys.KEY_FORMATTED_VERSION;
@@ -377,7 +398,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public string GetDirectoryPath( ) {
 #if UNITY_EDITOR
-            return Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ) + "/";
+            return Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ) + "\\";
 #else
             return string.Empty;
 #endif

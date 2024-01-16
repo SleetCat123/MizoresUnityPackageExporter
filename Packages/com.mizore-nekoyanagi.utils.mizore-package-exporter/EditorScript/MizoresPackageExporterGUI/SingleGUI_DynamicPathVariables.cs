@@ -36,6 +36,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
                 GUI.enabled = false;
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
+                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_RELATIVE_NAME, t.ReplaceRelativeName( Const_Keys.KEY_SAMPLE_RELATIVE_NAME ) );
                 DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.CurrentSettings.GetExportVersion( ) );
                 DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.GetFormattedVersion( ) );
                 DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.GetPackageName( ) );
