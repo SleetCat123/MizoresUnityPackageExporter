@@ -14,10 +14,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
         static Dictionary<string, System.Type> scriptTypeTable;
         static GUIContent[] popupValues;
-        static int[] popupValueIds;
         static string ScriptTypePopup( string value ) {
             popupValues[1] = new GUIContent( string.Empty );
-            popupValueIds[1] = 0;
             int index = 0;
             if ( !string.IsNullOrEmpty( value ) ) {
                 index = System.Array.IndexOf( popupValues.Select( v => v.tooltip ).ToArray( ), value );
@@ -25,9 +23,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     popupValues[1] = new GUIContent( ExporterTexts.PostProcessScriptPopupNotFound( value ), value );
                     index = 1;
                 } else {
-                    popupValues[1] = new GUIContent( value.Split( '.' ).Last( ), value );
+                    popupValues[1] = new GUIContent( );
                 }
-                popupValueIds[1] = index;
             }
             for ( int i = 2; i < popupValues.Length; i++ ) {
                 var fullName = popupValues[i].tooltip;
@@ -39,7 +36,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
             }
             var content = new GUIContent( ExporterTexts.PostProcessScript, popupValues[index].tooltip );
-            index = EditorGUILayout.IntPopup( content, index, popupValues, popupValueIds );
+            index = EditorGUILayout.Popup( content, index, popupValues );
             if ( index == 0 ) {
                 return string.Empty;
             } else {
@@ -69,11 +66,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 var key = keys[i];
                 // tooltipはFullName
                 popupValues[i + 2] = new GUIContent( key, key );
-            }
-            // 0は空・1は現在のスクリプト名用に開けておく
-            popupValueIds = new int[count];
-            for ( int i = 0; i < count; i++ ) {
-                popupValueIds[i] = i;
             }
         }
         static void UpdatePostProcessScript( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
