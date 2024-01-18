@@ -67,7 +67,7 @@ CopyTargetNoValue,Copy
 PasteTarget,Paste {0}
 PasteTargetWithValue,Paste [{1}] ({0})
 PasteTargetNoValue,Paste
-IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly, some setting values may change or disappear.
+IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly\. some setting values may change or disappear.
 IncompatibleVersionForceOpen,Force open
 
 FileListWindowTitle,Export unitypackages
@@ -99,7 +99,7 @@ UseRelativePath,Use relative path as default
 
 AdvancedMode,Advanced
 UsePostProcessScript,Use Post Process Script
-UsePostProcessScriptConfirm,Post Process Script can execute any script written, so there is a possibility of security issues.\nPlease make sure that the script to be executed is trustworthy and use it.\n\nDo you want to enable Post Process Script?
+UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from IExportPostProcess to be executed after exporting the unitypackage.\n\nWarning: If you use an external script\. make sure that you trust what it processes.\n\nDo you want to activate it?
 FoldoutPostProcessScript,[Advanced] Post Process Script
 PostProcessScript,Script
 PostProcessScriptTooltip,Script must inherit IExportPostProcess.
@@ -109,6 +109,7 @@ PostProcessScriptResetAllFields,Reset All Fields
 PostProcessScriptCleanUnusedFields,Clean Unused Fields
 PostProcessScriptNotFound,Script not found.
 PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
+PostProcessScriptUpdate,Refresh
 
 EditOnlySingle,{0} can only be edited in single selection mode.
 

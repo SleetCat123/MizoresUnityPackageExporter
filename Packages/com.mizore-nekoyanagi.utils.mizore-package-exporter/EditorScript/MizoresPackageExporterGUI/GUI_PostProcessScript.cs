@@ -11,6 +11,58 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         static FieldInfo[] fieldInfos;
         static Dictionary<string, object> postProcessTempValues = new Dictionary<string, object>( );
         static List<string> errorField = new List<string>( );
+
+        static Dictionary<string, System.Type> scriptTypeTable;
+        static GUIContent[] popupValues;
+        static int[] popupValueIds;
+        static string ScriptTypePopup( string value ) {
+            popupValues[1] = new GUIContent( string.Empty );
+            popupValueIds[1] = 0;
+            int index = 0;
+            if ( !string.IsNullOrEmpty( value ) ) {
+                index = System.Array.IndexOf( popupValues.Select( v => v.text ).ToArray( ), value );
+                if ( index == -1 ) {
+                    index = 0;
+                } else {
+                    popupValues[1] = new GUIContent( value );
+                    popupValueIds[1] = index;
+                }
+            }
+            var content = new GUIContent( ExporterTexts.PostProcessScript, ExporterTexts.PostProcessScriptTooltip );
+            index = EditorGUILayout.IntPopup( content, index, popupValues, popupValueIds );
+            if ( index == 0 ) {
+                return string.Empty;
+            } else {
+                return popupValues[index].text;
+            }
+        }
+        static void UpdateScriptNameList( ) {
+            // IExportPostProcessを実装したクラスを取得
+            scriptTypeTable = new Dictionary<string, System.Type>( );
+            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies( );
+            foreach ( var assembly in assemblies ) {
+                var types = assembly.GetTypes( );
+                foreach ( var type in types ) {
+                    if ( type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
+                        scriptTypeTable[type.Name] = type;
+                    }
+                }
+            }
+            // 0は空・1は現在のスクリプト名用に開けておく
+            var count = scriptTypeTable.Count + 2;
+            popupValues = new GUIContent[count];
+            popupValues[0] = new GUIContent( "None" );
+            popupValues[1] = new GUIContent( string.Empty );
+            var keys = scriptTypeTable.Keys.ToList( );
+            for ( int i = 0; i < keys.Count; i++ ) {
+                popupValues[i + 2] = new GUIContent( keys[i] );
+            }
+            // 0は空・1は現在のスクリプト名用に開けておく
+            popupValueIds = new int[count];
+            for ( int i = 0; i < count; i++ ) {
+                popupValueIds[i] = i;
+            }
+        }
         static void UpdatePostProcessScript( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             var t = targetlist[0];
             bool multiple = targetlist.Length > 1;
@@ -22,52 +74,46 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 return;
             }
 
-            if ( t.postProcessScript == null ) {
+            if ( string.IsNullOrEmpty( t.postProcessScriptTypeName ) ) {
                 return;
             }
+            System.Type postProcessScriptType;
+            scriptTypeTable.TryGetValue( t.postProcessScriptTypeName, out postProcessScriptType );
             // Fieldの初期値取得用にインスタンス化しておく
-            var postProcessScript = t.postProcessScript as MonoScript;
-            if ( postProcessScript != null ) {
-                var type = postProcessScript.GetClass( );
-                if ( type != null && type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
-                    IExportPostProcess postProcessTemp = System.Activator.CreateInstance( type ) as IExportPostProcess;
-                    fieldInfos = type.GetFields( );
-                    foreach ( var field in fieldInfos ) {
-                        string valueStr;
-                        var fieldName = field.Name;
-                        if ( t.postProcessScriptFieldValues.TryGetValue( fieldName, out valueStr ) ) {
-                            object obj;
-                            if ( ExporterUtils.FromJson( valueStr, field.FieldType, out obj ) ) {
-                                postProcessTempValues[fieldName] = obj;
-                            } else {
-                                postProcessTempValues[fieldName] = field.GetValue( postProcessTemp );
-                                errorField.Add( fieldName );
-                            }
+            if ( postProcessScriptType != null ) {
+                IExportPostProcess postProcessTemp = System.Activator.CreateInstance( postProcessScriptType ) as IExportPostProcess;
+                fieldInfos = postProcessScriptType.GetFields( );
+                foreach ( var field in fieldInfos ) {
+                    string valueStr;
+                    var fieldName = field.Name;
+                    if ( t.postProcessScriptFieldValues.TryGetValue( fieldName, out valueStr ) ) {
+                        object obj;
+                        if ( ExporterUtils.FromJson( valueStr, field.FieldType, out obj ) ) {
+                            postProcessTempValues[fieldName] = obj;
                         } else {
-                            // 初期値を取得
                             postProcessTempValues[fieldName] = field.GetValue( postProcessTemp );
+                            errorField.Add( fieldName );
                         }
+                    } else {
+                        // 初期値を取得
+                        postProcessTempValues[fieldName] = field.GetValue( postProcessTemp );
                     }
-                } else {
-                    Debug.LogError( $"Can't create instance: {t.postProcessScript.name} ({type})" );
                 }
             } else {
-                Debug.LogError( "Can't create instance: " + t.postProcessScript.name );
+                Debug.LogError( $"Can't create instance: {t.postProcessScriptTypeName}" );
             }
         }
         static void CleanUnusedFields( MizoresPackageExporter t ) {
-            var postProcessScript = t.postProcessScript as MonoScript;
-            if ( postProcessScript != null ) {
-                var type = postProcessScript.GetClass( );
-                if ( type != null && type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
-                    var fieldInfos = type.GetFields( );
-                    var fieldNames = fieldInfos.Select( v => v.Name );
-                    var keys = new List<string>( t.postProcessScriptFieldValues.Keys );
-                    foreach ( var key in keys ) {
-                        if ( !fieldNames.Contains( key ) ) {
-                            t.postProcessScriptFieldValues.Remove( key );
-                            Debug.Log( $"Remove unused field: {key}" );
-                        }
+            System.Type postProcessScriptType;
+            scriptTypeTable.TryGetValue( t.postProcessScriptTypeName, out postProcessScriptType );
+            if ( postProcessScriptType != null ) {
+                var fieldInfos = postProcessScriptType.GetFields( );
+                var fieldNames = fieldInfos.Select( v => v.Name );
+                var keys = new List<string>( t.postProcessScriptFieldValues.Keys );
+                foreach ( var key in keys ) {
+                    if ( !fieldNames.Contains( key ) ) {
+                        t.postProcessScriptFieldValues.Remove( key );
+                        Debug.Log( $"Remove unused field: {key}" );
                     }
                 }
             }
@@ -79,39 +125,30 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ) ) {
                 return;
             }
+            if ( scriptTypeTable == null ) {
+                UpdateScriptNameList( );
+            }
             bool multiple = targetlist.Length > 1;
             // PostProcessScript
-            var sameValuePostProcess = targetlist.All( v => v.postProcessScript == t.postProcessScript );
+            var sameValuePostProcess = targetlist.All( v => v.postProcessScriptTypeName == t.postProcessScriptTypeName );
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 if ( !sameValuePostProcess ) {
                     ExporterUtils.DiffLabel( );
                     EditorGUI.showMixedValue = true;
                 }
                 EditorGUI.BeginChangeCheck( );
-                var content = new GUIContent( ExporterTexts.PostProcessScript, ExporterTexts.PostProcessScriptTooltip );
-                var postProcessScript = EditorGUILayout.ObjectField( ExporterTexts.PostProcessScript, ed.t.postProcessScript, typeof( MonoScript ), false ) as MonoScript;
+                var postProcessScriptTypeName = ScriptTypePopup( t.postProcessScriptTypeName );
                 if ( EditorGUI.EndChangeCheck( ) ) {
-                    bool error = false;
-                    if ( postProcessScript == null ) {
-                        error = false;
-                    } else if ( postProcessScript.GetClass( ) == null ) {
-                        Debug.LogError( "Script is not class: " + postProcessScript.name );
-                        error = true;
-                    } else if ( !postProcessScript.GetClass( ).GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
-                        Debug.LogError( "Script is not inherit IExportPostProcess: " + postProcessScript.name );
-                        error = true;
-                    } else {
-                        error = false;
+                    foreach ( var item in targetlist ) {
+                        item.postProcessScriptTypeName = postProcessScriptTypeName;
+                        EditorUtility.SetDirty( item );
                     }
-                    if ( !error ) {
-                        foreach ( var item in targetlist ) {
-                            item.postProcessScript = postProcessScript;
-                            EditorUtility.SetDirty( item );
-                        }
-                        editInstance = null;
-                    }
+                    editInstance = null;
                 }
                 EditorGUI.showMixedValue = false;
+                if ( GUILayout.Button( ExporterTexts.PostProcessScriptUpdate, GUILayout.Width( 60 ) ) ) {
+                    UpdateScriptNameList( );
+                }
             }
             // PostProcessArgs
             if ( multiple ) {

@@ -1,5 +1,10 @@
 # ChangeLog
-## [7.2.0] (
+## [8.0.0] (
+- add: References検索対象から除外するファイルを指定できるようにした
+- add: ObjectとDynamicPathで指定されたAssetがReferencesを検索するかどうかを個別に指定できるようにした
+- change: PostProcessScriptの選択をPopupにした
+
+## [7.2.0] (2024-01-16)
 - add: （上級者向け機能）エクスポート後に所定のinterfaceを継承するスクリプトを実行できる機能を追加
 - add: 複数オブジェクト編集に対応していない項目にHelpBoxを表示するようにした
 - add: DynamicPathで%..name%のように書くと、現在のパスから.の個数だけ上の階層にあるフォルダの名前を取得するようにした

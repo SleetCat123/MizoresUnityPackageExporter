@@ -60,7 +60,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public List<ReferenceElement> references2 = new List<ReferenceElement>( );
 
 
-        public Object postProcessScript;
+        public string postProcessScriptTypeName;
         [System.NonSerialized]
         public Dictionary<string, string> postProcessScriptFieldValues = new Dictionary<string, string>( );
         [SerializeField]
@@ -660,7 +660,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
                 var list = kvp.Value;
                 bool exported = Export_Internal( logs, exportPath, list.paths );
-                if ( exported && ExporterEditorPrefs.UsePostProcessScript ) {
+                if ( exported ) {
                     CallPostProcessScript( this, exportPath, list, logs );
                 }
             }
@@ -668,15 +668,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public static void CallPostProcessScript( MizoresPackageExporter p, string exportPath, FilePathList list, ExporterEditorLogs logs ) {
 #if UNITY_EDITOR
-            if ( p.postProcessScript == null ) {
+            if ( !ExporterEditorPrefs.UsePostProcessScript ) {
+                return;
+            }
+            if ( string.IsNullOrEmpty( p.postProcessScriptTypeName ) ) {
                 return;
             }
             // 後処理スクリプトを実行
-            var script = p.postProcessScript as MonoScript;
-            if ( script == null ) {
+            var type = System.Type.GetType( p.postProcessScriptTypeName );
+            if ( type == null ) {
                 Debug.LogError( ExporterTexts.PostProcessScriptNotFound );
             } else {
-                var type = script.GetClass( );
                 if ( !type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
                     Debug.LogError( ExporterTexts.PostProcessScriptNotImplement );
                     return;
