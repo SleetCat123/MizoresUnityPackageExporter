@@ -25,11 +25,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     popupValues[1] = new GUIContent( ExporterTexts.PostProcessScriptPopupNotFound( value ), value );
                     index = 1;
                 } else {
-                    var name = value.Split( '.' ).Last( );
-                    // tooltipはFullName
-                    popupValues[1] = new GUIContent( name, value );
+                    popupValues[1] = new GUIContent( value.Split( '.' ).Last( ), value );
                 }
                 popupValueIds[1] = index;
+            }
+            for ( int i = 2; i < popupValues.Length; i++ ) {
+                var fullName = popupValues[i].tooltip;
+                // 選択していないものはFullNameで表示
+                if ( i == index ) {
+                    popupValues[i] = new GUIContent( fullName.Split( '.' ).Last( ), fullName );
+                } else {
+                    popupValues[i] = new GUIContent( fullName, fullName );
+                }
             }
             var content = new GUIContent( ExporterTexts.PostProcessScript, popupValues[index].tooltip );
             index = EditorGUILayout.IntPopup( content, index, popupValues, popupValueIds );
@@ -60,9 +67,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             var keys = scriptTypeTable.Keys.ToList( );
             for ( int i = 0; i < keys.Count; i++ ) {
                 var key = keys[i];
-                var name = key.Split( '.' ).Last( );
                 // tooltipはFullName
-                popupValues[i + 2] = new GUIContent( name, key );
+                popupValues[i + 2] = new GUIContent( key, key );
             }
             // 0は空・1は現在のスクリプト名用に開けておく
             popupValueIds = new int[count];
