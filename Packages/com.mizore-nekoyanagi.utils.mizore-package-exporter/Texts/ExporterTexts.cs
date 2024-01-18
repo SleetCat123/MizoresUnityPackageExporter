@@ -159,8 +159,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string UsePostProcessScript => Get( "UsePostProcessScript" );
         public static string UsePostProcessScriptConfirm => Get( "UsePostProcessScriptConfirm" );
         public static string PostProcessScript => Get( "PostProcessScript" );
+        public static string PostProcessScriptPopupNotFound( string name ) => string.Format( Get( "PostProcessScriptPopupNotFound" ), name );
+
         public static string PostProcessScriptUpdate => Get( "PostProcessScriptUpdate" );
-        public static string PostProcessScriptTooltip => Get( "PostProcessScriptTooltip" );
         public static string PostProcessScriptResetAllFields => Get( "PostProcessScriptResetAllFields" );
         public static string PostProcessScriptResetField( string fieldName ) => string.Format( Get( "PostProcessScriptResetField" ), fieldName );
         public static string PostProcessScriptFields => Get( "PostProcessScriptFields" );

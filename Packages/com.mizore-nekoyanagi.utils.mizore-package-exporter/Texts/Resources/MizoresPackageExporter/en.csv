@@ -102,7 +102,6 @@ UsePostProcessScript,Use Post Process Script
 UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from IExportPostProcess to be executed after exporting the unitypackage.\n\nWarning: If you use an external script\. make sure that you trust what it processes.\n\nDo you want to activate it?
 FoldoutPostProcessScript,[Advanced] Post Process Script
 PostProcessScript,Script
-PostProcessScriptTooltip,Script must inherit IExportPostProcess.
 PostProcessScriptFields,Fields
 PostProcessScriptResetField,Reset {0}
 PostProcessScriptResetAllFields,Reset All Fields
@@ -110,6 +109,7 @@ PostProcessScriptCleanUnusedFields,Clean Unused Fields
 PostProcessScriptNotFound,Script not found.
 PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
 PostProcessScriptUpdate,Refresh
+PostProcessScriptPopupNotFound,{0}(NotFound)
 
 EditOnlySingle,{0} can only be edited in single selection mode.
 

@@ -43,7 +43,6 @@ ConvertAllPathsToAbsolute,全てのパスを絶対パスに変換
 UseRelativePath,デフォルトで相対パスを使用
 
 UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、IExportPostProcessを継承したスクリプトをunitypackageのエクスポート後に実行できるようになります。\n\n警告: 外部スクリプトを使用する場合はそのスクリプトの処理内容が信頼できることを確認してください。\n\n有効化しますか？
-PostProcessScriptTooltip,スクリプトはIExportPostProcessを実装している必要があります。
 
 SearchReference,Referencesを検索
 SearchReferenceTooltip,このAssetが「References」に含まれているAssetを参照している場合、そのAssetを自動的にExport対象に追加します。
