@@ -8,6 +8,7 @@ using System.Collections.Generic;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class GUI_PostProcessScript {
         static MizoresPackageExporter editInstance;
+        static string typeName;
         static FieldInfo[] fieldInfos;
         static Dictionary<string, object> postProcessTempValues = new Dictionary<string, object>( );
         static List<string> errorField = new List<string>( );
@@ -98,6 +99,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             bool multiple = targetlist.Length > 1;
             editInstance = t;
             postProcessTempValues.Clear( );
+            typeName = null;
             fieldInfos = null;
             errorField.Clear( );
             if ( multiple ) {
@@ -111,6 +113,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // Fieldの初期値取得用にインスタンス化しておく
                 var postProcessScriptType = scriptData.type;
                 IExportPostProcess postProcessTemp = System.Activator.CreateInstance( postProcessScriptType ) as IExportPostProcess;
+                typeName = postProcessScriptType.FullName;
                 fieldInfos = postProcessScriptType.GetFields( );
                 foreach ( var field in fieldInfos ) {
                     string valueStr;
@@ -195,6 +198,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
             List<string> fieldNames = new List<string>( );
             if ( fieldInfos != null ) {
+                EditorGUILayout.LabelField( typeName );
+                EditorGUILayout.Separator( );
                 var rect = EditorGUILayout.GetControlRect( );
                 EditorGUI.LabelField( rect, ExporterTexts.PostProcessScriptFields, EditorStyles.boldLabel );
 
