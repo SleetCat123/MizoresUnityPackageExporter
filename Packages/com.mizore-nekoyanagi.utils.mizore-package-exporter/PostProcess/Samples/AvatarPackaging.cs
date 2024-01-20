@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace MizoreNekoyanagi.Private.ExportPackage {
-    public class PostProcess01 : IExportPostProcess {
+    public class AvatarPackaging : IExportPostProcess {
         [Tooltip( "エクスポート対象のfbxファイルをfbxフォルダにコピーするか" )]
         public bool copyFbx = true;
 
