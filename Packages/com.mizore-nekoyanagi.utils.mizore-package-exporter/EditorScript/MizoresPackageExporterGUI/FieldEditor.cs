@@ -6,18 +6,24 @@ using System.Reflection;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class FieldEditor {
-        public static object Field( FieldInfo field, object value, out Rect fieldRect ) {
+        public static object Field( FieldInfo field, object value, bool edited, out Rect fieldRect ) {
             var space = field. GetCustomAttributes( typeof( SpaceAttribute ), true ).FirstOrDefault( ) as SpaceAttribute;
             if ( space != null ) {
                 EditorGUILayout.Space( );
             }
 
             GUIContent content;
+            string label;
+            if ( edited ) {
+                label = $"* {field.Name}";
+            } else {
+                label = field.Name;
+            }
             var tooltip = field.GetCustomAttributes( typeof( TooltipAttribute ), false ).FirstOrDefault( ) as TooltipAttribute;
             if ( tooltip == null ) {
-                content = new GUIContent( field.Name );
+                content = new GUIContent( label );
             } else {
-                content = new GUIContent( field.Name, tooltip.tooltip );
+                content = new GUIContent( label, tooltip.tooltip );
             }
 
             var type = field.FieldType;

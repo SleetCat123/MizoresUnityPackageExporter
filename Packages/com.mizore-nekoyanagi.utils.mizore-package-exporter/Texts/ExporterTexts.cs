@@ -168,6 +168,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PostProcessScriptNotFound => Get( "PostProcessScriptNotFound" );
         public static string PostProcessScriptNotImplement => Get( "PostProcessScriptNotImplement" );
         public static string PostProcessScriptCleanUnusedFields => Get( "PostProcessScriptCleanUnusedFields" );
+        public static string PostProcessScriptUnusedFields => Get( "PostProcessScriptUnusedFields" );
 
         public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );
 
