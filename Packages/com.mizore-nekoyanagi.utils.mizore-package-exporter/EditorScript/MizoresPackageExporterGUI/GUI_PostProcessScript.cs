@@ -94,6 +94,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 popupValues[i + 2] = new GUIContent( key, key );
             }
         }
+        static void Clear( ) {
+            editInstance = null;
+            typeName = null;
+            fieldInfos = null;
+            postProcessTempValues.Clear( );
+            errorField.Clear( );
+        }
         static void UpdatePostProcessScript( MizoresPackageExporterEditor ed, MizoresPackageExporter[] targetlist ) {
             var t = targetlist[0];
             bool multiple = targetlist.Length > 1;
@@ -193,7 +200,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostProcessScriptFields ), MessageType.Info );
                 return;
             }
-            if ( editInstance != t ) {
+            if ( !scriptDataTable.ContainsKey( t.postProcessScriptTypeName ) ) {
+                EditorGUILayout.HelpBox( ExporterTexts.PostProcessScriptNotFound( t.postProcessScriptTypeName ), MessageType.Error );
+                Clear( );
+            } else if ( editInstance != t ) {
                 UpdatePostProcessScript( ed, targetlist );
             }
             List<string> fieldNames = new List<string>( );

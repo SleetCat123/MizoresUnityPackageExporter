@@ -677,7 +677,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // 後処理スクリプトを実行
             var type = System.Type.GetType( p.postProcessScriptTypeName );
             if ( type == null ) {
-                Debug.LogError( ExporterTexts.PostProcessScriptNotFound );
+                Debug.LogError( ExporterTexts.PostProcessScriptNotFound( p.postProcessScriptTypeName ) );
             } else {
                 if ( !type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
                     Debug.LogError( ExporterTexts.PostProcessScriptNotImplement );
