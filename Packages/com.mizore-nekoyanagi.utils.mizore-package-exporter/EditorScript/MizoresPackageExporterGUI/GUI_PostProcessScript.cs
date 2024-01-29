@@ -200,7 +200,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostProcessScriptFields ), MessageType.Info );
                 return;
             }
-            if ( !scriptDataTable.ContainsKey( t.postProcessScriptTypeName ) ) {
+            if ( !string.IsNullOrEmpty( t.postProcessScriptTypeName ) && !scriptDataTable.ContainsKey( t.postProcessScriptTypeName ) ) {
                 EditorGUILayout.HelpBox( ExporterTexts.PostProcessScriptNotFound( t.postProcessScriptTypeName ), MessageType.Error );
                 Clear( );
             } else if ( editInstance != t ) {

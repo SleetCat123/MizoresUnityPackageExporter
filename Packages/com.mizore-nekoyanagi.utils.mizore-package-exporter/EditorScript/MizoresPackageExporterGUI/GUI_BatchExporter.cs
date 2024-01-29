@@ -67,10 +67,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                     foreach ( var item in targetlist ) {
                                         ExporterUtils.ResizeList( item.batchExportTexts, Mathf.Max( i + 1, item.batchExportTexts.Count ) );
                                         item.batchExportTexts[i] = path;
-                                        texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
                                         item.UpdateBatchExportKeys( );
                                         EditorUtility.SetDirty( item );
                                     }
+                                    texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
                                 }
 
                                 // Button
@@ -90,10 +90,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                     foreach ( var item in targetlist ) {
                                         ExporterUtils.ResizeList( item.batchExportTexts, Mathf.Max( i + 1, item.batchExportTexts.Count ) );
                                         item.batchExportTexts.RemoveAt( i );
-                                        texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
                                         item.UpdateBatchExportKeys( );
                                         EditorUtility.SetDirty( item );
                                     }
+                                    texts_count = MinMax.Create( targetlist, v => v.batchExportTexts.Count );
                                     i--;
                                 }
                             }

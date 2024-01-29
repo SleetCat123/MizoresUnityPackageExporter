@@ -70,9 +70,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 foreach ( var item in targetlist ) {
                                     ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
                                     item.excludes[i].value = value;
-                                    minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                                     EditorUtility.SetDirty( item );
                                 }
+                                minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                             }
 
                             EditorGUI.BeginChangeCheck( );
@@ -88,9 +88,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 foreach ( var item in targetlist ) {
                                     ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
                                     item.excludes[i].searchType = searchType;
-                                    minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                                     EditorUtility.SetDirty( item );
                                 }
+                                minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                             }
                         }
 
@@ -141,9 +141,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
                                 item.excludes.RemoveAt( i );
-                                minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                                 EditorUtility.SetDirty( item );
                             }
+                            minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                             i--;
                         }
                     }

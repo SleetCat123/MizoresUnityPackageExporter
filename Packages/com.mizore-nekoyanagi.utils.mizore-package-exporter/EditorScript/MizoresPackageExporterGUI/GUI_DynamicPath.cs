@@ -139,9 +139,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath2, Mathf.Max( i + 1, item.dynamicpath2.Count ), ( ) => new DynamicPathElement( ) );
                                 item.dynamicpath2[i].path = path;
-                                dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                                 EditorUtility.SetDirty( item );
                             }
+                            dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                         }
 
                         // Button
@@ -160,10 +160,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath2, Mathf.Max( i + 1, item.dynamicpath2.Count ) );
                                 item.dynamicpath2.RemoveAt( i );
-                                dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                                 EditorUtility.SetDirty( item );
                             }
+                            dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                             i--;
+                            if ( i == -1 ) {
+                                break;
+                            }
                         }
                     }
                     var useReferences = targetlist.Any( v => v.references2.Count != 0 );
@@ -186,9 +189,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 foreach ( var item in targetlist ) {
                                     ExporterUtils.ResizeList( item.dynamicpath2, Mathf.Max( i + 1, item.dynamicpath2.Count ), ( ) => new DynamicPathElement( ) );
                                     item.dynamicpath2[i].searchReference = searchReference;
-                                    dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                                     EditorUtility.SetDirty( item );
                                 }
+                                dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
                             }
                         }
                     }

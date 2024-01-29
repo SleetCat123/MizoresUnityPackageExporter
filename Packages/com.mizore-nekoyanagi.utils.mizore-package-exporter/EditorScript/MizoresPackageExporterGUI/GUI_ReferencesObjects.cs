@@ -86,9 +86,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             var refs = item.references2;
                             ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
                             refs[i] = new ReferenceElement( element );
-                            objects_count = MinMax.Create( targetlist, v => v.references2.Count );
                             EditorUtility.SetDirty( item );
                         }
+                        objects_count = MinMax.Create( targetlist, v => v.references2.Count );
                     }
 
                     // Button
@@ -109,9 +109,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             var refs = item.references2;
                             ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
                             refs.RemoveAt( i );
-                            objects_count = MinMax.Create( targetlist, v => v.references2.Count );
                             EditorUtility.SetDirty( item );
                         }
+                        objects_count = MinMax.Create( targetlist, v => v.references2.Count );
                         i--;
                     }
                 }
