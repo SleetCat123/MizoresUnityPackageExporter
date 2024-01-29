@@ -74,7 +74,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                 }
 
                                 // Button
-                                int index_after = ExporterUtils.UpDownButton( i, texts_count.max );
+                                int index_after = GUIElement_Utils.UpDownButton( i, texts_count.max );
                                 if ( i != index_after ) {
                                     foreach ( var item in targetlist ) {
                                         if ( item.batchExportTexts.Count <= index_after ) {
@@ -121,7 +121,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUI.indentLevel++;
                             EditorGUILayout.LabelField( ExporterTexts.BatchExportFolder, GUILayout.Width( 60 ) );
                             EditorGUI.indentLevel--;
-                            PackagePrefsElementInspector.Draw<DefaultAsset>( t.batchExportFolderRoot );
+                            PackagePrefsElementInspector.Draw<DefaultAsset>( t, t.batchExportFolderRoot );
                         }
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
@@ -176,7 +176,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.indentLevel++;
                         EditorGUILayout.LabelField( ExporterTexts.BatchExportListFile, GUILayout.Width( 60 ) );
-                        PackagePrefsElementInspector.Draw<TextAsset>( t.batchExportListFile );
+                        PackagePrefsElementInspector.Draw<TextAsset>( t, t.batchExportListFile );
                         EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {

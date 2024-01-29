@@ -124,7 +124,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             path = EditorGUI.TextField( textrect, string.Empty );
                             EditorGUI.showMixedValue = false;
                         }
-                        path = GUIElement_Utils.BrowseButtons( t, path );
+                        bool browse = GUIElement_Utils.BrowseButtons( t, path, out string browseResult );
+                        if ( browse ) {
+                            path = browseResult;
+                        }
                         if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                             GUI.changed = true;
                             path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
@@ -145,7 +148,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
 
                         // Button
-                        int index_after = ExporterUtils.UpDownButton( i, dpath_count.max );
+                        int index_after = GUIElement_Utils.UpDownButton( i, dpath_count.max );
                         if ( i != index_after ) {
                             foreach ( var item in targetlist ) {
                                 if ( item.dynamicpath2.Count <= index_after ) {
@@ -156,7 +159,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                         }
                         EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                        if ( ExporterUtils.MinusButton( ) ) {
+                        if ( GUIElement_Utils.MinusButton( ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath2, Mathf.Max( i + 1, item.dynamicpath2.Count ) );
                                 item.dynamicpath2.RemoveAt( i );
@@ -197,7 +200,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel++;
-                if ( ExporterUtils.PlusButton( ) ) {
+                if ( GUIElement_Utils.PlusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         ExporterUtils.ResizeList( item.dynamicpath2, dpath_count.max + 1, ( ) => new DynamicPathElement( ) );
                         EditorUtility.SetDirty( item );

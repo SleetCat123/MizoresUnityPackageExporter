@@ -126,7 +126,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
 
                         // Button
-                        int index_after = ExporterUtils.UpDownButton( i, minmax_count.max );
+                        int index_after = GUIElement_Utils.UpDownButton( i, minmax_count.max );
                         if ( i != index_after ) {
                             foreach ( var item in targetlist ) {
                                 if ( item.excludes.Count <= index_after ) {
@@ -137,7 +137,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                         }
                         EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                        if ( GUIElement_Utils.MinusButton( ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
                                 item.excludes.RemoveAt( i );
@@ -149,7 +149,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel++;
-                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                if ( GUIElement_Utils.PlusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         ExporterUtils.ResizeList( item.excludes, minmax_count.max + 1, ( ) => new SearchPath( ) );
                         EditorUtility.SetDirty( item );

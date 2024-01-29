@@ -55,7 +55,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         EditorGUI.showMixedValue = !samevalue_in_all_obj;
                         EditorGUI.BeginChangeCheck( );
-                        PackagePrefsElementInspector.Draw<TextAsset>( s.versionFile );
+                        PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             var obj = s.versionFile.Object;

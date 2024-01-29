@@ -6,17 +6,14 @@ using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class PackagePrefsElementInspector
-    {
-        public static void Draw<T>( PackagePrefsElement element ) where T : UnityEngine.Object {
-            bool changed = false;
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class PackagePrefsElementInspector {
+        public static void Draw<T>( MizoresPackageExporter t, PackagePrefsElement element ) where T : UnityEngine.Object {
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 EditorGUI.BeginChangeCheck( );
                 element.Object = EditorGUILayout.ObjectField( element.Object, typeof( T ), false );
                 if ( EditorGUI.EndChangeCheck( ) ) {
-                    changed = true;
+                    GUI.changed = true;
                 }
 
                 EditorGUI.BeginChangeCheck( );
@@ -27,16 +24,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
                 }
 
+                bool browse = GUIElement_Utils.BrowseButtons( t, path, out string resultPath, forceAbsolute: true );
+                if ( browse ) {
+                    path = resultPath;
+                }
+
                 if ( EditorGUI.EndChangeCheck( ) ) {
+                    path = PathUtils.ToValidPath( path );
                     // パスが変更されたらオブジェクトを置き換える
                     Object o = AssetDatabase.LoadAssetAtPath<T>( path );
-                    if ( o != null ) {
+                    if ( o == null ) {
+                        Debug.LogWarning( "Not found asset at path: " + path );
+                    } else {
+                        // オブジェクトが取得できた場合のみ置き換える
                         element.Object = o;
                     }
-                    changed = true;
+                    GUI.changed = true;
                 }
             }
-            GUI.changed = changed;
         }
     }
 }

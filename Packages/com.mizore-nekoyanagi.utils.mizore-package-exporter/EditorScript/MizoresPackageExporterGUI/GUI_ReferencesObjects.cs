@@ -60,7 +60,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
 
                     EditorGUI.showMixedValue = !samevalue_in_all;
-                    PackagePrefsElementInspector.Draw<Object>( element );
+                    PackagePrefsElementInspector.Draw<Object>( t, element );
                     EditorGUI.showMixedValue = false;
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -97,7 +97,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
 
                     // Button
-                    int index_after = ExporterUtils.UpDownButton( i, objects_count.max );
+                    int index_after = GUIElement_Utils.UpDownButton( i, objects_count.max );
                     if ( i != index_after ) {
                         foreach ( var item in targetlist ) {
                             var refs = item.references2;
@@ -109,7 +109,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                     EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                    if ( ExporterUtils.MinusButton( ) ) {
+                    if ( GUIElement_Utils.MinusButton( ) ) {
                         foreach ( var item in targetlist ) {
                             var refs = item.references2;
                             ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
@@ -122,7 +122,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
             }
             EditorGUI.indentLevel++;
-            if ( ExporterUtils.PlusButton( ) ) {
+            if ( GUIElement_Utils.PlusButton( ) ) {
                 foreach ( var item in targetlist ) {
                     ExporterUtils.ResizeList( item.references2, objects_count.max + 1, ( ) => new ReferenceElement( ) );
                     EditorUtility.SetDirty( item );

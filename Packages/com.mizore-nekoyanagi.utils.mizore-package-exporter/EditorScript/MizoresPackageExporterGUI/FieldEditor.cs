@@ -104,7 +104,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             GUI.changed = true;
                         }
 
-                        int index_after = ExporterUtils.UpDownButton( i, array.Length );
+                        int index_after = GUIElement_Utils.UpDownButton( i, array.Length );
                         if ( i != index_after ) {
                             array.Swap( i, index_after );
                             GUI.changed = true;
@@ -158,7 +158,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             GUI.changed = true;
                         }
 
-                        int index_after = ExporterUtils.UpDownButton( i, list.Count );
+                        int index_after = GUIElement_Utils.UpDownButton( i, list.Count );
                         if ( i != index_after ) {
                             list.Swap( i, index_after );
                             GUI.changed = true;

@@ -34,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 MinMax objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
                 bool multiple = targetlist.Length > 1;
                 for ( int i = 0; i < objects_count.max; i++ ) {
-                    using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
                         // （複数インスタンス選択時）全てのオブジェクトの値が同じか
                         bool samevalue_in_all = true;
                         if ( multiple ) {
@@ -58,7 +58,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         } else {
                             element = new PackagePrefsElement( );
                         }
-                        PackagePrefsElementInspector.Draw<T>( element );
+                        PackagePrefsElementInspector.Draw<T>( t, element );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             var obj = element.Object;
@@ -73,7 +73,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
 
                         // Button
-                        int index_after = ExporterUtils.UpDownButton( i, objects_count.max );
+                        int index_after = GUIElement_Utils.UpDownButton( i, objects_count.max );
                         if ( i != index_after ) {
                             foreach ( var item in targetlist ) {
                                 if ( GetList( item ).Count <= index_after ) {
@@ -84,7 +84,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                         }
                         EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                        if ( ExporterUtils.MinusButton( ) ) {
+                        if ( GUIElement_Utils.MinusButton( ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( GetList( item ), Mathf.Max( i + 1, GetList( item ).Count ), ( ) => new PackagePrefsElement( ) );
                                 GetList( item ).RemoveAt( i );
@@ -96,7 +96,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel++;
-                if ( ExporterUtils.PlusButton( ) ) {
+                if ( GUIElement_Utils.PlusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         ExporterUtils.ResizeList( GetList( item ), objects_count.max + 1, ( ) => new PackagePrefsElement( ) );
                         EditorUtility.SetDirty( item );
