@@ -2,6 +2,7 @@
 ## [8.0.0] (
 - add: References検索対象から除外するファイルを指定できるようにした
 - add: ObjectとDynamicPathで指定されたAssetがReferencesを検索するかどうかを個別に指定できるようにした
+- add: DynamicPathで指定されたパスにAssetが存在するならObjectFieldで表示するようにした
 - change: PostProcessScriptの選択をPopupにした
 
 ## [7.2.0] (2024-01-16)

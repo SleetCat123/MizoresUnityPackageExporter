@@ -237,6 +237,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                                     previewpath = PathUtils.GetProjectAbsolutePath( dir, previewpath );
                                 }
                                 EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                                // Assetが存在するならObjectFieldで表示
+                                var obj = AssetDatabase.LoadAssetAtPath<Object>( previewpath );
+                                if ( obj != null ) {
+                                    using ( new EditorGUI.DisabledScope( true ) ) {
+                                        EditorGUILayout.ObjectField( obj, typeof( Object ), false, GUILayout.Width( 120 ) );
+                                    }
+                                }
                             } else {
                                 EditorGUILayout.LabelField( "-" );
                             }
