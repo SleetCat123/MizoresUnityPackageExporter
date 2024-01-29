@@ -52,21 +52,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     EditorGUI.indentLevel--;
 
                     EditorGUI.BeginChangeCheck( );
-                    ReferenceElement element;
+                    PackagePrefsElement element;
                     if ( samevalue_in_all ) {
-                        element = t.references2[i];
+                        element = t.references2[i].element;
                     } else {
-                        element = new ReferenceElement( );
+                        element = new PackagePrefsElement( );
                     }
 
                     EditorGUI.showMixedValue = !samevalue_in_all;
-                    PackagePrefsElementInspector.Draw<Object>( element.element );
-                    EditorGUI.showMixedValue = false;
-
-                    var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references2[i].mode == v.references2[i].mode );
-                    EditorGUI.showMixedValue = !samevalue_in_all_mode;
-                    EditorGUI.BeginChangeCheck( );
-                    var mode = ( ReferenceMode )EditorGUILayout.EnumPopup( t.references2[i].mode, GUILayout.Width( 80 ) );
+                    PackagePrefsElementInspector.Draw<Object>( element );
                     EditorGUI.showMixedValue = false;
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         foreach ( var item in targetlist ) {
@@ -74,21 +68,32 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             // 要素数が足りなかったらリサイズ
                             var refs = item.references2;
                             ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
-                            refs[i].mode = mode;
-                            EditorUtility.SetDirty( item );
-                        }
-                    }
-
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        foreach ( var item in targetlist ) {
-                            // 全ての選択中インスタンスに対してオブジェクトを設定
-                            // 要素数が足りなかったらリサイズ
-                            var refs = item.references2;
-                            ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
-                            refs[i] = new ReferenceElement( element );
+                            refs[i].element = element;
                             EditorUtility.SetDirty( item );
                         }
                         objects_count = MinMax.Create( targetlist, v => v.references2.Count );
+                    }
+
+                    var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references2[i].mode == v.references2[i].mode );
+                    ReferenceMode referenceMode;
+                    if ( samevalue_in_all_mode ) {
+                        referenceMode = t.references2[i].mode;
+                    } else {
+                        referenceMode = ReferenceMode.Include;
+                    }
+                    EditorGUI.showMixedValue = !samevalue_in_all_mode;
+                    EditorGUI.BeginChangeCheck( );
+                    referenceMode = ( ReferenceMode )EditorGUILayout.EnumPopup( referenceMode, GUILayout.Width( 80 ) );
+                    EditorGUI.showMixedValue = false;
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        foreach ( var item in targetlist ) {
+                            // 全ての選択中インスタンスに対してオブジェクトを設定
+                            // 要素数が足りなかったらリサイズ
+                            var refs = item.references2;
+                            ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
+                            refs[i].mode = referenceMode;
+                            EditorUtility.SetDirty( item );
+                        }
                     }
 
                     // Button
@@ -104,7 +109,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                     EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                    if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                    if ( ExporterUtils.MinusButton( ) ) {
                         foreach ( var item in targetlist ) {
                             var refs = item.references2;
                             ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
@@ -117,7 +122,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
             }
             EditorGUI.indentLevel++;
-            if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+            if ( ExporterUtils.PlusButton( ) ) {
                 foreach ( var item in targetlist ) {
                     ExporterUtils.ResizeList( item.references2, objects_count.max + 1, ( ) => new ReferenceElement( ) );
                     EditorUtility.SetDirty( item );

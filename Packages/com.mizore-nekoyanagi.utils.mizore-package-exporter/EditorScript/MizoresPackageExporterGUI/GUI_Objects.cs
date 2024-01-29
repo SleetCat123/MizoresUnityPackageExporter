@@ -1,9 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Reflection;
+using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
-    public static class GUI_Objects {
-        public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
+    public class GUI_Objects {
+        GUIElement_PackagePrefsElementList<Object> list;
+        public GUI_Objects( ) {
+            var field = typeof( MizoresPackageExporter ).GetField( "objects", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+            list = new GUIElement_PackagePrefsElementList<Object>( field );
+        }
+        public void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( ExporterUtils.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_OBJECT,
@@ -14,7 +20,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.FoldoutObjects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
                 }
                 ) ) {
-                GUIElement_PackagePrefsElementList.Draw<Object>( t, targetlist, ( v ) => v.objects );
+                list.Draw( t, targetlist );
             }
         }
 

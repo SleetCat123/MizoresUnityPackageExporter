@@ -12,6 +12,12 @@ using UnityEditor;
 #endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+#if UNITY_EDITOR
+    public class VerticalBoxScope : EditorGUILayout.VerticalScope {
+        public VerticalBoxScope( ) : base( GUI.skin.box ) { }
+        public VerticalBoxScope( params GUILayoutOption[] options ) : base( GUI.skin.box, options ) { }
+    }
+#endif
     public static class ExporterUtils {
         public static int UpDownButton( int index, int listLength, int buttonWidth = 15 ) {
             index = Mathf.Clamp( index, 0, listLength - 1 );
@@ -29,6 +35,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 #endif
             return index;
+        }
+        public static bool MinusButton( ) {
+#if UNITY_EDITOR
+            return GUILayout.Button( IconCache.RemoveIconContent, GUILayout.Width( 20 ), GUILayout.Height( 20 ) );
+#else
+            return false;
+#endif
+        }
+        public static bool PlusButton( ) {
+#if UNITY_EDITOR
+            return GUILayout.Button( IconCache.AddIconContent, GUILayout.Width( 40 ), GUILayout.Height( 20 ) );
+#else
+            return false;
+#endif
         }
 
         public enum GetIconResult {

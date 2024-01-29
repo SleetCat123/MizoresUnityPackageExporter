@@ -12,17 +12,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             string result = text;
             bool browse = false;
             bool folder = false;
-            if ( GUILayout.Button( ExporterTexts.ButtonFolder, GUILayout.Width( 50 ) ) ) {
+            float width = 30;
+            float height = 20;
+            var folderContent = new GUIContent( IconCache.FolderIcon, ExporterTexts.ButtonFolder );
+            if ( GUILayout.Button( folderContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
                 browse = true;
                 folder = true;
             }
-            if ( GUILayout.Button( ExporterTexts.ButtonFile, GUILayout.Width( 50 ) ) ) {
+            var fileContent = new GUIContent( IconCache.FileIcon, ExporterTexts.ButtonFile );
+            if ( GUILayout.Button( fileContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
                 browse = true;
                 folder = false;
             }
             if ( browse ) {
                 text = t.ConvertDynamicPath( text );
-                if ( PathUtils.IsRelativePath(text) ) {
+                if ( PathUtils.IsRelativePath( text ) ) {
                     var dir = t.GetDirectoryPath( );
                     text = PathUtils.GetProjectAbsolutePath( dir, text );
                 }

@@ -14,8 +14,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         public string _variableKeyTemp = string.Empty;
         public MizoresPackageExporter t;
 
+        GUI_Objects gui_Objects;
+        GUI_ExcludeObjects gui_ExcludeObjects;
+
         private void OnEnable( ) {
             t = target as MizoresPackageExporter;
+            gui_Objects = new GUI_Objects( );
+            gui_ExcludeObjects = new GUI_ExcludeObjects( );
         }
         public override void OnInspectorGUI( ) {
             // デバッグモード
@@ -106,7 +111,52 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
 
             // エディタ本体
-            MizoresPackageExporterEditorMain.EditMultiple( this );
+            Undo.RecordObjects( targets, ExporterTexts.Undo );
+
+            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
+
+            // Targets
+            GUI.enabled = false;
+            foreach ( var item in targetlist ) {
+                EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+            }
+            GUI.enabled = true;
+
+            ExporterUtils.SeparateLine( );
+
+            gui_Objects.Draw( this, t, targetlist );
+            GUI_DynamicPath.Draw( this, t, targetlist );
+
+            ExporterUtils.SeparateLine( );
+
+            GUI_ReferencesObjects.Draw( this, t, targetlist );
+
+            ExporterUtils.SeparateLine( );
+
+            gui_ExcludeObjects.Draw( this, t, targetlist );
+            GUI_Excludes.Draw( this, t, targetlist );
+
+            if ( targets.Length == 1 ) {
+                ExporterUtils.SeparateLine( );
+                EditorGUILayout.LabelField( ExporterTexts.Variables, EditorStyles.boldLabel );
+                SingleGUI_DynamicPathVariables.Draw( this, t );
+            } else {
+                ExporterUtils.SeparateLine( );
+                EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.Variables ), MessageType.Info );
+            }
+
+            ExporterUtils.SeparateLine( );
+            GUI_BatchExporter.Draw( this, t, targetlist );
+
+            if ( ExporterEditorPrefs.UsePostProcessScript ) {
+                ExporterUtils.SeparateLine( );
+                GUI_PostProcessScript.Draw( this, t, targetlist );
+            }
+
+            // ExportPackage
+            ExporterUtils.SeparateLine( );
+            GUI_ExportPackage.Draw( this, targetlist );
+            //
 
             logs.DrawUI( );
         }

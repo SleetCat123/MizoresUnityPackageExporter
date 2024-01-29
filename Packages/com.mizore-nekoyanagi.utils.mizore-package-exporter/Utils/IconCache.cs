@@ -3,16 +3,14 @@
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class IconCache
-    {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class IconCache {
         static Texture _unityLogoIcon;
         public static Texture UnityLogoIcon {
             get {
 #if UNITY_EDITOR
                 if ( _unityLogoIcon == null ) {
-                    _unityLogoIcon = EditorGUIUtility.IconContent( "UnityLogo" ).image;
+                    _unityLogoIcon = EditorGUIUtility.Load( "UnityLogo" ) as Texture;
                 }
 #endif
                 return _unityLogoIcon;
@@ -24,7 +22,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 if ( _errorIcon == null ) {
-                    _errorIcon = EditorGUIUtility.IconContent( "console.erroricon.sml" ).image;
+                    _errorIcon = EditorGUIUtility.Load( "console.erroricon.sml" ) as Texture;
                 }
 #endif
                 return _errorIcon;
@@ -36,7 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 if ( _warningIcon == null ) {
-                    _warningIcon = EditorGUIUtility.IconContent( "console.warnicon.sml" ).image;
+                    _warningIcon = EditorGUIUtility.Load( "console.warnicon.sml" ) as Texture;
                 }
 #endif
                 return _warningIcon;
@@ -48,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 if ( _infoIcon == null ) {
-                    _infoIcon = EditorGUIUtility.IconContent( "console.infoicon.sml" ).image;
+                    _infoIcon = EditorGUIUtility.Load( "console.infoicon.sml" ) as Texture;
                 }
 #endif
                 return _infoIcon;
@@ -60,34 +58,78 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             get {
 #if UNITY_EDITOR
                 if ( _helpIcon == null ) {
-                    _helpIcon = EditorGUIUtility.IconContent( "_Help@2x" ).image;
+                    _helpIcon = EditorGUIUtility.Load( "_Help@2x" ) as Texture;
                 }
 #endif
                 return _helpIcon;
             }
         }
 
-        static Texture _AddIcon;
-        public static Texture AddIcon {
+        static GUIContent _AddIconContent;
+        public static GUIContent AddIconContent {
             get {
 #if UNITY_EDITOR
-                if ( _AddIcon == null ) {
-                    _AddIcon = EditorGUIUtility.IconContent( "Toolbar Plus@2x" ).image;
+                if ( _AddIconContent == null ) {
+                    _AddIconContent = EditorGUIUtility.IconContent( "Toolbar Plus@2x" );
                 }
 #endif
-                return _AddIcon;
+                return _AddIconContent;
+            }
+        }
+        public static Texture AddIcon {
+            get {
+                return AddIconContent.image;
             }
         }
 
-        static Texture _RemoveIcon;
-        public static Texture RemoveIcon {
+        static GUIContent _RemoveIconContent;
+        public static GUIContent RemoveIconContent {
             get {
 #if UNITY_EDITOR
-                if ( _RemoveIcon == null ) {
-                    _RemoveIcon = EditorGUIUtility.IconContent( "Toolbar Minus@2x" ).image;
+                if ( _RemoveIconContent == null ) {
+                    _RemoveIconContent = EditorGUIUtility.IconContent( "Toolbar Minus@2x" );
                 }
 #endif
-                return _RemoveIcon;
+                return _RemoveIconContent;
+            }
+        }
+        public static Texture RemoveIcon {
+            get {
+                return RemoveIconContent.image;
+            }
+        }
+
+        static GUIContent _FolderIconContent;
+        public static GUIContent FolderIconContent {
+            get {
+#if UNITY_EDITOR
+                if ( _FolderIconContent == null ) {
+                    _FolderIconContent = EditorGUIUtility.IconContent( "d_FolderOpened Icon" );
+                }
+#endif
+                return _FolderIconContent;
+            }
+        }
+        public static Texture FolderIcon {
+            get {
+                return FolderIconContent.image;
+            }
+        }
+
+        static GUIContent _FileIconContent;
+        public static GUIContent FileIconContent {
+            get {
+#if UNITY_EDITOR
+                if ( _FileIconContent == null ) {
+                    _FileIconContent = EditorGUIUtility.IconContent( "d_DefaultAsset Icon" );
+                }
+#endif
+                return _FileIconContent;
+            }
+        }
+        public static Texture FileIcon {
+            get {
+                return FileIconContent.image;
             }
         }
     }

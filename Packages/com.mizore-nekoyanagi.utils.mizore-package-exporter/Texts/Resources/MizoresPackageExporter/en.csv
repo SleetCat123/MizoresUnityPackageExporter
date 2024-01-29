@@ -53,8 +53,8 @@ ButtonExportPackages,Export to unitypackages
 ButtonOpen,Open
 DiffLabel,?
 DiffTooltip,Some values are different.
-ButtonFolder,Folder
-ButtonFile,File
+ButtonFolder,Browse Folder
+ButtonFile,Browse File
 ExportLogNotFound,[{0}] is not exists.
 ExportLogFailedTargetEmpty,{0}\nThere are no files to export.
 ExportLogFailed,{0}\nExport has been cancelled.

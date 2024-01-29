@@ -156,7 +156,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                         }
                         EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                        if ( GUILayout.Button( "-", GUILayout.Width( 15 ) ) ) {
+                        if ( ExporterUtils.MinusButton( ) ) {
                             foreach ( var item in targetlist ) {
                                 ExporterUtils.ResizeList( item.dynamicpath2, Mathf.Max( i + 1, item.dynamicpath2.Count ) );
                                 item.dynamicpath2.RemoveAt( i );
@@ -197,7 +197,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel++;
-                if ( GUILayout.Button( "+", GUILayout.Width( 60 ) ) ) {
+                if ( ExporterUtils.PlusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         ExporterUtils.ResizeList( item.dynamicpath2, dpath_count.max + 1, ( ) => new DynamicPathElement( ) );
                         EditorUtility.SetDirty( item );
@@ -211,41 +211,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.FoldoutDynamicPathPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
-                    if ( first == false ) EditorGUILayout.Separator( );
-                    first = false;
-                    if ( multiple ) {
-                        GUI.enabled = false;
-                        EditorGUI.indentLevel++;
-                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                        EditorGUI.indentLevel--;
-                        GUI.enabled = true;
-                    }
-                    for ( int i = 0; i < dpath_count.max; i++ ) {
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            var indent = EditorGUI.indentLevel;
-                            if ( multiple ) {
-                                EditorGUI.indentLevel += 2;
-                            } else {
-                                EditorGUI.indentLevel++;
-                            }
-                            EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
-                            EditorGUI.indentLevel = indent;
-                            if ( i < item.dynamicpath2.Count ) {
-                                string previewpath = item.ConvertDynamicPath( item.dynamicpath2[i].path, true );
-                                if ( PathUtils.IsRelativePath( previewpath ) ) {
-                                    var dir = item.GetDirectoryPath( );
-                                    previewpath = PathUtils.GetProjectAbsolutePath( dir, previewpath );
+                    using ( new VerticalBoxScope( ) ) {
+                        if ( first == false ) EditorGUILayout.Separator( );
+                        first = false;
+                        if ( multiple ) {
+                            GUI.enabled = false;
+                            EditorGUI.indentLevel++;
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                            EditorGUI.indentLevel--;
+                            GUI.enabled = true;
+                        }
+                        for ( int i = 0; i < dpath_count.max; i++ ) {
+                            using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
+                                var indent = EditorGUI.indentLevel;
+                                if ( multiple ) {
+                                    EditorGUI.indentLevel += 2;
+                                } else {
+                                    EditorGUI.indentLevel++;
                                 }
-                                EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
-                                // Assetが存在するならObjectFieldで表示
-                                var obj = AssetDatabase.LoadAssetAtPath<Object>( previewpath );
-                                if ( obj != null ) {
-                                    using ( new EditorGUI.DisabledScope( true ) ) {
-                                        EditorGUILayout.ObjectField( obj, typeof( Object ), false, GUILayout.Width( 120 ) );
+                                EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
+                                EditorGUI.indentLevel = indent;
+                                if ( i < item.dynamicpath2.Count ) {
+                                    string previewpath = item.ConvertDynamicPath( item.dynamicpath2[i].path, true );
+                                    if ( PathUtils.IsRelativePath( previewpath ) ) {
+                                        var dir = item.GetDirectoryPath( );
+                                        previewpath = PathUtils.GetProjectAbsolutePath( dir, previewpath );
                                     }
+                                    EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                                    // Assetが存在するならObjectFieldで表示
+                                    var obj = AssetDatabase.LoadAssetAtPath<Object>( previewpath );
+                                    if ( obj != null ) {
+                                        using ( new EditorGUI.DisabledScope( true ) ) {
+                                            EditorGUILayout.ObjectField( obj, typeof( Object ), false, GUILayout.Width( 120 ) );
+                                        }
+                                    }
+                                } else {
+                                    EditorGUILayout.LabelField( "-" );
                                 }
-                            } else {
-                                EditorGUILayout.LabelField( "-" );
                             }
                         }
                     }
