@@ -124,7 +124,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             path = EditorGUI.TextField( textrect, string.Empty );
                             EditorGUI.showMixedValue = false;
                         }
-                        bool browse = GUIElement_Utils.BrowseButtons( t, path, out string browseResult );
+                        bool browse = GUIElement_Utils.BrowseButtons( t, path, out string browseResult, GUIElement_Utils.BrowseType.FileAndFolder );
                         if ( browse ) {
                             path = browseResult;
                         }

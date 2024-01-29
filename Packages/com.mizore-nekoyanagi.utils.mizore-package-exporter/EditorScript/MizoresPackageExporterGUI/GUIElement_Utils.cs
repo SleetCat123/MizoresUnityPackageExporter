@@ -10,23 +10,39 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public class VerticalBoxScope : EditorGUILayout.VerticalScope {
         public VerticalBoxScope( ) : base( GUI.skin.box ) { }
         public VerticalBoxScope( params GUILayoutOption[] options ) : base( GUI.skin.box, options ) { }
+        public static Rect BeginVerticalBox( ) {
+            return EditorGUILayout.BeginVertical( GUI.skin.box );
+        }
     }
     public static class GUIElement_Utils {
-        public static bool BrowseButtons( MizoresPackageExporter t, string path, out string result, bool forceAbsolute = false ) {
+        public enum BrowseType {
+            None = 0,
+            File = 1 << 0,
+            Folder = 1 << 1,
+            FileAndFolder = File | Folder,
+        }
+        public static bool BrowseButtons( MizoresPackageExporter t, string path, out string result, BrowseType browseType, string fileExtension = null, bool forceAbsolute = false ) {
             result = path;
+            if ( browseType == BrowseType.None ) {
+                return false;
+            }
             bool browse = false;
             bool folder = false;
             float width = 30;
             float height = 20;
-            var folderContent = new GUIContent( IconCache.FolderIcon, ExporterTexts.ButtonFolder );
-            if ( GUILayout.Button( folderContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
-                browse = true;
-                folder = true;
+            if ( browseType.HasFlag( BrowseType.Folder ) ) {
+                var folderContent = new GUIContent( IconCache.FolderIcon, ExporterTexts.ButtonFolder );
+                if ( GUILayout.Button( folderContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
+                    browse = true;
+                    folder = true;
+                }
             }
-            var fileContent = new GUIContent( IconCache.FileIcon, ExporterTexts.ButtonFile );
-            if ( GUILayout.Button( fileContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
-                browse = true;
-                folder = false;
+            if ( browseType.HasFlag( BrowseType.File ) ) {
+                var fileContent = new GUIContent( IconCache.FileIcon, ExporterTexts.ButtonFile );
+                if ( GUILayout.Button( fileContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
+                    browse = true;
+                    folder = false;
+                }
             }
             if ( browse ) {
                 if ( t != null ) {
@@ -45,7 +61,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     if ( !File.Exists( path ) ) {
                         path = t.GetDirectoryPath( );
                     }
-                    path = EditorUtility.OpenFilePanel( null, path, null );
+                    path = EditorUtility.OpenFilePanel( null, path, fileExtension );
                 }
                 if ( string.IsNullOrEmpty( path ) == false ) {
                     path = PathUtils.ToValidPath( path );
