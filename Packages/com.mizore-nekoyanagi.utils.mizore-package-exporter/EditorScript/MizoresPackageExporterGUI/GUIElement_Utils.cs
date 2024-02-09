@@ -98,7 +98,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return GUILayout.Button( IconCache.RemoveIconContent, GUILayout.Width( 20 ), GUILayout.Height( 20 ) );
         }
         public static bool PlusButton( ) {
-            return GUILayout.Button( IconCache.AddIconContent, GUILayout.Width( 40 ), GUILayout.Height( 20 ) );
+            var rect = EditorGUILayout.GetControlRect( GUILayout.Height( 17 ) );
+            rect = EditorGUI.IndentedRect( rect );
+            rect.width = 40;
+            return GUI.Button( rect, IconCache.AddIconContent );
         }
     }
 #endif
