@@ -208,6 +208,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 } else {
                     EditorGUILayout.Separator( );
                 }
+                VerticalBoxScope.BeginVerticalBox( );
                 first = false;
                 if ( multiple ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
@@ -283,6 +284,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 EditorGUI.EndDisabledGroup( );
                 EditorGUI.indentLevel--;
+                VerticalBoxScope.EndVerticalBox( );
             }
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
@@ -298,12 +300,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
             }
             if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 Main( t, targetlist, samevalue_in_all_mode );
 
                 EditorGUILayout.Separator( );
                 GUI_VersionFile.DrawMain( targetlist.Select( v => v.packageNameSettings ).ToArray( ), targetlist, 1 );
 
                 DrawList( targetlist );
+                VerticalBoxScope.EndVerticalBox( );
             }
 
             foreach ( var item in targetlist ) {

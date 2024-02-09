@@ -169,6 +169,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ) ) {
                 return;
             }
+            VerticalBoxScope.BeginVerticalBox( );
             if ( scriptDataTable == null ) {
                 UpdateScriptNameList( );
             }
@@ -305,6 +306,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
             GUI.contentColor = temp_contentColor;
             EditorGUI.indentLevel = temp_indentLevel;
+            VerticalBoxScope.EndVerticalBox( );
         }
     }
 }

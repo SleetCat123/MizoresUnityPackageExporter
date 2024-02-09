@@ -37,6 +37,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             // 出力先一覧
             for ( int i = 0; i < targetlist.Length; i++ ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 var obj = targetlist[i];
                 var files = fileList[i];
                 if ( multiple ) {
@@ -55,6 +56,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUILayout.LabelField( new GUIContent( path, path ) );
                     }
                 }
+                VerticalBoxScope.EndVerticalBox( );
             }
             if ( !any ) {
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );

@@ -28,7 +28,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout( targetlist, ExporterTexts.FoldoutReferences, ( ex ) => ex.references2, ( ex, list ) => ex.references2 = list )
                 }
                 ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 DrawList( t, targetlist );
+                VerticalBoxScope.EndVerticalBox( );
             }
         }
         static void DrawList( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {

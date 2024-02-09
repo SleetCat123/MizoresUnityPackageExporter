@@ -62,6 +62,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 for ( int i = 0; i < dpath_count.max; i++ ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                         // 全てのオブジェクトの値が同じか
@@ -207,6 +208,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel--;
+                VerticalBoxScope.EndVerticalBox( );
             }
             // ↑ Dynamic Path
 

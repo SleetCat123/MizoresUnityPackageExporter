@@ -31,6 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.FoldoutExcludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
                 }
                 ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 Event currentEvent = Event.current;
                 for ( int i = 0; i < minmax_count.max; i++ ) {
                     var scopeRect = EditorGUILayout.BeginHorizontal( );
@@ -168,11 +169,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 EditorGUI.indentLevel--;
+                VerticalBoxScope.EndVerticalBox( );
             }
             // ↑ Excludes
 
             // ↓ Excludes Preview
             if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.FoldoutExcludesPreview ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );
@@ -208,6 +211,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                 }
+                VerticalBoxScope.EndVerticalBox( );
             }
             // ↑ Excludes Preview
         }

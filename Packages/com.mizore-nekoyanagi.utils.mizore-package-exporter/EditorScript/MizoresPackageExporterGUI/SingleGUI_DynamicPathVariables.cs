@@ -33,6 +33,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterEditorPrefs.FOLDOUT_VARIABLES,
                 ExporterTexts.FoldoutVariables( t.variables.Count.ToString( ) )
                 ) ) {
+                VerticalBoxScope.BeginVerticalBox( );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
                 GUI.enabled = false;
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
@@ -95,6 +96,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorUtility.SetDirty( t );
                     }
                 }
+                VerticalBoxScope.EndVerticalBox( );
             }
         }
     }
