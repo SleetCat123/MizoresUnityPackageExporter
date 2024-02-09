@@ -50,9 +50,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public static void SeparateLine( ) {
+        public static void SeparateLine( float lineHeight = 2f, float margins = 4f ) {
 #if UNITY_EDITOR
-            EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+            // EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
+            var baseRect = EditorGUILayout.GetControlRect( GUILayout.Height( margins + lineHeight + margins ) );
+            var rect = new Rect(baseRect );
+            rect.y += margins;
+            rect.height = lineHeight;
+            var color = Color.gray;
+            EditorGUI.DrawRect( rect, color );
 #endif
         }
 
@@ -119,10 +125,29 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             bool result = true;
 #if UNITY_EDITOR
             bool before = EditorPrefsCache.GetBool( key, true );
-            Rect rect = EditorGUILayout.GetControlRect( );
+            Rect rect = EditorGUILayout.GetControlRect( GUILayout.Height( 22 ) );
 
-            result = EditorGUI.BeginFoldoutHeaderGroup( rect, before, label );
+            var style = new GUIStyle("ShurikenModuleTitle");
+            style.font = new GUIStyle( EditorStyles.label ).font;
+            style.fontSize = 13;
+            style.fixedHeight = 22;
+            style.contentOffset = new Vector2( 19f, -2f );
+            var temp_color = GUI.backgroundColor;
+            GUI.backgroundColor *= new Color( 1f, 1f, 1f, 0.7f );
+
+            bool pushed = GUI.Button( rect, label, style );
+            GUI.backgroundColor = temp_color;
+            if ( pushed ) {
+                result = !before;
+            } else {
+                result = before;
+            }
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
+            var ev = Event.current;
+            var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
+            if ( ev.type == EventType.Repaint ) {
+                EditorStyles.foldout.Draw( toggleRect, false, false, result, false );
+            }
 
             if ( funcs != null && DragDrop( rect, funcs.canDragDrop ) ) {
                 funcs.onDragPerform( DragAndDrop.objectReferences );
@@ -132,7 +157,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( before != result ) {
                 EditorPrefsCache.SetBool( key, result );
             }
-            EditorGUI.EndFoldoutHeaderGroup( );
 
             Event currentEvent = Event.current;
             if ( funcs != null && funcs.onRightClick != null && currentEvent.type == EventType.ContextClick && rect.Contains( currentEvent.mousePosition ) ) {
