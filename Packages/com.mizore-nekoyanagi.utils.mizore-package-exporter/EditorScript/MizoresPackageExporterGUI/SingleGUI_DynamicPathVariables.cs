@@ -29,7 +29,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             return key;
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t ) {
-            if ( ExporterUtils.EditorPrefFoldout(
+            if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_VARIABLES,
                 ExporterTexts.FoldoutVariables( t.variables.Count.ToString( ) )
                 ) ) {

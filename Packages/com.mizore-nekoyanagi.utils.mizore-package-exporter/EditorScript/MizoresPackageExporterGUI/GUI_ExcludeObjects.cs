@@ -15,10 +15,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         }
         public void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
-            if ( ExporterUtils.EditorPrefFoldout(
+            if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDE_OBJECTS,
                 ExporterTexts.FoldoutExcludeObjects( excludeObjects_count.ToString( ) ),
-                new ExporterUtils.FoldoutFuncs( ) {
+                new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => excludeObjects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => ExporterUtils.AddObjects( targetlist, v => v.excludeObjects, objectReferences ),
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.FoldoutExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )

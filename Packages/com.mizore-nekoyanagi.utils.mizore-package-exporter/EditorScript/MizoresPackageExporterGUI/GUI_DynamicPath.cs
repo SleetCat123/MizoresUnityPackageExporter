@@ -32,10 +32,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             var dpath_count = MinMax.Create( targetlist, v => v.dynamicpath2.Count );
             bool multiple = targetlist.Length > 1;
             // ↓ Dynamic Path
-            if ( ExporterUtils.EditorPrefFoldout(
+            if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_DYNAMICPATH,
                 ExporterTexts.FoldoutDynamicPath( dpath_count.ToString( ) ),
-                new ExporterUtils.FoldoutFuncs( ) {
+                new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => dpath_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( t, targetlist, objectReferences ),
                     onRightClick = ( ) => {
@@ -211,7 +211,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             // ↑ Dynamic Path
 
             // ↓ Dynamic Path Preview
-            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.FoldoutDynamicPathPreview ) ) {
+            if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_DYNAMICPATH_PREVIEW, ExporterTexts.FoldoutDynamicPathPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     using ( new VerticalBoxScope( ) ) {

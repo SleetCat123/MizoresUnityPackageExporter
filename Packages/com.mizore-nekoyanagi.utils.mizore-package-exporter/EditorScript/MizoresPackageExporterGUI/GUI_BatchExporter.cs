@@ -297,7 +297,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             } else {
                 foldoutLabel = ExporterTexts.FoldoutBatchExportEnabled;
             }
-            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
+            if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXPORT_SETTING, foldoutLabel ) ) {
                 Main( t, targetlist, samevalue_in_all_mode );
 
                 EditorGUILayout.Separator( );

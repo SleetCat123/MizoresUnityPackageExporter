@@ -22,10 +22,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
             bool multiple = targetlist.Length > 1;
             // ↓ Excludes
-            if ( ExporterUtils.EditorPrefFoldout(
+            if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDES,
                 ExporterTexts.FoldoutExcludes( minmax_count.ToString( ) ),
-                new FoldoutFuncs( ) {
+                new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => minmax_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, v => v.excludes, objectReferences ),
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<SearchPath>( targetlist, ExporterTexts.FoldoutExcludes, ( ex ) => ex.excludes, ( ex, list ) => ex.excludes = list )
@@ -172,7 +172,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             // ↑ Excludes
 
             // ↓ Excludes Preview
-            if ( ExporterUtils.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.FoldoutExcludesPreview ) ) {
+            if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.FoldoutExcludesPreview ) ) {
                 bool first = true;
                 foreach ( var item in targetlist ) {
                     if ( first == false ) EditorGUILayout.Separator( );

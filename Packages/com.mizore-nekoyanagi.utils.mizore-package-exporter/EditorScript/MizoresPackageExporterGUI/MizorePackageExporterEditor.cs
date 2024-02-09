@@ -138,7 +138,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
-                EditorGUILayout.LabelField( ExporterTexts.Variables, EditorStyles.boldLabel );
                 SingleGUI_DynamicPathVariables.Draw( this, t );
             } else {
                 ExporterUtils.SeparateLine( );

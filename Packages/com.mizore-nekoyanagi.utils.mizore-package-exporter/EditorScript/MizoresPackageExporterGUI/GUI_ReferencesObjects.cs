@@ -19,10 +19,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax references_count = MinMax.Create( targetlist, v => v.references2.Count );
-            if ( ExporterUtils.EditorPrefFoldout(
+            if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_REFERENCES,
                 new GUIContent( ExporterTexts.FoldoutReferences( references_count.ToString( ) ), ExporterTexts.FoldoutReferencesTooltip ),
-                new ExporterUtils.FoldoutFuncs( ) {
+                new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => references_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, objectReferences ),
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout( targetlist, ExporterTexts.FoldoutReferences, ( ex ) => ex.references2, ( ex, list ) => ex.references2 = list )

@@ -163,7 +163,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
-            if ( !ExporterUtils.EditorPrefFoldout(
+            if ( !CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_POST_PROCESS_SCRIPT,
                 ExporterTexts.FoldoutPostProcessScript
                 ) ) {

@@ -95,18 +95,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return index;
         }
         public static bool MinusButton( ) {
-#if UNITY_EDITOR
             return GUILayout.Button( IconCache.RemoveIconContent, GUILayout.Width( 20 ), GUILayout.Height( 20 ) );
-#else
-            return false;
-#endif
         }
         public static bool PlusButton( ) {
-#if UNITY_EDITOR
             return GUILayout.Button( IconCache.AddIconContent, GUILayout.Width( 40 ), GUILayout.Height( 20 ) );
-#else
-            return false;
-#endif
         }
     }
 #endif
