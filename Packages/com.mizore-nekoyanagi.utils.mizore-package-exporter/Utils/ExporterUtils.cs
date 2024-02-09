@@ -62,11 +62,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<PackagePrefsElement>> getList, Object[] objectReferences ) {
+        public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[] objectReferences ) where TElement : PackagePrefsElement, new() {
 #if UNITY_EDITOR
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
-                Select( v => new PackagePrefsElement( v ) );
+                Select( v => {
+                    var r = new TElement( );
+                    r.Object = v;
+                    return r;
+                });
             foreach ( var item in targetlist ) {
                 getList( item ).AddRange( add );
                 EditorUtility.SetDirty( item );

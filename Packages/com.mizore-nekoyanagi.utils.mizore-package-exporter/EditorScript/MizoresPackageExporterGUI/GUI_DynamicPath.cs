@@ -173,7 +173,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                     var useReferences = targetlist.Any( v => v.references2.Count != 0 );
-                    if ( useReferences ) {
+                    using ( new EditorGUI.DisabledScope( !useReferences ) ) {
                         // Search Reference
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
                             EditorGUI.indentLevel++;

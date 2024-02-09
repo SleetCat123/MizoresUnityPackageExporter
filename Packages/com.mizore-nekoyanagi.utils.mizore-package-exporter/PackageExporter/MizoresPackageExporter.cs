@@ -40,7 +40,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
         public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
 
-        public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
+        public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>( );
 
         [System.Obsolete, SerializeField]
         List<string> dynamicpath = new List<string>( );

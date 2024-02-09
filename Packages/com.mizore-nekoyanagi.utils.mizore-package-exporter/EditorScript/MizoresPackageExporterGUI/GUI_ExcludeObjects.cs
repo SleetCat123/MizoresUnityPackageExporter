@@ -9,10 +9,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
     public class GUI_ExcludeObjects {
-        GUIElement_PackagePrefsElementList<Object> list;
+        GUIElement_PackagePrefsElementList<Object, PackagePrefsElement> list;
         public GUI_ExcludeObjects( ) {
-            var field = typeof( MizoresPackageExporter ).GetField( "excludeObjects", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            list = new GUIElement_PackagePrefsElementList<Object>( field );
+            list = new GUIElement_PackagePrefsElementList<Object, PackagePrefsElement>( t => t.excludeObjects );
         }
         public void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );

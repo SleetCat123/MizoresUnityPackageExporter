@@ -3,15 +3,14 @@
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
     public class PackagePrefsElement : System.ICloneable, System.IEquatable<PackagePrefsElement>
     {
         [SerializeField]
-        private Object obj;
+        protected Object obj;
         [SerializeField]
-        private string path;
+        protected string path;
 
         public PackagePrefsElement( ) { }
         public PackagePrefsElement( Object obj ) {
@@ -22,7 +21,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             this.path = source.path;
         }
 
-        public Object Object {
+        public virtual Object Object {
             get {
 #if UNITY_EDITOR
                 if ( obj == null && !string.IsNullOrEmpty( path ) ) {
@@ -45,7 +44,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
 
-        public string Path {
+        public virtual string Path {
             get {
 #if UNITY_EDITOR
                 if ( obj != null ) {
@@ -56,7 +55,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
         }
 
-        public object Clone( ) {
+        public virtual object Clone( ) {
             return new PackagePrefsElement( this );
         }
 
