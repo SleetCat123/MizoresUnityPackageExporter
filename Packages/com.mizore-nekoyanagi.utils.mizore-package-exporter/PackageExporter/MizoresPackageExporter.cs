@@ -470,7 +470,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
             IEnumerable<FilePath> list;
             {
-                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath(v.Path, true) );
+                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath(v.Path, v.searchReference) );
                 var list2 = dynamicpath2
                     .Where( v => !string.IsNullOrWhiteSpace( v.path ) )
                     .Select( v => {
