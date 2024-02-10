@@ -116,3 +116,5 @@ EditOnlySingle,{0} can only be edited in single selection mode.
 
 SearchReference,Search Reference
 SearchReferenceTooltip,If this Asset is reference an Asset in "References", the corresponding Asset is automatically added to the export target.
+
+ErrorEmptyName,The file name for the currently selected MizoresPackageExporter is not yet set.\nPlease set the file name and select it again.

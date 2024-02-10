@@ -115,6 +115,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
 
+            foreach ( var item in targetlist ) {
+                if ( string.IsNullOrEmpty( item.name ) ) {
+                    EditorGUILayout.HelpBox( ExporterTexts.ErrorEmptyName, MessageType.Error );
+                    return;
+                }
+            }
+
             // Targets
             GUI.enabled = false;
             foreach ( var item in targetlist ) {

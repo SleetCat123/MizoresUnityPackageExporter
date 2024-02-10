@@ -6,6 +6,7 @@
 - add: Objectsなどの項目にもフォルダ／ファイルの選択ボタンを追加
 - change: フォルダ／ファイルの選択ボタンの表示を変更
 - change: PostProcessScriptの選択をPopupにした
+- fix: MizoresPackageExporterを新規作成した直後にエラーが出てしまうのを修正
 
 ## [7.2.0] (2024-01-16)
 - add: （上級者向け機能）エクスポート後に所定のinterfaceを継承するスクリプトを実行できる機能を追加
