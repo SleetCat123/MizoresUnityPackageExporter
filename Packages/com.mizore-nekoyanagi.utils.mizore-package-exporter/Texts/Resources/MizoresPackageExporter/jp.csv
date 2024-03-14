@@ -47,4 +47,4 @@ UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、IExportPo
 SearchReference,Referencesを検索
 SearchReferenceTooltip,「References」に含まれているAssetが、このAssetにより参照されている場合、「Reference」内の当該Assetを自動的にExport対象に追加します。
 
-ErrorEmptyName,ファイル名が未確定なMizoresPackageExporterが存在しています。\nファイル名を確定してから再度選択してください。
+ErrorEmptyName,選択中のMizoresPackageExporterはファイル名が未設定です。\nファイル名を確定してから再度選択してください。
