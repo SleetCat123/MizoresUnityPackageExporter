@@ -178,3 +178,23 @@ unitypackageの名前はMizoresPackageExporterのファイル名が使用され�
 ### ◇Open
 出力先フォルダを開きます。  
 （プロジェクトフォルダ直下の MizorePackageExporter/）
+  
+    
+---
+---
+## ◆上級者向け機能
+MizoresPackageExporter上で上級者向け機能を有効化することで使用できる機能です。
+### ◇Post Process Script
+unitypackageのエクスポート後に追加でスクリプトを実行できる機能です。  
+IExportPostProcessを継承したスクリプトを作成し、MizoresPackageExporter上で指定することで使用できます。  
+
+**注：スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。**
+
+サンプルとして以下のスクリプトが同梱されています。  
+- PostProcess/Samples/PackagingAvatar.cs  
+以下の処理を行います。
+  1. エクスポートされたunitypackageを同名のフォルダに格納
+  2. エクスポート対象に含まれるfbxファイルを1で作成されたフォルダにコピー
+  3. プロジェクト内にある指定のフォルダの中身を1で作成されたフォルダにコピー
+  （Readmeや利用規約などのファイルを同梱する際に使用できます）
+  4. 1で作成されたフォルダをzipファイルに圧縮
