@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
-    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable {
+    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable, ISerializationCallbackReceiver {
+        // 互換性のためSerialize対象にしておく
         public SearchPathType searchType;
+        [SerializeField]string s_searchType;
         public string value;
 
         public SearchPath( ) {
@@ -169,6 +171,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return result;
             }
         }
+
+        public void OnBeforeSerialize( ) {
+            s_searchType = searchType.GetString( );
+        }
+
+        public void OnAfterDeserialize( ) {
+            if ( string.IsNullOrEmpty( s_searchType ) ) {
+                // enumのstring保存が未実装なデータを読み込んだ場合のみ発生
+                // enumの順番が変わった場合はここで対応する
+            } else {
+                searchType = SearchPathTypeExtensions.Parse( s_searchType );
+            }
+        }
     }
     public enum SearchPathType {
         Disabled,
@@ -202,6 +217,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 case SearchPathType.Partial_IgnoreCase: return "Partial_IgnoreCase";
                 case SearchPathType.Regex: return "Regex";
                 case SearchPathType.Regex_IgnoreCase: return "Regex_IgnoreCase";
+                default: throw new System.ArgumentException( );
+            }
+        }
+        public static SearchPathType Parse( string value ) {
+            switch ( value ) {
+                case "Disabled": return SearchPathType.Disabled;
+                case "Exact": return SearchPathType.Exact;
+                case "Partial": return SearchPathType.Partial;
+                case "Partial_IgnoreCase": return SearchPathType.Partial_IgnoreCase;
+                case "Regex": return SearchPathType.Regex;
+                case "Regex_IgnoreCase": return SearchPathType.Regex_IgnoreCase;
                 default: throw new System.ArgumentException( );
             }
         }
