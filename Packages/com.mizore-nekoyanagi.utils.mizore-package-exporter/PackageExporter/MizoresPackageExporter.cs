@@ -504,15 +504,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // .metaファイルを除外
             list_include_sub = list_include_sub.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
 
+            // 除外指定ファイル・フォルダの検索用
+            IEnumerable< SearchPath> excludeSearchPaths = excludeObjects.Where( v => v != null && v.Object != null ).Select( v => new SearchPath( SearchPathType.Exact, v.Path ) );
+            excludeSearchPaths = excludeSearchPaths.Concat( excludes.Select( v => new SearchPath( v.searchType, ConvertDynamicPath( v.value ) ) ) );
+
             var result = new HashSet<string>( );
+            var result_exclude1 = new HashSet<string>( );
             var referencesResults = new Dictionary<string, HashSet<string>>( );
             foreach ( var item in list_include_sub ) {
+                if ( excludeSearchPaths.Any( v => v.IsMatch( item.path ) ) ) {
+                    // 除外対象ならスキップ
+                    result_exclude1.Add( item.path );
+                    continue;
+                }
+
                 if ( Path.GetExtension( item.path ).Length != 0 ) {
-                    // notSearchに含まれていたら参照Assetを検索しない
                     if ( useReference && item.searchReference ) {
+                        // 依存Assetを検索
                         var dependencies = AssetDatabase.GetDependencies( item.path, true );
                         foreach ( var dp in dependencies ) {
                             if ( dp == item.path ) {
+                                // 自分自身
                                 result.Add( dp );
                             } else if ( referencesPath.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
@@ -528,37 +540,38 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                                 ExporterUtils.DebugLog( "Dependency: " + dp );
                                 ExporterUtils.DebugLog( "Referenced by: " + item );
                             } else {
+                                // 依存AssetがReferencesに含まれていない場合は無視
                                 ExporterUtils.DebugLog( "Ignore Dependency: " + dp );
                             }
                         }
                     } else {
+                        // 依存Assetを検索しない場合はそのまま追加
                         result.Add( item.path );
                     }
                 } else if ( Directory.Exists( item.path ) ) {
                     // 何もしない
                 } else {
+                    // 拡張子が無いファイルはそのまま追加
                     result.Add( item.path );
                 }
             }
 
-            // 除外指定されたファイル・フォルダを処理
+            // 除外指定されたファイル・フォルダを処理（2回目　Referencesで追加されたファイルを除外するために再度処理）
             ExporterUtils.DebugLog( "Before Exclude: \n" + string.Join( "\n", result ) + "\n" );
             IEnumerable<string> result_enumerable = result;
-            foreach ( var item in excludeObjects ) {
-                if ( item == null || item.Object == null ) continue;
-                var exclude = new SearchPath( SearchPathType.Exact, item.Path );
+            foreach ( var exclude in excludeSearchPaths ) {
                 result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
             }
-            foreach ( var item in excludes ) {
-                var exclude = new SearchPath( item.searchType, ConvertDynamicPath( item.value ) );
-                result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
-            }
-            var excludeResults = result.Except( result_enumerable );
+            var result_exclude2 = result.Except( result_enumerable );
+
+            // 除外処理1回目と2回目の結果を結合
+            var excludeResults =  result_exclude1.Concat( result_exclude2 );
             if ( excludeResults.Any( ) ) {
                 ExporterUtils.DebugLog( "Excludes Result: \n" + string.Join( "\n", excludeResults ) + "\n" );
             } else {
                 ExporterUtils.DebugLog( ExporterTexts.ExcludesWereEmpty );
             }
+
             return new FilePathList( ) {
                 paths = result_enumerable,
                 excludePaths = excludeResults,
