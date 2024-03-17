@@ -199,6 +199,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( multiple ) {
                 EditorGUILayout.LabelField( ExporterTexts.PostProcessScriptFields, EditorStyles.boldLabel );
                 EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostProcessScriptFields ), MessageType.Info );
+                VerticalBoxScope.EndVerticalBox( );
                 return;
             }
             if ( !string.IsNullOrEmpty( t.postProcessScriptTypeName ) && !scriptDataTable.ContainsKey( t.postProcessScriptTypeName ) ) {
