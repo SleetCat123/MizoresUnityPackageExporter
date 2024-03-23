@@ -1,11 +1,13 @@
 # ChangeLog
-## [8.0.0] (
+## [8.0.0] (2024
 - add: References検索対象から除外するファイルを指定できるようにした
 - add: ObjectとDynamicPathで指定されたAssetがReferencesを検索するかどうかを個別に指定できるようにした
 - add: DynamicPathで指定されたパスにAssetが存在するならObjectFieldで表示するようにした
 - add: Objectsなどの項目にもフォルダ／ファイルの選択ボタンを追加
 - change: フォルダ／ファイルの選択ボタンの表示を変更
 - change: PostProcessScriptの選択をPopupにした
+- change: （内部処理）各種Enumの値を文字列で保存するように変更
+- fix: エクスポート除外対象のObject／DynamicPathがReferenceの依存Assetを検索してしまうのを修正
 - fix: MizoresPackageExporterを新規作成した直後にエラーが出てしまうのを修正
 
 ## [7.2.0] (2024-01-16)
