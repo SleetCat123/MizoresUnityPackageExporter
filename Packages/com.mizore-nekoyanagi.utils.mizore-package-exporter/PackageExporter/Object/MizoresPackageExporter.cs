@@ -148,58 +148,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 GetOverridedSettings( item ).UpdateExportVersion( );
             }
         }
-
-        public bool ConvertToCurrentVersion( bool force = false ) {
-            if ( force ) {
-                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
-                return true;
-            }
-            bool converted = false;
-            // 初回実行時
-            if ( packageExporterVersion == INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION ) {
-                ExporterUtils.DebugLog( "Initialize" );
-#pragma warning disable 612
-                // packageExporterVersion実装前のオブジェクトからの変換
-                if ( versionFile != null && !string.IsNullOrEmpty( versionFile.Path ) ) {
-                    // versionFileの場所変更
-                    ExporterUtils.DebugLog( "Convert: versionFile" );
-                    packageNameSettings.versionSource = VersionSource.File;
-                    packageNameSettings.versionFile = versionFile;
-                    versionFile = null;
-                }
-                if ( !string.IsNullOrEmpty( versionFormat ) ) {
-                    // versionFormatの場所変更
-                    ExporterUtils.DebugLog( "Convert: versionFormat" );
-                    packageNameSettings.versionFormat = versionFormat;
-                    versionFormat = null;
-                }
-                if ( !string.IsNullOrEmpty( packageName ) ) {
-                    // packageNameの場所変更
-                    ExporterUtils.DebugLog( "Convert: packageName" );
-                    packageNameSettings.packageName = packageName;
-                    packageName = null;
-                }
-                converted = true;
-            }
-            if ( packageExporterVersion < 2 ) {
-                ExporterUtils.DebugLog( "Convert: references" );
-                // referencesの場所変更
-                references2 = references.Select( v => new ReferenceElement( v, ReferenceMode.Include ) ).ToList( );
-                references.Clear( );
-
-                // dynamicpathの場所変更
-                dynamicpath2 = dynamicpath.Select( v => new DynamicPathElement( v ) ).ToList( );
-                dynamicpath.Clear( );
-
-                converted = true;
-            }
-            if ( converted ) {
-                Debug.Log( $"Convert version: {packageExporterVersion} -> {CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION}" );
-                packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
-            }
-            return converted;
-#pragma warning restore 612
-        }
         #endregion
 
         #region BatchExport
