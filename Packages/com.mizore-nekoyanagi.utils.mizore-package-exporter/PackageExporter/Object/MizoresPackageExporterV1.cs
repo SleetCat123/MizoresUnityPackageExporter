@@ -25,7 +25,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
         }
 
         [SerializeField]
-        public int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
+        public int packageExporterVersion = PackageExporter.MizoresPackageExporter.INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
 
         public List<PackagePrefsElement> objects = new List<PackagePrefsElement>( );
         public List<string> dynamicpath = new List<string>( );
