@@ -2,6 +2,8 @@
 using System.Linq;
 using MizoreNekoyanagi.PublishUtil.PackageExporterV1;
 using System.IO;
+using System.Collections.Generic;
+
 
 
 #if UNITY_EDITOR
@@ -52,12 +54,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         Debug.Log( $"Convert version: {MizoresPackageExporter.INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION} -> 1" );
                         v1.packageExporterVersion = MizoresPackageExporter.CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
                     }
+
+                    // V1 -> V2
                     var v2 = MizoresPackageExporter.CreateInstance<MizoresPackageExporter>( );
                     ExporterUtils.DebugLog( "Convert: references" );
-                    // referencesの場所変更
+
+                    // V1のobjectsとdynamicpathを結合
+                    var objects = v1.objects.Select( v => new ExportTargetObjectElement( v.Path ) );
+                    var dynamicpath = v1.dynamicpath.Select( v => new ExportTargetObjectElement( v ) );
+                    v2.objects = objects.Concat( dynamicpath ).ToList( );
+
+                    v2.variables = v1.variables.ToDictionary( v => v.Key, v => v.Value );
+                    v2.excludeObjects = v1.excludeObjects.Select( v => new ObjectRefElement( v.Path ) ).ToList( );
+                    v2.excludes = v1.excludes.Select( v => new SearchPath( (SearchPathType)v.searchType, v.value ) ).ToList( );
                     v2.references = v1.references.Select( v => new ReferenceElement( new ObjectRefElement( v.Path ), ReferenceMode.Include ) ).ToList( );
-                    // dynamicpathの場所変更
-                    v2.dynamicpath = v1.dynamicpath.Select( v => new DynamicPathElement( v ) ).ToList( );
+                    v2.packageNameSettings = ( PackageNameSettings )v1.packageNameSettings;
+                    v2.packageNameSettingsOverride = v1.packageNameSettingsOverride.ToDictionary( v => v.Key, v => ( PackageNameSettings )v.Value );
+                    v2.batchExportMode = ( BatchExportMode )v1.batchExportMode;
+                    v2.batchExportFolderMode = ( BatchExportFolderMode )v1.batchExportFolderMode;
+                    v2.batchExportTexts = new List<string>( v1.batchExportTexts );
+                    v2.batchExportFolderRoot = new ObjectRefElement( v1.batchExportFolderRoot.Path );
+                    v2.batchExportListFile = new ObjectRefElement( v1.batchExportListFile.Path );
+                    v2.batchExportFolderRegex = v1.batchExportFolderRegex;
 
                     latest = v2;
                 }

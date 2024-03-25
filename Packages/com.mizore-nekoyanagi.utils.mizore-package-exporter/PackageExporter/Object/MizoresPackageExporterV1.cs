@@ -143,6 +143,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
             public bool useOverride_versionFormat;
             public bool useOverride_batchFormat;
             public bool useOverride_packageName;
+
+            public static implicit operator PackageExporter.PackageNameSettings( PackageNameSettings source ) {
+                return new PackageExporter.PackageNameSettings( ) {
+                    versionSource = ( PackageExporter.VersionSource )source.versionSource,
+                    versionFile = new PackageExporter.ObjectRefElement( source.versionFile.Path ),
+                    versionString = source.versionString,
+                    versionFormat = source.versionFormat,
+                    batchFormat = source.batchFormat,
+                    packageName = source.packageName,
+                    useOverride_version = source.useOverride_version,
+                    useOverride_versionFormat = source.useOverride_versionFormat,
+                    useOverride_batchFormat = source.useOverride_batchFormat,
+                    useOverride_packageName = source.useOverride_packageName,
+                };
+            }
         }
         [System.Serializable]
         public class SearchPath : ISerializationCallbackReceiver {
@@ -150,6 +165,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
             public SearchPathType searchType;
             [SerializeField]string s_searchType;
             public string value;
+
             public void OnBeforeSerialize( ) {
                 s_searchType = SearchPathTypeExtensions.GetString( searchType );
             }

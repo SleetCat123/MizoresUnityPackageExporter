@@ -42,8 +42,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>( );
 
-        public List<DynamicPathElement> dynamicpath = new List<DynamicPathElement>( );
-
         [SerializeField]
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
