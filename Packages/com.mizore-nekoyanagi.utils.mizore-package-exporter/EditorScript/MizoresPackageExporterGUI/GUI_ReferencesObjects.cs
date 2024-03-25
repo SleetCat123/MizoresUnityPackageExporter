@@ -12,19 +12,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             var objects = objectReferences.Where( v => EditorUtility.IsPersistent( v ) );
             foreach ( var exporter in targetlist ) {
                 var add = objects.Select( v => new ReferenceElement( new ObjectRefElement( exporter, v ), ReferenceMode.Include ) );
-                exporter.references2.AddRange( add );
+                exporter.references.AddRange( add );
                 EditorUtility.SetDirty( exporter );
             }
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
-            MinMax references_count = MinMax.Create( targetlist, v => v.references2.Count );
+            MinMax references_count = MinMax.Create( targetlist, v => v.references.Count );
             if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_REFERENCES,
                 new GUIContent( ExporterTexts.FoldoutReferences( references_count.ToString( ) ), ExporterTexts.FoldoutReferencesTooltip ),
                 new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => references_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => AddObjects( targetlist, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout( targetlist, ExporterTexts.FoldoutReferences, ( ex ) => ex.references2, ( ex, list ) => ex.references2 = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout( targetlist, ExporterTexts.FoldoutReferences, ( ex ) => ex.references, ( ex, list ) => ex.references = list )
                 }
                 ) ) {
                 VerticalBoxScope.BeginVerticalBox( );
@@ -33,14 +33,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
         }
         static void DrawList( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
-            MinMax objects_count = MinMax.Create( targetlist, v => v.references2.Count );
+            MinMax objects_count = MinMax.Create( targetlist, v => v.references.Count );
             bool multiple = targetlist.Length > 1;
             for ( int i = 0; i < objects_count.max; i++ ) {
                 EditorGUILayout.BeginHorizontal( );
                 // （複数インスタンス選択時）全てのオブジェクトの値が同じか
                 bool samevalue_in_all = true;
                 if ( multiple ) {
-                    samevalue_in_all = i < objects_count.min && targetlist.All( v => t.references2[i].element.Object == v.references2[i].element.Object );
+                    samevalue_in_all = i < objects_count.min && targetlist.All( v => t.references[i].element.Object == v.references[i].element.Object );
                 }
 
                 EditorGUI.indentLevel++;
@@ -55,7 +55,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.BeginChangeCheck( );
                 ObjectRefElement element;
                 if ( samevalue_in_all ) {
-                    element = t.references2[i].element;
+                    element = t.references[i].element;
                 } else {
                     element = new ObjectRefElement( );
                 }
@@ -67,12 +67,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     foreach ( var item in targetlist ) {
                         // 全ての選択中インスタンスに対してオブジェクトを設定
                         // 要素数が足りなかったらリサイズ
-                        var refs = item.references2;
+                        var refs = item.references;
                         ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
                         refs[i].element = element;
                         EditorUtility.SetDirty( item );
                     }
-                    objects_count = MinMax.Create( targetlist, v => v.references2.Count );
+                    objects_count = MinMax.Create( targetlist, v => v.references.Count );
                 }
                 if ( browse ) {
                     // OpenFilePanelなどを使用した場合に以下のエラーが出るのでreturnして回避
@@ -80,10 +80,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     return;
                 }
 
-                var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references2[i].mode == v.references2[i].mode );
+                var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references[i].mode == v.references[i].mode );
                 ReferenceMode referenceMode;
                 if ( samevalue_in_all_mode ) {
-                    referenceMode = t.references2[i].mode;
+                    referenceMode = t.references[i].mode;
                 } else {
                     referenceMode = ReferenceMode.Include;
                 }
@@ -95,7 +95,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     foreach ( var item in targetlist ) {
                         // 全ての選択中インスタンスに対してオブジェクトを設定
                         // 要素数が足りなかったらリサイズ
-                        var refs = item.references2;
+                        var refs = item.references;
                         ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
                         refs[i].mode = referenceMode;
                         EditorUtility.SetDirty( item );
@@ -106,7 +106,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 int index_after = GUIElement_Utils.UpDownButton( i, objects_count.max );
                 if ( i != index_after ) {
                     foreach ( var item in targetlist ) {
-                        var refs = item.references2;
+                        var refs = item.references;
                         if ( refs.Count <= index_after ) {
                             ExporterUtils.ResizeList( refs, index_after + 1, ( ) => new ReferenceElement( ) );
                         }
@@ -117,12 +117,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
                 if ( GUIElement_Utils.MinusButton( ) ) {
                     foreach ( var item in targetlist ) {
-                        var refs = item.references2;
+                        var refs = item.references;
                         ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
                         refs.RemoveAt( i );
                         EditorUtility.SetDirty( item );
                     }
-                    objects_count = MinMax.Create( targetlist, v => v.references2.Count );
+                    objects_count = MinMax.Create( targetlist, v => v.references.Count );
                     i--;
                 }
                 EditorGUILayout.EndHorizontal( );
@@ -130,7 +130,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             EditorGUI.indentLevel++;
             if ( GUIElement_Utils.PlusButton( ) ) {
                 foreach ( var item in targetlist ) {
-                    ExporterUtils.ResizeList( item.references2, objects_count.max + 1, ( ) => new ReferenceElement( ) );
+                    ExporterUtils.ResizeList( item.references, objects_count.max + 1, ( ) => new ReferenceElement( ) );
                     EditorUtility.SetDirty( item );
                 }
             }

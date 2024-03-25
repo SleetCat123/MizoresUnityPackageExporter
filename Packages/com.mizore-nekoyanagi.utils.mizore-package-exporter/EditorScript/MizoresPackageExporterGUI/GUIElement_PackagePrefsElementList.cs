@@ -92,7 +92,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // ExportTargetObjectElementの場合
                 var exportTargetObjectElement = element as ExportTargetObjectElement;
                 if ( exportTargetObjectElement != null ) {
-                    var useReferences = targetlist.Any( v => v.references2.Count != 0 );
+                    var useReferences = targetlist.Any( v => v.references.Count != 0 );
                     using ( new EditorGUI.DisabledScope( !useReferences ) ) {
                         // Search Reference
                         using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {

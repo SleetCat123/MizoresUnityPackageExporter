@@ -98,6 +98,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
             public UnityEngine.Object obj;
             [SerializeField]
             public string path;
+            public virtual string Path {
+                get {
+#if UNITY_EDITOR
+                    if ( obj != null ) {
+                        path = AssetDatabase.GetAssetPath( obj );
+                    }
+#endif
+                    return path;
+                }
+            }
             public bool IsEmpty( ) {
                 return obj == null && string.IsNullOrEmpty( path );
             }

@@ -55,9 +55,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     var v2 = MizoresPackageExporter.CreateInstance<MizoresPackageExporter>( );
                     ExporterUtils.DebugLog( "Convert: references" );
                     // referencesの場所変更
-                    v2.references2 = v1.references.Select( v => new ReferenceElement( new PackagePrefsElement( v.obj ), ReferenceMode.Include ) ).ToList( );
+                    v2.references = v1.references.Select( v => new ReferenceElement( new ObjectRefElement( v.Path ), ReferenceMode.Include ) ).ToList( );
                     // dynamicpathの場所変更
-                    v2.dynamicpath2 = v1.dynamicpath.Select( v => new DynamicPathElement( v ) ).ToList( );
+                    v2.dynamicpath = v1.dynamicpath.Select( v => new DynamicPathElement( v ) ).ToList( );
 
                     latest = v2;
                 }
