@@ -3,21 +3,21 @@
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
     public class ReferenceElement : ISerializationCallbackReceiver {
-        public PackagePrefsElement element;
+        public ObjectRefElement element;
         // ReferenceMode実装と同時にstring保存を実装したためNonSerializedで問題ない
         [System.NonSerialized]
         public ReferenceMode mode;
         [SerializeField]string s_mode;
         public ReferenceElement( ) {
-            element = new PackagePrefsElement( );
+            element = new ObjectRefElement( );
             mode = ReferenceMode.Include;
         }
-        public ReferenceElement( PackagePrefsElement element, ReferenceMode mode ) {
+        public ReferenceElement( ObjectRefElement element, ReferenceMode mode ) {
             this.element = element;
             this.mode = mode;
         }
         public ReferenceElement( ReferenceElement other ) {
-            element = new PackagePrefsElement( other.element );
+            element = new ObjectRefElement( other.element );
             mode = other.mode;
         }
 

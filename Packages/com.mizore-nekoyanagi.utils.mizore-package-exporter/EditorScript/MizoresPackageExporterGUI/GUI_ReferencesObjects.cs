@@ -9,12 +9,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
     public static class GUI_ReferencesObjects {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, Object[] objectReferences ) {
-            var add = objectReferences.
-                Where( v => EditorUtility.IsPersistent( v ) ).
-                Select( v => new ReferenceElement( new PackagePrefsElement( v ), ReferenceMode.Include ) );
-            foreach ( var item in targetlist ) {
-                item.references2.AddRange( add );
-                EditorUtility.SetDirty( item );
+            var objects = objectReferences.Where( v => EditorUtility.IsPersistent( v ) );
+            foreach ( var exporter in targetlist ) {
+                var add = objects.Select( v => new ReferenceElement( new ObjectRefElement( exporter, v ), ReferenceMode.Include ) );
+                exporter.references2.AddRange( add );
+                EditorUtility.SetDirty( exporter );
             }
         }
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
@@ -54,11 +53,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.indentLevel--;
 
                 EditorGUI.BeginChangeCheck( );
-                PackagePrefsElement element;
+                ObjectRefElement element;
                 if ( samevalue_in_all ) {
                     element = t.references2[i].element;
                 } else {
-                    element = new PackagePrefsElement( );
+                    element = new ObjectRefElement( );
                 }
 
                 EditorGUI.showMixedValue = !samevalue_in_all;
@@ -75,7 +74,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                     objects_count = MinMax.Create( targetlist, v => v.references2.Count );
                 }
-                if ( browse){
+                if ( browse ) {
                     // OpenFilePanelなどを使用した場合に以下のエラーが出るのでreturnして回避
                     // 'EndLayoutGroup: BeginLayoutGroup must be called first.'
                     return;

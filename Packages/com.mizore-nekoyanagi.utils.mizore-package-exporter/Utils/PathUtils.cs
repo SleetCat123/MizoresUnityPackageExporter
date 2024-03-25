@@ -56,5 +56,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             path = Regex.Replace( path, @"^[a-zA-Z]:/", "" );
             return path;
         }
+
+        public static bool IsDynamicPath( string path ) {
+            return path.Contains( "%" );
+        }
     }
 }

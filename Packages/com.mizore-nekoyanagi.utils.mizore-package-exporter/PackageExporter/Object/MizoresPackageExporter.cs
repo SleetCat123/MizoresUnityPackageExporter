@@ -42,9 +42,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>( );
 
-        [System.Obsolete, SerializeField]
-        List<string> dynamicpath = new List<string>( );
-        public List<DynamicPathElement> dynamicpath2 = new List<DynamicPathElement>( );
+        public List<DynamicPathElement> dynamicpath = new List<DynamicPathElement>( );
 
         [SerializeField]
         DynamicPathVariable[] s_variables;
@@ -54,10 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
 
-        [System.Obsolete, SerializeField]
-        List<PackagePrefsElement> references = new List<PackagePrefsElement>( );
-
-        public List<ReferenceElement> references2 = new List<ReferenceElement>( );
+        public List<ReferenceElement> references = new List<ReferenceElement>( );
 
 
         public string postProcessScriptTypeName;
@@ -67,18 +62,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         StringPair[] s_postProcessScriptFieldValues;
 
         #region PackageName
-        /// <summary>互換性のため残しておく。今後はpackageNameSettings.versionFileを使用</summary>
-        [System.Obsolete, SerializeField]
-        PackagePrefsElement versionFile;
-
-        /// <summary>互換性のため残しておく。今後はpackageNameSettings.versionFormatを使用</summary>
-        [System.Obsolete, SerializeField]
-        string versionFormat = null;
-
-        /// <summary>互換性のため残しておく。今後はpackageNameSettings.packageNameを使用</summary>
-        [System.Obsolete, SerializeField]
-        string packageName = null;
-
         public PackageNameSettings packageNameSettings = new PackageNameSettings( );
 
         public PackageNameSettings CurrentSettings => GetOverridedSettings( temp_batchExportCurrentKey );
@@ -366,9 +349,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         /// </summary>
         /// <returns></returns>
         IEnumerable<string> GetReferencesPath( ) {
-            List<string> references = new List<string>( );
+            List<string> referencePaths = new List<string>( );
             List<string> excludeReferences = new List<string>( );
-            foreach ( var v in references2 ) {
+            foreach ( var v in references ) {
                 var path = v.element.Path;
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
@@ -377,7 +360,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 switch ( v.mode ) {
                     default:
                     case ReferenceMode.Include:
-                        list = references;
+                        list = referencePaths;
                         break;
                     case ReferenceMode.Exclude:
                         list = excludeReferences;
@@ -390,10 +373,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
             }
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
-            references = references.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
+            referencePaths = referencePaths.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
             excludeReferences = excludeReferences.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
             // includeからexcludeを除外
-            return references.Except( excludeReferences );
+            return referencePaths.Except( excludeReferences );
         }
         public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
             var result = new Dictionary<string, FilePathList>( );
@@ -423,7 +406,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             IEnumerable<FilePath> list;
             {
                 var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath(v.Path, v.searchReference) );
-                var list2 = dynamicpath2
+                var list2 = dynamicpath
                     .Where( v => !string.IsNullOrWhiteSpace( v.path ) )
                     .Select( v => {
                         var path = ConvertDynamicPath( v.path );

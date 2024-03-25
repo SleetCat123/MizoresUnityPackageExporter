@@ -1,6 +1,8 @@
 Undo,PackagePrefs
 Yes,Yes
 No,No
+CopyText,Copy
+PasteText,Paste
 
 FoldoutObjects,Objects to export ({0})
 FoldoutObjectsTooltip,Objects to export
