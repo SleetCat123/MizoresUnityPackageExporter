@@ -15,9 +15,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         protected string path;
 
         public ObjectRefElement( ) { }
-        public ObjectRefElement( MizoresPackageExporter exporter, Object obj, bool relativePath = false ) {
+        public ObjectRefElement( MizoresPackageExporter exporter, Object obj, bool relativePath ) {
             this.exporter = exporter;
             SetObject( obj, relativePath );
+        }
+        public ObjectRefElement( MizoresPackageExporter exporter, Object obj ) {
+            this.exporter = exporter;
+            SetObject( obj );
         }
         public ObjectRefElement( string path ) {
             this.Path = path;
@@ -49,8 +53,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return obj;
 #endif
             }
+            set {
+                SetObject( value );
+            }
         }
-        public void SetObject( Object value, bool relativePath = false ) {
+        public void SetObject( Object value ) {
+            SetObject( value, ExporterEditorPrefs.UseRelativePath );
+        }
+        public void SetObject( Object value, bool relativePath ) {
 #if UNITY_EDITOR
             if ( value != null ) {
                 path = AssetDatabase.GetAssetPath( value.GetInstanceID( ) );
