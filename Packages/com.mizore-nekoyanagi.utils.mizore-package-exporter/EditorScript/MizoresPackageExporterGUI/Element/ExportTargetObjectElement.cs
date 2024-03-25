@@ -4,10 +4,10 @@
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
-    public class ExportTargetObjectElement : PackagePrefsElement, System.ICloneable, System.IEquatable<ExportTargetObjectElement> {
+    public class ExportTargetObjectElement : ObjectRefElement, System.ICloneable, System.IEquatable<ExportTargetObjectElement> {
         public bool searchReference = true;
         public ExportTargetObjectElement( ) { }
-        public ExportTargetObjectElement( Object obj ) : base( obj ) { }
+        public ExportTargetObjectElement( string path ) : base( path ) { }
         public ExportTargetObjectElement( ExportTargetObjectElement source ) : base( source ) {
             this.searchReference = source.searchReference;
         }

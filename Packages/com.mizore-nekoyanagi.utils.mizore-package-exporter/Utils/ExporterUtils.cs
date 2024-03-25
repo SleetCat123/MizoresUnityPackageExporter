@@ -68,7 +68,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[] objectReferences ) where TElement : PackagePrefsElement, new() {
+        public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[] objectReferences ) where TElement : ObjectRefElement, new() {
 #if UNITY_EDITOR
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).

@@ -15,7 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public VersionSource versionSource;
-        public PackagePrefsElement versionFile;
+        public ObjectRefElement versionFile;
         public string versionString;
         public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
         public string batchFormat = $"_{Const_Keys.KEY_BATCH_EXPORTER}";

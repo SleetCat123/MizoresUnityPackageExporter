@@ -9,9 +9,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
 #if UNITY_EDITOR
     public class GUI_ExcludeObjects {
-        GUIElement_PackagePrefsElementList<Object, PackagePrefsElement> list;
+        GUIElement_PackagePrefsElementList<Object, ObjectRefElement> list;
         public GUI_ExcludeObjects( ) {
-            list = new GUIElement_PackagePrefsElementList<Object, PackagePrefsElement>( t => t.excludeObjects );
+            list = new GUIElement_PackagePrefsElementList<Object, ObjectRefElement>( t => t.excludeObjects );
         }
         public void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax excludeObjects_count = MinMax.Create( targetlist, v => v.excludeObjects.Count );
@@ -21,7 +21,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 new CustomFoldout.FoldoutFuncs( ) {
                     canDragDrop = objectReferences => excludeObjects_count.SameValue && ExporterUtils.Filter_HasPersistentObject( objectReferences ),
                     onDragPerform = ( objectReferences ) => ExporterUtils.AddObjects( targetlist, v => v.excludeObjects, objectReferences ),
-                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<PackagePrefsElement>( targetlist, ExporterTexts.FoldoutExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
+                    onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout<ObjectRefElement>( targetlist, ExporterTexts.FoldoutExcludeObjects, ( ex ) => ex.excludeObjects, ( ex, list ) => ex.excludeObjects = list )
                 }
                 ) ) {
                 list.Draw( t, targetlist );

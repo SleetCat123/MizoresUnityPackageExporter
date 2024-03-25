@@ -49,7 +49,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         [System.NonSerialized]
         public Dictionary<string, string> variables = new Dictionary<string, string>( );
 
-        public List<PackagePrefsElement> excludeObjects = new List<PackagePrefsElement>( );
+        public List<ObjectRefElement> excludeObjects = new List<ObjectRefElement>( );
         public List<SearchPath> excludes = new List<SearchPath>( );
 
         public List<ReferenceElement> references = new List<ReferenceElement>( );
@@ -141,8 +141,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public BatchExportFolderMode batchExportFolderMode;
         [SerializeField]string s_batchExportFolderMode;
         public List<string> batchExportTexts = new List<string>();
-        public PackagePrefsElement batchExportFolderRoot;
-        public PackagePrefsElement batchExportListFile;
+        public ObjectRefElement batchExportFolderRoot;
+        public ObjectRefElement batchExportListFile;
         public string batchExportFolderRegex;
         [System.NonSerialized]
         string[] temp_batchExportKeys;

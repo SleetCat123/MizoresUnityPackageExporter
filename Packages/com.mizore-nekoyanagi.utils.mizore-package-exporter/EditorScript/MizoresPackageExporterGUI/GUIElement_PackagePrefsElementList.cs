@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
-    public class GUIElement_PackagePrefsElementList<T, TElement> where T : Object where TElement : PackagePrefsElement, new() {
+    public class GUIElement_PackagePrefsElementList<T, TElement> where T : Object where TElement : ObjectRefElement, new() {
         System.Func<MizoresPackageExporter, List<TElement>> getList;
 
         public GUIElement_PackagePrefsElementList( System.Func<MizoresPackageExporter, List<TElement>> getList ) {
@@ -41,11 +41,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
                 EditorGUI.showMixedValue = !samevalue_in_all;
                 EditorGUI.BeginChangeCheck( );
-                PackagePrefsElement element;
+                ObjectRefElement element;
                 if ( samevalue_in_all ) {
                     element = GetList( t )[i];
                 } else {
-                    element = new PackagePrefsElement( );
+                    element = new ObjectRefElement( );
                 }
                 bool browse = PackagePrefsElementInspector.Draw<T>( t, element );
                 EditorGUI.showMixedValue = false;
