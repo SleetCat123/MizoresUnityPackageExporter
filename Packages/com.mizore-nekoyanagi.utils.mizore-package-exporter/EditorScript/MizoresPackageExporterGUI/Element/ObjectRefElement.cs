@@ -86,8 +86,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             set {
                 path = value;
-                // Pathが相対パスでもDynamicPathでもない場合はObjectを設定
-                if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsRelativePath( path ) && !PathUtils.IsDynamicPath( path ) ) {
+                // PathがDynamicPathではない場合はObjectを設定
+                if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsDynamicPath( path ) ) {
                     obj = AssetDatabase.LoadAssetAtPath<Object>( path );
                 } else {
                     obj = null;

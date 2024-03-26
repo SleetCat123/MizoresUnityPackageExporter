@@ -96,17 +96,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             // Exporterのファイルバージョンの互換性チェック
             foreach ( var item in targets ) {
                 var exporter = item as MizoresPackageExporter;
-                if ( !exporter.IsCompatible ) {
+                if ( !MizoresPackageExporterUpdator.IsCompatible( exporter ) ) {
                     EditorGUILayout.HelpBox( ExporterTexts.IncompatibleVersion( exporter.name ), MessageType.Error );
-                    if ( GUILayout.Button( ExporterTexts.IncompatibleVersionForceOpen ) ) {
-                        // SetDirtyはしない
-                        exporter.ConvertToCurrentVersion( force: true );
-                    }
                     return;
                 }
-                bool converted = exporter.ConvertToCurrentVersion( );
-                if ( converted ) {
-                    EditorUtility.SetDirty( item );
+                if ( !MizoresPackageExporterUpdator.IsLatest( exporter ) ) {
+                    exporter = MizoresPackageExporterUpdator.ConvertToLatest( exporter ) as MizoresPackageExporter;
                 }
             }
 
@@ -132,7 +127,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             ExporterUtils.SeparateLine( );
 
             gui_Objects.Draw( this, t, targetlist );
-            GUI_DynamicPath.Draw( this, t, targetlist );
+            // GUI_DynamicPath.Draw( this, t, targetlist );
 
             ExporterUtils.SeparateLine( );
 

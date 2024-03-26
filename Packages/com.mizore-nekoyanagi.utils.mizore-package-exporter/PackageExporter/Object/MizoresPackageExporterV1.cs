@@ -11,6 +11,22 @@ using UnityEditor;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
     [Obsolete]
     public class MizoresPackageExporterV1 : ScriptableObject, ISerializationCallbackReceiver {
+#if UNITY_EDITOR
+        [CustomEditor( typeof( MizoresPackageExporterV1 ) )]
+        public class Inspector : Editor {
+            public override void OnInspectorGUI( ) {
+                EditorGUILayout.HelpBox( PackageExporter.ExporterTexts.ConvertVersionRequired, MessageType.Warning );
+                if ( GUILayout.Button( "Convert" ) ) {
+                    foreach ( var target in targets ) {
+                        var v1 = target as MizoresPackageExporterV1;
+                        PackageExporter.MizoresPackageExporterUpdator.ConvertToLatest( v1 );
+
+                    }
+                }
+            }
+        }
+#endif
+
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 1;
 
         [System.Serializable]

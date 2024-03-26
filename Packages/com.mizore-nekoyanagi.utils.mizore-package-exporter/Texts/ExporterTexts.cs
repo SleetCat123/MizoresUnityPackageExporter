@@ -177,5 +177,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string SearchReference => Get( "SearchReference" );
         public static string SearchReferenceTooltip => Get( "SearchReferenceTooltip" );
         public static string ErrorEmptyName => Get( "ErrorEmptyName" );
+        public static string ConvertVersionRequired => Get( "ConvertVersionRequired" );
     }
 }

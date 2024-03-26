@@ -7,6 +7,7 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public static class PackagePrefsElementInspector {
         public static bool Draw<T>( MizoresPackageExporter t, ObjectRefElement element ) where T : Object {
+            element.exporter = t;
             EditorGUILayout.BeginHorizontal( );
 
             Rect textrect = EditorGUILayout.GetControlRect( );

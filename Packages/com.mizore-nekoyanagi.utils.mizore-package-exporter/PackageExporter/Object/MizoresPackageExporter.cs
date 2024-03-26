@@ -35,10 +35,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public const int INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION = 0;
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 2;
         [SerializeField]
-        private int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
-        public int PackageExporterVersion { get => packageExporterVersion; }
-        public bool IsCurrentVersion { get => PackageExporterVersion == CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
-        public bool IsCompatible { get => PackageExporterVersion <= CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION; }
+        public int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
 
         public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>( );
 
@@ -401,21 +398,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", referencesPath ) );
             bool useReference = referencesPath.Any( );
 
-            IEnumerable<FilePath> list;
-            {
-                var list1 = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath(v.Path, v.searchReference) );
-                var list2 = dynamicpath
-                    .Where( v => !string.IsNullOrWhiteSpace( v.path ) )
-                    .Select( v => {
-                        var path = ConvertDynamicPath( v.path );
-                        if ( PathUtils.IsRelativePath( path ) ) {
-                            path = PathUtils.GetProjectAbsolutePath( GetDirectoryPath(), path );
-                        }
-                        return new FilePath( path, v.searchReference);
-                    });
-                list = list1.Concat( list2 );
-            }
-
+            IEnumerable<FilePath> list = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath( v.Path, v.searchReference ) );
             var list_include_sub = new List<FilePath>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item.path ) ) {
