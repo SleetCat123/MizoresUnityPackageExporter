@@ -32,6 +32,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             path = EditorGUI.TextField( textrect, path );
             if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                 path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                // 相対パスを使用する場合は、プロジェクトフォルダからの相対パスに変換
+                if ( ExporterEditorPrefs.UseRelativePath ) {
+                    path = PathUtils.GetRelativePath( t.GetDirectoryPath( ), path );
+                }
             }
 
             EditorGUI.BeginChangeCheck( );
