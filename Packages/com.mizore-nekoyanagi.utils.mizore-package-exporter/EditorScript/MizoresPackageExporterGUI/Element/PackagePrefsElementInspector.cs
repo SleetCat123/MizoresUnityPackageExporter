@@ -21,9 +21,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 menu.AddItem( new GUIContent( ExporterTexts.PasteText ), false, ( ) => path = EditorGUIUtility.systemCopyBuffer );
                 menu.AddSeparator( "" );
                 if ( PathUtils.IsRelativePath( path ) ) {
-                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToAbsolutePath ), false, ( ) => path = PathUtils.GetProjectAbsolutePath( t.GetDirectoryPath( ), path ) );
+                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToAbsolutePath ), false, ( ) => {
+                        var newPath = PathUtils.GetProjectAbsolutePath( t.GetDirectoryPath( ), path );
+                        newPath = PathUtils.ToValidPath( newPath );
+                        ExporterUtils.DebugLog( "Path changed: " + prevPath + " -> " + newPath );
+                        element.Path = newPath;
+                        GUI.changed = true;
+                    } );
                 } else {
-                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToRelativePath ), false, ( ) => path = PathUtils.GetRelativePath( t.GetDirectoryPath( ), path ) );
+                    menu.AddItem( new GUIContent( ExporterTexts.ConvertToRelativePath ), false, ( ) => {
+                        var newPath = PathUtils.GetRelativePath( t.GetDirectoryPath( ), path );
+                        newPath = PathUtils.ToValidPath( newPath );
+                        ExporterUtils.DebugLog( "Path changed: " + prevPath + " -> " + newPath );
+                        element.Path = newPath;
+                        GUI.changed = true;
+                    } );
                 }
 
                 menu.ShowAsContext( );
@@ -68,8 +80,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             if ( prevPath != path ) {
-                ExporterUtils.DebugLog( "Path changed: " + prevPath + " -> " + path );
                 path = PathUtils.ToValidPath( path );
+                ExporterUtils.DebugLog( "Path changed: " + prevPath + " -> " + path );
                 element.Path = path;
                 GUI.changed = true;
             }
