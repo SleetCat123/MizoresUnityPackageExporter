@@ -1,14 +1,10 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Linq;
 using MizoreNekoyanagi.PublishUtil.PackageExporterV1;
 using System.IO;
 using System.Collections.Generic;
-
-
-
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public static class MizoresPackageExporterUpdator {
@@ -56,6 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         }
                         if ( !string.IsNullOrEmpty( v1.versionFormat ) ) {
                             // versionFormatの場所変更
+
                             ExporterUtils.DebugLog( "Convert: versionFormat" );
                             v1.packageNameSettings.versionFormat = v1.versionFormat;
                             v1.versionFormat = null;
@@ -117,3 +114,4 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
     }
 }
+#endif

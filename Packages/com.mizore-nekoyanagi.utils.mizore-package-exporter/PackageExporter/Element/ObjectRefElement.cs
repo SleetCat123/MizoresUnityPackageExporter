@@ -58,7 +58,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
         }
         public void SetObject( Object value ) {
+#if UNITY_EDITOR
             SetObject( value, ExporterEditorPrefs.UseRelativePath );
+#endif
         }
         public void SetObject( Object value, bool relativePath ) {
 #if UNITY_EDITOR
@@ -78,20 +80,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public string Path {
             get {
+#if UNITY_EDITOR
                 // Pathが相対パスでもDynamicPathでもなく、Objectがnullでない場合はAssetPathを取得
                 if ( obj != null && !PathUtils.IsRelativePath( path ) && !PathUtils.IsDynamicPath( path ) ) {
                     path = AssetDatabase.GetAssetPath( obj );
                 }
+#endif
                 return path;
             }
             set {
                 path = value;
+#if UNITY_EDITOR
                 // PathがDynamicPathではない場合はObjectを設定
                 if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsDynamicPath( path ) ) {
                     obj = AssetDatabase.LoadAssetAtPath<Object>( path );
                 } else {
                     obj = null;
                 }
+#endif
             }
         }
 
