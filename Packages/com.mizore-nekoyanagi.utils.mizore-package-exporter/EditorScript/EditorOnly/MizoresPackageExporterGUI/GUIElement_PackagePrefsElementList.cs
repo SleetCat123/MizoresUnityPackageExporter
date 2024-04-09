@@ -89,34 +89,55 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 EditorGUILayout.EndHorizontal( );
 
+                // プレビュー
+                for ( int j = 0; j < targetlist.Length; j++ ) {
+                    var item = targetlist[j];
+                    var preview = GetList( item )[i].Path;
+                    if ( PathUtils.IsDynamicPath( preview ) ) {
+                        preview = t.ConvertDynamicPath( preview );
+                    }
+                    if ( PathUtils.IsRelativePath( preview ) ) {
+                        preview = PathUtils.GetProjectAbsolutePath( t.GetDirectoryPath( ), preview );
+                    }
+                    EditorGUI.indentLevel += 2;
+                    if ( targetlist.Length > 1 ) {
+                        using ( new EditorGUI.DisabledScope( true ) ) {
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                        }
+                        EditorGUI.indentLevel++;
+                    }
+                    EditorGUILayout.LabelField( new GUIContent( preview, preview ) );
+                    if ( targetlist.Length > 1 ) {
+                        EditorGUI.indentLevel--;
+                    }
+                    EditorGUI.indentLevel -= 2;
+                }
+
                 // ExportTargetObjectElementの場合
                 var exportTargetObjectElement = element as ExportTargetObjectElement;
                 if ( exportTargetObjectElement != null ) {
                     var useReferences = targetlist.Any( v => v.references.Count != 0 );
                     using ( new EditorGUI.DisabledScope( !useReferences ) ) {
                         // Search Reference
-                        using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                            EditorGUI.indentLevel++;
-                            EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 30 ) );
-                            EditorGUI.indentLevel--;
-                            var samevalue_searchReference = true;
-                            if ( multiple ) {
-                                samevalue_searchReference = i < objects_count.min && targetlist.All( v => t.objects[i].searchReference == v.objects[i].searchReference );
-                            }
-                            EditorGUI.BeginChangeCheck( );
-                            EditorGUI.showMixedValue = !samevalue_searchReference;
-                            var content = new GUIContent( ExporterTexts.SearchReference, ExporterTexts.SearchReferenceTooltip );
-                            bool searchReference = EditorGUILayout.Toggle(content, t.objects[i].searchReference );
-                            EditorGUI.showMixedValue = false;
-                            if ( EditorGUI.EndChangeCheck( ) ) {
-                                foreach ( var item in targetlist ) {
-                                    ExporterUtils.ResizeList( item.objects, Mathf.Max( i + 1, item.objects.Count ), ( ) => new ExportTargetObjectElement( ) );
-                                    item.objects[i].searchReference = searchReference;
-                                    EditorUtility.SetDirty( item );
-                                }
-                                objects_count = MinMax.Create( targetlist, v => v.objects.Count );
-                            }
+                        EditorGUI.indentLevel += 2;
+                        var samevalue_searchReference = true;
+                        if ( multiple ) {
+                            samevalue_searchReference = i < objects_count.min && targetlist.All( v => t.objects[i].searchReference == v.objects[i].searchReference );
                         }
+                        EditorGUI.BeginChangeCheck( );
+                        EditorGUI.showMixedValue = !samevalue_searchReference;
+                        var content = new GUIContent( ExporterTexts.SearchReference, ExporterTexts.SearchReferenceTooltip );
+                        bool searchReference = EditorGUILayout.Toggle(content, t.objects[i].searchReference );
+                        EditorGUI.showMixedValue = false;
+                        if ( EditorGUI.EndChangeCheck( ) ) {
+                            foreach ( var item in targetlist ) {
+                                ExporterUtils.ResizeList( item.objects, Mathf.Max( i + 1, item.objects.Count ), ( ) => new ExportTargetObjectElement( ) );
+                                item.objects[i].searchReference = searchReference;
+                                EditorUtility.SetDirty( item );
+                            }
+                            objects_count = MinMax.Create( targetlist, v => v.objects.Count );
+                        }
+                        EditorGUI.indentLevel -= 2;
                     }
                 }
             }
