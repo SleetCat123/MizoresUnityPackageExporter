@@ -40,7 +40,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // （複数インスタンス選択時）全てのオブジェクトの値が同じか
                 bool samevalue_in_all = true;
                 if ( multiple ) {
-                    samevalue_in_all = i < objects_count.min && targetlist.All( v => t.references[i].element.Object == v.references[i].element.Object );
+                    samevalue_in_all = i < objects_count.min && targetlist.All( v => {
+                        var el1 = t.references[i].element;
+                        el1.exporter = t;
+                        var el2 = v.references[i].element;
+                        el2.exporter = v;
+                        return el1.Object == el2.Object;
+                        } );
                 }
 
                 EditorGUI.indentLevel++;
@@ -69,7 +75,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         // 要素数が足りなかったらリサイズ
                         var refs = item.references;
                         ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
-                        refs[i].element = element;
+                        refs[i].element = new ObjectRefElement( element );
                         EditorUtility.SetDirty( item );
                     }
                     objects_count = MinMax.Create( targetlist, v => v.references.Count );
@@ -126,6 +132,32 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     i--;
                 }
                 EditorGUILayout.EndHorizontal( );
+
+                // プレビュー
+                for ( int j = 0; j < targetlist.Length; j++ ) {
+                    var item = targetlist[j];
+                    var el = item.references[i].element;
+                    el.exporter = item;
+                    var preview = el.Path;
+                    if ( PathUtils.IsDynamicPath( preview ) ) {
+                        preview = t.ConvertDynamicPath( preview );
+                    }
+                    if ( PathUtils.IsRelativePath( preview ) ) {
+                        preview = PathUtils.GetProjectAbsolutePath( t.GetDirectoryPath( ), preview );
+                    }
+                    EditorGUI.indentLevel += 2;
+                    if ( targetlist.Length > 1 ) {
+                        using ( new EditorGUI.DisabledScope( true ) ) {
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                        }
+                        EditorGUI.indentLevel++;
+                    }
+                    EditorGUILayout.LabelField( new GUIContent( preview, preview ) );
+                    if ( targetlist.Length > 1 ) {
+                        EditorGUI.indentLevel--;
+                    }
+                    EditorGUI.indentLevel -= 2;
+                }
             }
             EditorGUI.indentLevel++;
             if ( GUIElement_Utils.PlusButton( ) ) {

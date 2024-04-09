@@ -36,6 +36,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return result;
         }
         public static bool IsRelativePath( string path ) {
+            if ( string.IsNullOrEmpty( path ) ) {
+                return false;
+            }
             return path.StartsWith( "." );
         }
         //public static string GetFullPath( string path ) {
@@ -58,6 +61,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public static bool IsDynamicPath( string path ) {
+            if ( string.IsNullOrEmpty( path ) ) {
+                return false;
+            }
             return path.Contains( "%" );
         }
     }

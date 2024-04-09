@@ -2,6 +2,8 @@
 using UnityEngine;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using System.Linq;
+using System.Runtime.InteropServices;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,7 +29,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // （複数インスタンス選択時）全てのオブジェクトの値が同じか
                 bool samevalue_in_all = true;
                 if ( multiple ) {
-                    samevalue_in_all = i < objects_count.min && targetlist.All( v => GetList( t )[i].Object == GetList( v )[i].Object );
+                    samevalue_in_all = i < objects_count.min && targetlist.All( v => {
+                        var el1 = GetList( t )[i];
+                        el1.exporter = t;
+                        var el2 = GetList( v )[i];
+                        el2.exporter = v;
+                        return el1.Object == el2.Object;
+                        } );
                 }
 
                 EditorGUI.indentLevel++;
@@ -120,7 +128,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // プレビュー
                 for ( int j = 0; j < targetlist.Length; j++ ) {
                     var item = targetlist[j];
-                    var preview = GetList( item )[i].Path;
+                    var el = GetList( item )[i];
+                    el.exporter = item;
+                    var preview = el.Path;
                     if ( PathUtils.IsDynamicPath( preview ) ) {
                         preview = t.ConvertDynamicPath( preview );
                     }
