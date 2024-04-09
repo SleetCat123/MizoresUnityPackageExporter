@@ -40,6 +40,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             } else if ( Directory.Exists( path ) ) {
                 icon = AssetDatabase.GetCachedIcon( path );
                 return GetIconResult.ExistsFolder;
+            } else if ( File.Exists( path ) ) {
+                icon = AssetDatabase.GetCachedIcon( path );
+                return GetIconResult.ExistsFile;
             } else {
                 icon = IconCache.ErrorIcon;
                 return GetIconResult.NotExistsFolder;
