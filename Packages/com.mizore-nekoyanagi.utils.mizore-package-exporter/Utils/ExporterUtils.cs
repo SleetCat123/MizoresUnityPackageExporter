@@ -29,7 +29,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public static GetIconResult TryGetIcon( string path, out Texture icon ) {
 #if UNITY_EDITOR
-            if ( Path.GetExtension( path ).Length != 0 ) {
+            if ( Directory.Exists( path ) ) {
+                icon = AssetDatabase.GetCachedIcon( path );
+                return GetIconResult.ExistsFolder;
+            } else if ( Path.GetExtension( path ).Length != 0 ) {
                 if ( File.Exists( path ) ) {
                     icon = AssetDatabase.GetCachedIcon( path );
                     return GetIconResult.ExistsFile;
@@ -37,9 +40,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     icon = IconCache.ErrorIcon;
                     return GetIconResult.NotExistsFile;
                 }
-            } else if ( Directory.Exists( path ) ) {
-                icon = AssetDatabase.GetCachedIcon( path );
-                return GetIconResult.ExistsFolder;
             } else if ( File.Exists( path ) ) {
                 icon = AssetDatabase.GetCachedIcon( path );
                 return GetIconResult.ExistsFile;
