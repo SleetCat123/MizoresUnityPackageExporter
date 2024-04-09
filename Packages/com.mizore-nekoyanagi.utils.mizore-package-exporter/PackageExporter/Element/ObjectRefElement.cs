@@ -79,6 +79,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
+        public string ConvertedPath {
+            get {
+                var result = Path;
+                if ( PathUtils.IsDynamicPath( path ) ) {
+                    result = exporter.ConvertDynamicPath( path );
+                }
+                if ( PathUtils.IsRelativePath( result ) ) {
+                    result = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), result );
+                }
+                return result;
+            }
+        }
         public string Path {
             get {
 #if UNITY_EDITOR

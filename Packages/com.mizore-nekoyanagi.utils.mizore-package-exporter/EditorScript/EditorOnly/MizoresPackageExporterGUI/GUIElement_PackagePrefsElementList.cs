@@ -130,13 +130,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     var item = targetlist[j];
                     var el = GetList( item )[i];
                     el.exporter = item;
-                    var preview = el.Path;
-                    if ( PathUtils.IsDynamicPath( preview ) ) {
-                        preview = t.ConvertDynamicPath( preview );
-                    }
-                    if ( PathUtils.IsRelativePath( preview ) ) {
-                        preview = PathUtils.GetProjectAbsolutePath( t.GetDirectoryPath( ), preview );
-                    }
+                    var preview = el.ConvertedPath;
                     EditorGUI.indentLevel += 2;
                     if ( targetlist.Length > 1 ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {

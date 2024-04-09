@@ -78,6 +78,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             FileListNode node = this;
             node.iconResult = ExporterUtils.TryGetIcon( path, out node.icon );
             if ( !node.iconResult.IsExists( ) ) {
+                ExporterUtils.DebugLogError( "Not found: " + path );
                 type = NodeType.NotFound;
             }
             node = AddOrGetCategoryNode( type );

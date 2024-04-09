@@ -347,7 +347,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             List<string> referencePaths = new List<string>( );
             List<string> excludeReferences = new List<string>( );
             foreach ( var v in references ) {
-                var path = v.element.Path;
+                v.element.exporter = this;
+                var path = v.element.ConvertedPath;
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
@@ -398,7 +399,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             ExporterUtils.DebugLog( "References: \n" + string.Join( "\n", referencesPath ) );
             bool useReference = referencesPath.Any( );
 
-            IEnumerable<FilePath> list = objects.Where( v => !string.IsNullOrWhiteSpace( v.Path ) ).Select( v => new FilePath( v.Path, v.searchReference ) );
+            foreach ( var item in objects ) {
+                item.exporter = this;
+            }
+            IEnumerable<FilePath> list = objects.Select( v => new FilePath( v.ConvertedPath, v.searchReference ) ).Where( v => !string.IsNullOrWhiteSpace( v.path ) );
             var list_include_sub = new List<FilePath>( );
             foreach ( var item in list ) {
                 if ( Directory.Exists( item.path ) ) {
@@ -421,7 +425,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             list_include_sub = list_include_sub.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
 
             // 除外指定ファイル・フォルダの検索用
-            IEnumerable< SearchPath> excludeSearchPaths = excludeObjects.Where( v => v != null && v.Object != null ).Select( v => new SearchPath( SearchPathType.Exact, v.Path ) );
+            IEnumerable< SearchPath> excludeSearchPaths = excludeObjects.Where( v => v != null && v.Object != null ).Select( v => new SearchPath( SearchPathType.Exact, v.ConvertedPath ) );
             excludeSearchPaths = excludeSearchPaths.Concat( excludes.Select( v => new SearchPath( v.searchType, ConvertDynamicPath( v.value ) ) ) );
 
             var result = new HashSet<string>( );
