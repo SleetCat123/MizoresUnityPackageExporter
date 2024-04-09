@@ -70,6 +70,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     path = PathUtils.GetRelativePath( exporter.GetDirectoryPath( ), path );
                 }
             } else {
+                ExporterUtils.DebugLog( "Set Path to empty" );
                 path = string.Empty;
             }
             obj = value;

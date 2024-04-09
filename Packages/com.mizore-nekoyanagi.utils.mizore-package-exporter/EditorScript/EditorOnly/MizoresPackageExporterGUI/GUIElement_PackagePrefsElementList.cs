@@ -50,12 +50,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 bool browse = PackagePrefsElementInspector.Draw<T>( t, element );
                 EditorGUI.showMixedValue = false;
                 if ( EditorGUI.EndChangeCheck( ) ) {
-                    var obj = element.Object;
+                    var path = element.Path;
                     foreach ( var item in targetlist ) {
-                        // 全ての選択中インスタンスに対してオブジェクトを設定
+                        // 全ての選択中インスタンスに対してパスを設定
                         // 要素数が足りなかったらリサイズ
                         ExporterUtils.ResizeList( GetList( item ), Mathf.Max( i + 1, GetList( item ).Count ), ( ) => new TElement( ) );
-                        GetList( item )[i].Object = obj;
+                        GetList( item )[i].Path = path;
                         EditorUtility.SetDirty( item );
                     }
                     objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
