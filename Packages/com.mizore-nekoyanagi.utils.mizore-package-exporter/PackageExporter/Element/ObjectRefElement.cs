@@ -40,14 +40,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 if ( string.IsNullOrEmpty( path ) ) {
                     return null;
                 } else {
-                    var actualPath = path;
-                    if ( PathUtils.IsDynamicPath( path ) ) {
-                        actualPath = exporter.ConvertDynamicPath( path );
-                    }
-                    if ( PathUtils.IsRelativePath( actualPath ) ) {
-                        actualPath = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), actualPath );
-                    }
-                    return AssetDatabase.LoadAssetAtPath<Object>( actualPath );
+                    return AssetDatabase.LoadAssetAtPath<Object>( ConvertedPath );
                 }
 #else
                 return obj;

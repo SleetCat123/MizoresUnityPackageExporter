@@ -425,6 +425,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             list_include_sub = list_include_sub.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
 
             // 除外指定ファイル・フォルダの検索用
+            foreach ( var item in excludeObjects ) {
+                item.exporter = this;
+            }
             IEnumerable< SearchPath> excludeSearchPaths = excludeObjects.Where( v => v != null && v.Object != null ).Select( v => new SearchPath( SearchPathType.Exact, v.ConvertedPath ) );
             excludeSearchPaths = excludeSearchPaths.Concat( excludes.Select( v => new SearchPath( v.searchType, ConvertDynamicPath( v.value ) ) ) );
 
