@@ -42,6 +42,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 ev.Use( );
             }
             path = EditorGUI.TextField( textrect, path );
+            // ドラッグドロップ
             if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
                 path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
                 // 相対パスを使用する場合は、プロジェクトフォルダからの相対パスに変換
