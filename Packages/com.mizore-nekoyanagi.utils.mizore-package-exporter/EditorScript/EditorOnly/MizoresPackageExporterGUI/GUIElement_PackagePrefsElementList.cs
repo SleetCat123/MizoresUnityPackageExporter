@@ -96,6 +96,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     i--;
                 }
                 EditorGUILayout.EndHorizontal( );
+                if ( objects_count.max == 0 ) {
+                    break;
+                }
 
                 // ExportTargetObjectElementの場合
                 var exportTargetObjectElement = element as ExportTargetObjectElement;
