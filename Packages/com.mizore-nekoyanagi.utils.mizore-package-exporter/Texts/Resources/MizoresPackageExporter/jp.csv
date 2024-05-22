@@ -23,6 +23,9 @@ ExportLogFailed,{0}\nエクスポートは中断されました。
 ExportLogAllFileExists,ファイル／フォルダの存在チェックが完了しました。
 ExportLogSuccess,[{0}]のエクスポートに成功しました。\n
 IncompatibleVersion,[{0}]は現在のバージョンのMizoresPackageExporterとの互換性がありません。\n強制的に開いた場合、一部項目の設定内容が変化したり消えたりする可能性があります。
+ConvertVersionRequired,このファイルは古いバージョンのMizoresPackageExporterで作成されています。\nファイルの変換処理を行いますか？
+ConvertVersionButton,変換
+ConvertVersionConfirm,MizoresPackageExporterのバージョン変換を行います。\n\n変換前のファイルは別名で保存されます。\n\n変換を行いますか？
 ButtonCheck,エクスポートするファイルの有無を確認
 PackageName,unitypackage名
 

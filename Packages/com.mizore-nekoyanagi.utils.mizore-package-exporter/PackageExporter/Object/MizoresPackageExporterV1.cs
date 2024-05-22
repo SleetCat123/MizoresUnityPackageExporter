@@ -16,11 +16,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
         public class Inspector : Editor {
             public override void OnInspectorGUI( ) {
                 EditorGUILayout.HelpBox( PackageExporter.ExporterTexts.ConvertVersionRequired, MessageType.Warning );
-                if ( GUILayout.Button( "Convert" ) ) {
-                    foreach ( var target in targets ) {
-                        var v1 = target as MizoresPackageExporterV1;
-                        PackageExporter.MizoresPackageExporterUpdator.ConvertToLatest( v1 );
-
+                if ( GUILayout.Button( PackageExporter.ExporterTexts.ConvertVersionButton ) ) {
+                    if ( EditorUtility.DisplayDialog( "MizoresPackageExporter", PackageExporter.ExporterTexts.ConvertVersionConfirm, PackageExporter.ExporterTexts.ConvertVersionButton, PackageExporter.ExporterTexts.Cancel ) ) {
+                        foreach ( var target in targets ) {
+                            var v1 = target as MizoresPackageExporterV1;
+                            PackageExporter.MizoresPackageExporterUpdator.ConvertToLatest( v1 );
+                        }
                     }
                 }
             }

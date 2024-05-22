@@ -63,6 +63,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string Undo => Get( "Undo" );
         public static string Yes => Get( "Yes" );
         public static string No => Get( "No" );
+        public static string Cancel => Get( "Cancel" );
         public static string CopyText => Get( "CopyText" );
         public static string PasteText => Get( "PasteText" );
         public static string BatchExportFolder => Get( "BatchExportFolder" );
@@ -178,5 +179,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string SearchReferenceTooltip => Get( "SearchReferenceTooltip" );
         public static string ErrorEmptyName => Get( "ErrorEmptyName" );
         public static string ConvertVersionRequired => Get( "ConvertVersionRequired" );
+        public static string ConvertVersionButton => Get( "ConvertVersionButton" );
+        public static string ConvertVersionConfirm => Get( "ConvertVersionConfirm" );
     }
 }

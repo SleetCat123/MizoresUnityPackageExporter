@@ -1,6 +1,7 @@
 Undo,PackagePrefs
 Yes,Yes
 No,No
+Cancel,Cancel
 CopyText,Copy
 PasteText,Paste
 
@@ -71,6 +72,9 @@ PasteTargetWithValue,Paste [{1}] ({0})
 PasteTargetNoValue,Paste
 IncompatibleVersion,[{0}] is incompatible with current version of MizoresPackageExporter.\nIf you open it forcibly\. some setting values may change or disappear.
 IncompatibleVersionForceOpen,Force open
+ConvertVersionRequired,This asset is created by a older version of MizoresPackageExporter.\nDo you want to convert it to the current version?
+ConvertVersionButton,Convert
+ConvertVersionConfirm,Convert MizoresPackageExporter version.\n\nThe original file will be saved with a different name.\n\nDo you want to convert it?
 
 FileListWindowTitle,Export unitypackages
 FileListViewFullPath,FullPath

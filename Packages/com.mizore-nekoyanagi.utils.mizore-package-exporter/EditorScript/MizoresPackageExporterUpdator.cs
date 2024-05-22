@@ -25,7 +25,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( v2 != null ) {
                 return v2.packageExporterVersion <= MizoresPackageExporter.CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
             }
-            #pragma warning restore 612
+#pragma warning restore 612
             return false;
         }
         public static ScriptableObject ConvertToLatest( ScriptableObject obj ) {
@@ -81,7 +81,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
                     v2.variables = v1.variables.ToDictionary( v => v.Key, v => v.Value );
                     v2.excludeObjects = v1.excludeObjects.Select( v => new ObjectRefElement( v.Path ) ).ToList( );
-                    v2.excludes = v1.excludes.Select( v => new SearchPath( (SearchPathType)v.searchType, v.value ) ).ToList( );
+                    v2.excludes = v1.excludes.Select( v => new SearchPath( ( SearchPathType )v.searchType, v.value ) ).ToList( );
                     v2.references = v1.references.Select( v => new ReferenceElement( new ObjectRefElement( v.Path ), ReferenceMode.Include ) ).ToList( );
                     v2.packageNameSettings = ( PackageNameSettings )v1.packageNameSettings;
                     v2.packageNameSettingsOverride = v1.packageNameSettingsOverride.ToDictionary( v => v.Key, v => ( PackageNameSettings )v.Value );
@@ -99,15 +99,23 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 // 新規作成時、Assetファイルを上書きする
                 // GUIDが変わらないようにFile.Copyで上書きする
 
-                // 既存のAssetを削除して変換後のAssetを作成
                 var path = AssetDatabase.GetAssetPath( obj );
-                AssetDatabase.DeleteAsset( path );
+                // 既存のAssetのファイル名の末尾に_bakをつける
+                // すでに同名のAssetが存在する場合はユニークな名前に変更
+                var bakPath = Path.Combine( Path.GetDirectoryName( path ),  name + "_bak.asset" );
+                if ( File.Exists( bakPath ) ) {
+                    bakPath = AssetDatabase.GenerateUniqueAssetPath( path );
+                }
+                var bakName = Path.GetFileNameWithoutExtension( bakPath );
+                AssetDatabase.RenameAsset( path, bakName );
+
+                // 変換後のAssetを作成
                 AssetDatabase.CreateAsset( latest, path );
                 AssetDatabase.SaveAssets( );
                 AssetDatabase.Refresh( );
                 // オブジェクトを選択
                 latest = AssetDatabase.LoadAssetAtPath<MizoresPackageExporter>( path );
-                Selection.objects = Selection.objects.Concat( new Object[ ] { latest } ).ToArray( );
+                Selection.objects = Selection.objects.Concat( new Object[] { latest } ).ToArray( );
             }
             return latest;
 #pragma warning restore 612
