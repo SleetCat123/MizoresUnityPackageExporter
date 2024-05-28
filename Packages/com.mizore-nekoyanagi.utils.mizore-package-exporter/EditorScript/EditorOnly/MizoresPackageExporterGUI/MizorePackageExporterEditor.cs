@@ -161,16 +161,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             logs.DrawUI( );
         }
-        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, HashSet<string> ignorePaths ) {
+        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, HashSet<string> exportPaths ) {
             logs.Clear( );
             for ( int i = 0; i < targets.Length; i++ ) {
                 var item = targets[i];
-                item.Export( logs, ignorePaths );
+                item.Export( logs, exportPaths );
             }
-        }
-        public void Export( HashSet<string> ignorePaths ) {
-            var targetlist = targets.Select( v => v as MizoresPackageExporter ).ToArray( );
-            Export( logs, targetlist, ignorePaths );
         }
     }
 #endif

@@ -17,7 +17,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
         /// <summary>
         /// エクスポート対象から除外するパス
         /// </summary>
-        public HashSet<string> ignorePaths = new HashSet<string>();
+        public HashSet<string> exportPaths = new HashSet<string>();
         public bool viewFullPath;
         public bool viewExcludeFiles;
         public bool viewReferencedFiles;
@@ -239,12 +239,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             if ( isRoot ) {
                 rect.width = 20;
                 EditorGUI.BeginChangeCheck( );
-                bool export = EditorGUI.Toggle( rect, !ignorePaths.Contains(path) );
+                bool export = EditorGUI.Toggle( rect, exportPaths.Contains(path) );
                 if (EditorGUI.EndChangeCheck()) {
                     if ( export ) {
-                        ignorePaths.Remove(path);
+                        exportPaths.Add(path);
                     } else {
-                        ignorePaths.Add(path);
+                        exportPaths.Remove(path);
                     }
                 }
             } else {

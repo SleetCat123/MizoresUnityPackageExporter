@@ -581,7 +581,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return false;
 #endif
         }
-        public void Export( ExporterEditorLogs logs, HashSet<string> ignorePaths ) {
+        public void Export( ExporterEditorLogs logs, HashSet<string> exportPaths ) {
 #if UNITY_EDITOR
             logs.Clear( );
             UpdateAllExportVersions( );
@@ -590,7 +590,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var table = GetAllPath_Batch( );
             foreach ( var kvp in table ) {
                 string exportPath = kvp.Key;
-                if ( ignorePaths.Contains( exportPath ) ) {
+                if ( exportPaths.Contains( exportPath ) == false ) {
                     ExporterUtils.DebugLog( "Ignore Export: " + exportPath );
                     continue;
                 }

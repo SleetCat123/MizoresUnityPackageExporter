@@ -32,7 +32,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
         void InitTreeView( FileListData data ) {
             _treeViewState = new TreeViewState( );
             _treeView = new FileListTreeView( _treeViewState, data.rootNode );
-            _treeView.ignorePaths.Clear( );
+            AddExportTargetAll( );
             exportPaths = data.packages;
             ReloadTreeView( );
             _treeView.ExpandAll( );
@@ -47,6 +47,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             _treeView.viewReferencedFiles = ExporterEditorPrefs.FileListViewReferencedFiles;
             _treeView.viewExcludeFiles = ExporterEditorPrefs.FileListViewExcludeFiles;
             _treeView.Reload( );
+        }
+        public void AddExportTargetAll( ) {
+            _treeView.exportPaths = new HashSet<string>( exportPaths );
+        }
+        public void ClearExportTarget( ) {
+            _treeView.exportPaths.Clear( );
         }
         private void OnGUI( ) {
             float tooltipHeight = 100;
@@ -111,10 +117,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             using ( new EditorGUILayout.VerticalScope( EditorStyles.helpBox ) ) {
                 using ( new EditorGUILayout.HorizontalScope( ) ) {
                     if ( GUILayout.Button( ExporterTexts.ButtonExportAll, GUILayout.Width( 70 ) ) ) {
-                        _treeView.ignorePaths.Clear( );
+                        AddExportTargetAll( );
                     }
                     if ( GUILayout.Button( ExporterTexts.ButtonExportNone, GUILayout.Width( 70 ) ) ) {
-                        _treeView.ignorePaths = new HashSet<string>( exportPaths );
+                        ClearExportTarget( );
                     }
                 }
 
@@ -161,7 +167,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                 }
 
                 if ( GUILayout.Button( ExporterTexts.ButtonExportPackage, GUILayout.Height( 50 ) ) ) {
-                    MizoresPackageExporterEditor.Export( _logs, _targets, _treeView.ignorePaths );
+                    MizoresPackageExporterEditor.Export( _logs, _targets, _treeView.exportPaths );
                     this.Close( );
                 }
             }
