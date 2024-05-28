@@ -53,6 +53,7 @@ ButtonExportNone,None
 LabelExportPackage,Export to unitypackage
 ButtonExportPackage,Export to unitypackage
 ButtonExportPackages,Export to unitypackages
+ButtonExportSinglePackage,Export
 ButtonOpen,Open
 DiffLabel,?
 DiffTooltip,Some values are different.

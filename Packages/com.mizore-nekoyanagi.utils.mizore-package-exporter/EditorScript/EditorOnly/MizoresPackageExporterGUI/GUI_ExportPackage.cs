@@ -41,9 +41,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 var obj = targetlist[i];
                 var files = fileList[i];
                 if ( multiple ) {
-                    EditorGUI.BeginDisabledGroup( true );
-                    EditorGUILayout.ObjectField( obj, typeof( MizoresPackageExporter ), false );
-                    EditorGUI.EndDisabledGroup( );
+                    using ( new EditorGUILayout.HorizontalScope( ) ) {
+                        EditorGUI.BeginDisabledGroup( true );
+                        EditorGUILayout.ObjectField( obj, typeof( MizoresPackageExporter ), false );
+                        EditorGUI.EndDisabledGroup( );
+                        if ( GUILayout.Button( ExporterTexts.ButtonExportSinglePackage, GUILayout.Width( 60 ) ) ) {
+                            FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { obj } );
+                        }
+                    }
                 }
                 for ( int j = 0; j < files.Length; j++ ) {
                     using ( new EditorGUILayout.HorizontalScope( ) ) {
@@ -54,6 +59,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         var path = files[j];
                         EditorGUILayout.LabelField( new GUIContent( path, path ) );
+                        if ( GUILayout.Button( ExporterTexts.ButtonExportSinglePackage, GUILayout.Width( 60 ) ) ) {
+                            Debug.Log( "Export: " + path );
+                            FileList.FileListWindow.Show( 
+                                ed.logs,
+                                new MizoresPackageExporter[] { obj }, 
+                                new List<string> { Const.EXPORT_FOLDER_PATH + path } 
+                                );
+                        }
                     }
                 }
                 VerticalBoxScope.EndVerticalBox( );

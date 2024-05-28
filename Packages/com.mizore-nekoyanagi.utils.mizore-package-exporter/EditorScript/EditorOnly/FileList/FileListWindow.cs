@@ -20,20 +20,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
         List<string> exportPaths;
 
-        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets ) {
+        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets, IEnumerable<string> filter = null ) {
             var window = CreateInstance<FileListWindow>( );
             window.titleContent = new GUIContent( ExporterTexts.FileListWindowTitle );
             window._targets = targets;
             window._logs = logs;
-            var data = CreateFileList.Create( targets );
+            var data = CreateFileList.Create( targets, filter );
             window.InitTreeView( data );
             window.ShowAuxWindow( );
         }
         void InitTreeView( FileListData data ) {
             _treeViewState = new TreeViewState( );
             _treeView = new FileListTreeView( _treeViewState, data.rootNode );
-            AddExportTargetAll( );
             exportPaths = data.packages;
+            AddExportTargetAll( );
             ReloadTreeView( );
             _treeView.ExpandAll( );
         }

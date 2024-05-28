@@ -374,7 +374,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // includeからexcludeを除外
             return referencePaths.Except( excludeReferences );
         }
-        public Dictionary<string, FilePathList> GetAllPath_Batch( ) {
+        public Dictionary<string, FilePathList> GetAllPath_Batch( IEnumerable<string> filter = null ) {
             var result = new Dictionary<string, FilePathList>( );
             if ( batchExportMode == BatchExportMode.Single ) {
                 temp_batchExportCurrentKey = string.Empty;
@@ -385,6 +385,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 for ( int i = 0; i < texts.Length; i++ ) {
                     temp_batchExportCurrentKey = texts[i];
                     string path = GetExportPath( );
+                    if ( filter != null && !filter.Contains( path ) ) {
+                        continue;
+                    }
                     if ( !result.ContainsKey( path ) ) {
                         result.Add( path, GetAllPath( ) );
                     }

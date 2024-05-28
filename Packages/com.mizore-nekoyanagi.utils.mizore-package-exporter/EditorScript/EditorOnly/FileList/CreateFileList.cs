@@ -15,12 +15,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList
                 this.packages = packages;
             }
         }
-        public static FileListData Create( MizoresPackageExporter[] exporters ) {
+        public static FileListData Create( MizoresPackageExporter[] exporters, IEnumerable<string> filter ) {
             var root = new FileListNode( );
             var packages = new List<string>();
             for ( int i = 0; i < exporters.Length; i++ ) {
                 var item = exporters[i];
-                var table = item.GetAllPath_Batch( );
+                var table = item.GetAllPath_Batch( filter );
                 foreach ( var kvp in table ) {
                     string exportPath = kvp.Key;
                     if ( root.Contains( exportPath ) ) {

@@ -112,6 +112,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ButtonExportAll => Get( "ButtonExportAll" );
         public static string ButtonExportPackage => Get( "ButtonExportPackage" );
         public static string ButtonExportPackages => Get( "ButtonExportPackages" );
+        public static string ButtonExportSinglePackage => Get( "ButtonExportSinglePackage" );
         public static string ButtonOpen => Get( "ButtonOpen" );
         public static string DiffLabel => Get( "DiffLabel" );
         public static string DiffTooltip => Get( "DiffTooltip" );
