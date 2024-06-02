@@ -59,7 +59,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return "[NotFound: " + key + "]";
             }
         }
-
+        
+        public const string AssetName = "MizoresPackageExporter";
         public static string Undo => Get( "Undo" );
         public static string Yes => Get( "Yes" );
         public static string No => Get( "No" );

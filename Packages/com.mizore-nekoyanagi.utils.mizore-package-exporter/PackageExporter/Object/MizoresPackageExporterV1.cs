@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Linq;
 using ExporterUtils = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using System;
+using MizoreNekoyanagi.PublishUtil.PackageExporter;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -17,7 +19,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporterV1 {
             public override void OnInspectorGUI( ) {
                 EditorGUILayout.HelpBox( PackageExporter.ExporterTexts.ConvertVersionRequired, MessageType.Warning );
                 if ( GUILayout.Button( PackageExporter.ExporterTexts.ConvertVersionButton ) ) {
-                    if ( EditorUtility.DisplayDialog( "MizoresPackageExporter", PackageExporter.ExporterTexts.ConvertVersionConfirm, PackageExporter.ExporterTexts.ConvertVersionButton, PackageExporter.ExporterTexts.Cancel ) ) {
+                    if ( EditorUtility.DisplayDialog( PackageExporter.ExporterTexts.AssetName, PackageExporter.ExporterTexts.ConvertVersionConfirm, PackageExporter.ExporterTexts.ConvertVersionButton, PackageExporter.ExporterTexts.Cancel ) ) {
                         foreach ( var target in targets ) {
                             var v1 = target as MizoresPackageExporterV1;
                             PackageExporter.MizoresPackageExporterUpdator.ConvertToLatest( v1 );
