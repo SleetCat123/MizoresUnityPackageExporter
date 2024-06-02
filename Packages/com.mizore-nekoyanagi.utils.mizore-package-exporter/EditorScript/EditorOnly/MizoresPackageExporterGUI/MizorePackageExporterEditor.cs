@@ -34,6 +34,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.BeginDisabledGroup( true );
                 EditorGUILayout.ObjectField( MonoScript.FromScriptableObject( t ), typeof( MonoScript ), false );
                 EditorGUI.EndDisabledGroup( );
+                MizoresPackageExporter.LockEditor = EditorGUILayout.Toggle( "Lock Editor", MizoresPackageExporter.LockEditor );
             }
 
             ExporterUtils.SeparateLine( );
@@ -61,6 +62,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ExporterEditorPrefs.Language = ExporterTexts.LanguageList[languageIndex];
             }
 
+            EditorGUI.BeginDisabledGroup( MizoresPackageExporter.LockEditor );
             // デフォルトで相対パスを使用するか
             EditorGUI.BeginChangeCheck( );
             bool useRelativePath = EditorGUILayout.Toggle( ExporterTexts.UseRelativePath, ExporterEditorPrefs.UseRelativePath );
@@ -118,11 +120,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
 
             // Targets
-            GUI.enabled = false;
+            EditorGUI.BeginDisabledGroup( true );
             foreach ( var item in targetlist ) {
                 EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
             }
-            GUI.enabled = true;
+            EditorGUI.EndDisabledGroup( );
 
             ExporterUtils.SeparateLine( );
 
@@ -137,7 +139,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             gui_ExcludeObjects.Draw( this, t, targetlist );
             GUI_Excludes.Draw( this, t, targetlist );
-
+            
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
                 SingleGUI_DynamicPathVariables.Draw( this, t );
@@ -158,15 +160,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             ExporterUtils.SeparateLine( );
             GUI_ExportPackage.Draw( this, targetlist );
             //
+            EditorGUI.EndDisabledGroup( );
+
+            if ( MizoresPackageExporter.LockEditor ) {
+                var helpboxStyle = EditorStyles.helpBox;
+                var tempFontSizes = helpboxStyle.fontSize;
+                helpboxStyle.fontSize = 12;
+                EditorGUILayout.HelpBox( ExporterTexts.EditorLocked, MessageType.Info );
+                helpboxStyle.fontSize = tempFontSizes;
+            }
 
             logs.DrawUI( );
-        }
-        public static void Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, HashSet<string> exportPaths ) {
-            logs.Clear( );
-            for ( int i = 0; i < targets.Length; i++ ) {
-                var item = targets[i];
-                item.Export( logs, exportPaths );
-            }
         }
     }
 #endif

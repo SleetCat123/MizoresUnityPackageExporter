@@ -31,7 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             // List Button
             using ( new EditorGUI.DisabledGroupScope( !any ) ) {
                 if ( GUILayout.Button( ExporterTexts.ButtonExportPackages, GUILayout.Height( 50 ) ) ) {
-                    FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
+                    var task = FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
                 }
             }
 
@@ -46,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUILayout.ObjectField( obj, typeof( MizoresPackageExporter ), false );
                         EditorGUI.EndDisabledGroup( );
                         if ( GUILayout.Button( ExporterTexts.ButtonExportSinglePackage, GUILayout.Width( 60 ) ) ) {
-                            FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { obj } );
+                            var task = FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { obj } );
                         }
                     }
                 }
@@ -61,7 +61,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUILayout.LabelField( new GUIContent( path, path ) );
                         if ( GUILayout.Button( ExporterTexts.ButtonExportSinglePackage, GUILayout.Width( 60 ) ) ) {
                             Debug.Log( "Export: " + path );
-                            FileList.FileListWindow.Show( 
+                            var task = FileList.FileListWindow.Show( 
                                 ed.logs,
                                 new MizoresPackageExporter[] { obj }, 
                                 new List<string> { Const.EXPORT_FOLDER_PATH + path } 

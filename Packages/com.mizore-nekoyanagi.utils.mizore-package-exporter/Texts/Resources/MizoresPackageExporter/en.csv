@@ -125,3 +125,8 @@ SearchReference,Search Reference
 SearchReferenceTooltip,If this Asset is reference an Asset in "References", the corresponding Asset is automatically added to the export target.
 
 ErrorEmptyName,The file name for the currently selected MizoresPackageExporter is not yet set.\nPlease set the file name and select it again.
+
+ProgressBarInfo_CreateFileList,Creating File List\n{0} - {1}
+ProgressBarInfo_Export,Export\n{0} - {1}
+
+EditorLocked,Waiting for processing.

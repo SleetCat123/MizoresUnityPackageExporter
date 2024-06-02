@@ -3,6 +3,7 @@ using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -20,12 +21,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
         List<string> exportPaths;
 
-        public static void Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets, IEnumerable<string> filter = null ) {
+        public static async Task Show( ExporterEditorLogs logs, MizoresPackageExporter[] targets, IEnumerable<string> filter = null ) {
             var window = CreateInstance<FileListWindow>( );
             window.titleContent = new GUIContent( ExporterTexts.FileListWindowTitle );
             window._targets = targets;
             window._logs = logs;
-            var data = CreateFileList.Create( targets, filter );
+            FileListData data = null;
+            await CreateFileList.Create( targets, filter, (d) => data = d );
             window.InitTreeView( data );
             window.ShowAuxWindow( );
         }
@@ -167,9 +169,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                 }
 
                 if ( GUILayout.Button( ExporterTexts.ButtonExportPackage, GUILayout.Height( 50 ) ) ) {
-                    MizoresPackageExporterEditor.Export( _logs, _targets, _treeView.exportPaths );
+                    _ = Export( _logs, _targets, _treeView.exportPaths );
                     this.Close( );
                 }
+            }
+        }
+        public static async Task Export( ExporterEditorLogs logs, MizoresPackageExporter[] targets, HashSet<string> exportPaths ) {
+            logs.Clear( );
+            for ( int i = 0; i < targets.Length; i++ ) {
+                var item = targets[i];
+                await item.Export( logs, exportPaths );
             }
         }
     }

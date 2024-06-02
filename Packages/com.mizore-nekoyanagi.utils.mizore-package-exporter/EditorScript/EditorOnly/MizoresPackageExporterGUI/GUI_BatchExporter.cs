@@ -212,11 +212,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 first = false;
                 if ( multiple ) {
                     using ( var horizontalScope = new EditorGUILayout.HorizontalScope( ) ) {
-                        GUI.enabled = false;
+                        EditorGUI.BeginDisabledGroup( true );
                         EditorGUI.indentLevel++;
                         EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
                         EditorGUI.indentLevel--;
-                        GUI.enabled = true;
+                        EditorGUI.EndDisabledGroup( );
                     }
                 }
                 var list = item.BatchExportKeysConverted;

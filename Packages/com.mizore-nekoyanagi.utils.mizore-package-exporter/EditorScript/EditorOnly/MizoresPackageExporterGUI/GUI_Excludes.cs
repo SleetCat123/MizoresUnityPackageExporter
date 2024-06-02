@@ -181,11 +181,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     if ( first == false ) EditorGUILayout.Separator( );
                     first = false;
                     if ( multiple ) {
-                        GUI.enabled = false;
+                        EditorGUI.BeginDisabledGroup( true );
                         EditorGUI.indentLevel++;
                         EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
                         EditorGUI.indentLevel--;
-                        GUI.enabled = true;
+                        EditorGUI.EndDisabledGroup( );
                     }
                     for ( int i = 0; i < minmax_count.max; i++ ) {
                         if ( multiple ) {

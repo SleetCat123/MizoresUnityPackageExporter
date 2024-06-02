@@ -183,5 +183,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ConvertVersionRequired => Get( "ConvertVersionRequired" );
         public static string ConvertVersionButton => Get( "ConvertVersionButton" );
         public static string ConvertVersionConfirm => Get( "ConvertVersionConfirm" );
+
+        public static string ProgressBarInfo_CreateFileList( string name, string path ) => Get( "ProgressBarInfo_CreateFileList", name, path );
+        public static string ProgressBarInfo_Export( string name, string path ) => Get( "ProgressBarInfo_CreateFileList", name, path );
+
+        public static string EditorLocked => Get( "EditorLocked" );
     }
 }

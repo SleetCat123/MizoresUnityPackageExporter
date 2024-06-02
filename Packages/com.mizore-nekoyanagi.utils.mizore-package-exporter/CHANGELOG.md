@@ -4,6 +4,7 @@
 - add: Objectで指定されたAssetがReferencesを検索するかどうかを個別に指定できるようにした
 - add: Objectsなどの項目にもフォルダ／ファイルの選択ボタンを追加
 - add: 特定のパッケージだけを個別にエクスポートできるようにした
+- add: ファイル一覧の表示とエクスポート時にプログレスバーを表示するようにした
 - change: DynamicPathをObjectsに統合
 - change: フォルダ／ファイルの選択ボタンの表示を変更
 - change: PostProcessScriptの選択をPopupにした

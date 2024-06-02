@@ -35,7 +35,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 ) ) {
                 VerticalBoxScope.BeginVerticalBox( );
                 var button_width = GUILayout.Width( BUTTON_WIDTH );
-                GUI.enabled = false;
+                EditorGUI.BeginDisabledGroup( true );
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_RELATIVE_NAME, t.ReplaceRelativeName( Const_Keys.KEY_SAMPLE_RELATIVE_NAME ) );
                 DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.CurrentSettings.GetExportVersion( ) );
@@ -46,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, ExporterTexts.FormattedBatchVariableTooltip );
                 }
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
-                GUI.enabled = true;
+                EditorGUI.EndDisabledGroup( );
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {
                     string key = keys[i];
