@@ -6,8 +6,6 @@ using System.Text.RegularExpressions;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 using System.Threading.Tasks;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
