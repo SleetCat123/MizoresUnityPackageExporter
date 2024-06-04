@@ -21,7 +21,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         public static void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             var minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
             bool multiple = targetlist.Length > 1;
-            // ↓ Excludes
             if ( CustomFoldout.EditorPrefFoldout(
                 ExporterEditorPrefs.FOLDOUT_EXCLUDES,
                 ExporterTexts.FoldoutExcludes( minmax_count.ToString( ) ),
@@ -160,6 +159,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         i--;
                     }
                     EditorGUILayout.EndHorizontal( );
+
+                    // プレビュー
+                    for ( int j = 0; j < targetlist.Length; j++ ) {
+                        var item = targetlist[j];
+                        if ( item.excludes.Count <= i ) {
+                            continue;
+                        }
+                        var el = item.excludes[i];
+                        EditorGUI.indentLevel += 2;
+                        if ( multiple ) {
+                            EditorGUI.BeginDisabledGroup( true );
+                            EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
+                            EditorGUI.EndDisabledGroup( );
+                            EditorGUI.indentLevel++;
+                        }
+                        EditorGUILayout.BeginHorizontal( );
+                        string previewpath = item.ConvertDynamicPath( item.excludes[i].value );
+                        EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
+                        if ( multiple ) {
+                            EditorGUI.indentLevel--;
+                        }
+                        EditorGUI.indentLevel -= 2;
+                        using ( new EditorGUI.DisabledGroupScope( true ) ) {
+                            EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
+                        }
+                        EditorGUILayout.EndHorizontal( );
+                    }
                 }
                 EditorGUI.indentLevel++;
                 if ( GUIElement_Utils.PlusButton( ) ) {
@@ -171,49 +197,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.indentLevel--;
                 VerticalBoxScope.EndVerticalBox( );
             }
-            // ↑ Excludes
-
-            // ↓ Excludes Preview
-            if ( CustomFoldout.EditorPrefFoldout( ExporterEditorPrefs.FOLDOUT_EXCLUDES_PREVIEW, ExporterTexts.FoldoutExcludesPreview ) ) {
-                VerticalBoxScope.BeginVerticalBox( );
-                bool first = true;
-                foreach ( var item in targetlist ) {
-                    if ( first == false ) EditorGUILayout.Separator( );
-                    first = false;
-                    if ( multiple ) {
-                        EditorGUI.BeginDisabledGroup( true );
-                        EditorGUI.indentLevel++;
-                        EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
-                        EditorGUI.indentLevel--;
-                        EditorGUI.EndDisabledGroup( );
-                    }
-                    for ( int i = 0; i < minmax_count.max; i++ ) {
-                        if ( multiple ) {
-                            EditorGUI.indentLevel += 2;
-                        } else {
-                            EditorGUI.indentLevel++;
-                        }
-                        EditorGUILayout.LabelField( i.ToString( ), GUILayout.Width( 30 ) );
-                        if ( multiple ) {
-                            EditorGUI.indentLevel -= 2;
-                        } else {
-                            EditorGUI.indentLevel--;
-                        }
-
-                        if ( i < item.excludes.Count ) {
-                            string previewpath = item.ConvertDynamicPath( item.excludes[i].value );
-                            EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
-                            using ( new EditorGUI.DisabledGroupScope( true ) ) {
-                                EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
-                            }
-                        } else {
-                            EditorGUILayout.LabelField( "-" );
-                        }
-                    }
-                }
-                VerticalBoxScope.EndVerticalBox( );
-            }
-            // ↑ Excludes Preview
         }
     }
 #endif
