@@ -91,7 +91,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 if ( obj != null && !PathUtils.IsRelativePath( path ) && !PathUtils.IsDynamicPath( path ) ) {
                     path = AssetDatabase.GetAssetPath( obj );
                 }
-                path = path.Replace( "%20", " " );
+                if ( path != null ) {
+                    path = path.Replace( "%20", " " );
+                }
 #endif
                 return path;
             }
