@@ -14,7 +14,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             public string version;
         }
 
-        public VersionSource versionSource;
+        public VersionSourceData versionSource;
         public ObjectRefElement versionFile;
         public string versionString;
         public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
@@ -28,7 +28,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public PackageNameSettings( ) { }
         public PackageNameSettings( PackageNameSettings source ) {
-            this.versionSource = source.versionSource;
+            this.versionSource = source.versionSource.value;
             this.versionFile = source.versionFile;
             this.versionString = source.versionString;
             this.versionFormat = source.versionFormat;
@@ -100,7 +100,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public void SetBase( PackageNameSettings baseSettings ) {
             if ( !useOverride_version ) {
-                this.versionSource = baseSettings.versionSource;
+                this.versionSource = baseSettings.versionSource.value;
                 this.versionFile = baseSettings.versionFile;
                 this.versionString = baseSettings.versionString;
                 UpdateExportVersion( );

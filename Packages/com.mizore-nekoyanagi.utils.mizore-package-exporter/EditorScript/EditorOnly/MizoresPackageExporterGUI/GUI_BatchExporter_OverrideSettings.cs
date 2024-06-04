@@ -27,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     settings.lastUpdate_ExportVersion = 0;
                     EditorUtility.SetDirty( t );
                 }
-                switch ( settings.versionSource ) {
+                switch ( settings.versionSource.value ) {
                     case VersionSource.String: {
                         EditorGUI.BeginChangeCheck( );
                         string versionString = EditorGUILayout.TextField( ExporterTexts.Version, settings.versionString );

@@ -7,10 +7,8 @@ using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
-    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable, ISerializationCallbackReceiver {
-        // 互換性のためSerialize対象にしておく
-        public SearchPathType searchType;
-        [SerializeField]string s_searchType;
+    public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable {
+        public SearchPathTypeData searchType;
         public string value;
 
         public SearchPath( ) {
@@ -22,7 +20,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             this.value = value;
         }
         public SearchPath( SearchPath source ) {
-            this.searchType = source.searchType;
+            this.searchType = source.searchType.value;
             this.value = source.value;
         }
         public object Clone( ) {
@@ -30,7 +28,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public override string ToString( ) {
-            return $"{value}({searchType.GetString( )})";
+            return $"{value}({EnumCache.GetName( searchType )})";
         }
 
         public override int GetHashCode( ) {
@@ -50,7 +48,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public bool IsMatch( string path ) {
-            switch ( searchType ) {
+            switch ( searchType.value ) {
                 default:
                 case SearchPathType.Disabled:
                     return false;
@@ -121,7 +119,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
             } else {
                 foreach ( var path in paths ) {
-                    switch ( searchType ) {
+                    switch ( searchType.value ) {
                         case SearchPathType.Partial:
                         case SearchPathType.Partial_IgnoreCase:
                             bool b;
@@ -169,66 +167,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
             } else {
                 return result;
-            }
-        }
-
-        public void OnBeforeSerialize( ) {
-            s_searchType = searchType.GetString( );
-        }
-
-        public void OnAfterDeserialize( ) {
-            if ( string.IsNullOrEmpty( s_searchType ) ) {
-                // enumのstring保存が未実装なデータを読み込んだ場合のみ発生
-                // enumの順番が変わった場合はここで対応する
-            } else {
-                searchType = SearchPathTypeExtensions.Parse( s_searchType );
-            }
-        }
-    }
-    public enum SearchPathType {
-        Disabled,
-        /// <summary>
-        /// 完全一致
-        /// </summary>
-        Exact,
-        /// <summary>
-        /// 部分一致
-        /// </summary>
-        Partial,
-        /// <summary>
-        /// 部分一致（大文字小文字を無視）
-        /// </summary>
-        Partial_IgnoreCase,
-        /// <summary>
-        /// 正規表現
-        /// </summary>
-        Regex,
-        /// <summary>
-        /// 正規表現（大文字小文字を無視）
-        /// </summary>
-        Regex_IgnoreCase,
-    }
-    public static class SearchPathTypeExtensions {
-        public static string GetString( this SearchPathType value ) {
-            switch ( value ) {
-                case SearchPathType.Disabled: return "Disabled";
-                case SearchPathType.Exact: return "Exact";
-                case SearchPathType.Partial: return "Partial";
-                case SearchPathType.Partial_IgnoreCase: return "Partial_IgnoreCase";
-                case SearchPathType.Regex: return "Regex";
-                case SearchPathType.Regex_IgnoreCase: return "Regex_IgnoreCase";
-                default: throw new System.ArgumentException( );
-            }
-        }
-        public static SearchPathType Parse( string value ) {
-            switch ( value ) {
-                case "Disabled": return SearchPathType.Disabled;
-                case "Exact": return SearchPathType.Exact;
-                case "Partial": return SearchPathType.Partial;
-                case "Partial_IgnoreCase": return SearchPathType.Partial_IgnoreCase;
-                case "Regex": return SearchPathType.Regex;
-                case "Regex_IgnoreCase": return SearchPathType.Regex_IgnoreCase;
-                default: throw new System.ArgumentException( );
             }
         }
     }

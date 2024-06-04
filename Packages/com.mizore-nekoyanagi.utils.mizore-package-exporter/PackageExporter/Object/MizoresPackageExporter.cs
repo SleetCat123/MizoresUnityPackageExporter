@@ -133,12 +133,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #endregion
 
         #region BatchExport
-        // 互換性のためEnumもSerialize対象にしておく
-        public BatchExportMode batchExportMode;
-        [SerializeField]string s_batchExportMode;
-        // 互換性のためEnumもSerialize対象にしておく
-        public BatchExportFolderMode batchExportFolderMode;
-        [SerializeField]string s_batchExportFolderMode;
+        public BatchExportModeData batchExportMode;
+        public BatchExportFolderModeData batchExportFolderMode;
         public List<string> batchExportTexts = new List<string>();
         public ObjectRefElement batchExportFolderRoot;
         public ObjectRefElement batchExportListFile;
@@ -181,7 +177,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #if UNITY_EDITOR
             //ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
-            switch ( batchExportMode ) {
+            switch ( batchExportMode.value ) {
                 default:
                 case BatchExportMode.Single:
                     temp_batchExportKeys = new string[0];
@@ -204,7 +200,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         regex = new Regex( string.Empty );
                     }
                     IEnumerable<string> files;
-                    switch ( batchExportFolderMode ) {
+                    switch ( batchExportFolderMode.value ) {
                         default:
                         case BatchExportFolderMode.All:
                             files = Directory.GetFileSystemEntries( path );
@@ -357,7 +353,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     continue;
                 }
                 List<string> list;
-                switch ( v.mode ) {
+                switch ( v.mode.value ) {
                     default:
                     case ReferenceMode.Include:
                         list = referencePaths;
@@ -685,8 +681,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             s_variables = variables.Select( kvp => new DynamicPathVariable( kvp.Key, kvp.Value ) ).ToArray( );
             s_packageNameSettingsOverride = packageNameSettingsOverride.Select( kvp => new PackageNameSettingsKVP( kvp.Key, kvp.Value ) ).ToArray( );
             s_postProcessScriptFieldValues = postProcessScriptFieldValues.Select( kvp => new StringPair( kvp.Key, kvp.Value ) ).ToArray( );
-            s_batchExportMode = batchExportMode.GetString( );
-            s_batchExportFolderMode = batchExportFolderMode.GetString( );
         }
 
         public void OnAfterDeserialize( ) {
@@ -698,16 +692,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             if ( s_postProcessScriptFieldValues != null ) {
                 postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary( v => v.key, v => v.value );
-            }
-            if ( string.IsNullOrEmpty( s_batchExportMode ) ) {
-                // enumのstring保存が未実装なデータを読み込んだ場合のみ発生
-                // enumの順番が変わった場合はここで対応する
-            } else {
-                batchExportMode = BatchExportModeExtensions.Parse( s_batchExportMode );
-            }
-            if ( string.IsNullOrEmpty( s_batchExportFolderMode ) ) {
-            } else {
-                batchExportFolderMode = BatchExportFolderModeExtensions.Parse( s_batchExportFolderMode );
             }
         }
 

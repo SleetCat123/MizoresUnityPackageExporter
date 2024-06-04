@@ -20,16 +20,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             EditorGUI.indentLevel--;
             EditorGUI.showMixedValue = false;
             if ( EditorGUI.EndChangeCheck( ) ) {
-                var mode = t.batchExportMode;
                 foreach ( var item in targetlist ) {
-                    item.batchExportMode = mode;
+                    item.batchExportMode = t.batchExportMode.value;
                     item.UpdateBatchExportKeys( );
                     EditorUtility.SetDirty( item );
                 }
             }
 
             if ( samevalue_in_all_mode ) {
-                switch ( t.batchExportMode ) {
+                switch ( t.batchExportMode.value ) {
                     default:
                     case BatchExportMode.Single:
                         break;
@@ -141,9 +140,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
-                            var mode = t.batchExportFolderMode;
                             foreach ( var item in targetlist ) {
-                                item.batchExportFolderMode = mode;
+                                item.batchExportFolderMode = t.batchExportFolderMode.value;
                                 item.UpdateBatchExportKeys( );
                                 EditorUtility.SetDirty( item );
                             }

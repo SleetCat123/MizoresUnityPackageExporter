@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Linq;
-using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -28,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
 
             if ( same_versionSource_valueInAllObj ) {
-                switch ( s.versionSource ) {
+                switch ( s.versionSource.value ) {
                     case VersionSource.String: {
                         var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
                         EditorGUI.BeginChangeCheck( );
