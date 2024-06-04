@@ -131,18 +131,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 // プレビュー
                 for ( int j = 0; j < targetlist.Length; j++ ) {
                     var item = targetlist[j];
-                    var el = GetList( item )[i];
+                    var list = GetList( item );
+                    if ( list.Count <= i ) {
+                        continue;
+                    }
+                    var el = list[i];
                     el.exporter = item;
                     var preview = el.ConvertedPath;
                     EditorGUI.indentLevel += 2;
-                    if ( targetlist.Length > 1 ) {
+                    if ( multiple ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {
                             EditorGUILayout.ObjectField( item, typeof( MizoresPackageExporter ), false );
                         }
                         EditorGUI.indentLevel++;
                     }
                     EditorGUILayout.LabelField( new GUIContent( preview, preview ) );
-                    if ( targetlist.Length > 1 ) {
+                    if ( multiple ) {
                         EditorGUI.indentLevel--;
                     }
                     EditorGUI.indentLevel -= 2;
