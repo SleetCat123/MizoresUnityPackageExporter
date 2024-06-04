@@ -181,8 +181,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUI.indentLevel--;
                         }
                         EditorGUI.indentLevel -= 2;
-                        using ( new EditorGUI.DisabledGroupScope( true ) ) {
-                            EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
+                        if ( multiple ) {
+                            using ( new EditorGUI.DisabledGroupScope( true ) ) {
+                                EditorGUILayout.EnumPopup( item.excludes[i].searchType, GUILayout.Width( 140 ) );
+                            }
                         }
                         EditorGUILayout.EndHorizontal( );
                     }
