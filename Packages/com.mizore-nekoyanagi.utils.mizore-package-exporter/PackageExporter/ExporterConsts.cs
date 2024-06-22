@@ -1,7 +1,5 @@
-﻿namespace MizoreNekoyanagi.PublishUtil.PackageExporter
-{
-    public static class ExporterConsts
-    {
+﻿namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
+    public static class ExporterConsts {
         public const string ASSET_NAME = "MizoresPackageExporter";
         public const string EXPORT_FOLDER_PATH = "MizorePackageExporter/";
 
@@ -9,5 +7,8 @@
         public const string PATH_PREFIX_NOTFOUND = "[NOT]";
         public const string PATH_PREFIX_REFERENCED = "[REF]";
         public const string PATH_PREFIX_EXCLUDES = "[EXC]";
+        public const string PATH_PREFIX_POSTPROCESS = "[_PP]";
+
+        public static readonly string POSTPROCESS_BASECLASS_NAME = typeof(ExportPostProcess).Name;
     }
 }

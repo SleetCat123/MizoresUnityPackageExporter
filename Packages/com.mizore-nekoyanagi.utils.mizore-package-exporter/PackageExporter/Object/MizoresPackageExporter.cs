@@ -650,13 +650,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( type == null ) {
                 Debug.LogError( ExporterTexts.PostProcessScriptNotFound( p.postProcessScriptTypeName ) );
             } else {
-                if ( !type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
+                if ( !type.IsSubclassOf( typeof( ExportPostProcess ) ) ) {
                     Debug.LogError( ExporterTexts.PostProcessScriptNotImplement );
                     return;
                 }
                 var fields = type.GetFields( System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance );
                 // インスタンス化
-                var instance = System.Activator.CreateInstance( type ) as IExportPostProcess;
+                var instance = System.Activator.CreateInstance( type ) as ExportPostProcess;
                 // フィールドに値を設定
                 foreach ( var field in fields ) {
                     string valueStr;

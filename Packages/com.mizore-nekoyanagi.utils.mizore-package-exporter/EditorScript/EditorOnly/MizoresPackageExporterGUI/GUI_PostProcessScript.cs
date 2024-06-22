@@ -63,8 +63,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
         }
         static void UpdateScriptNameList( ) {
-            // IExportPostProcessを実装したcsファイルを探す
-            var scriptType = typeof( IExportPostProcess );
+            // ExportPostProcessを継承したcsファイルを探す
+            var scriptType = typeof( ExportPostProcess );
             scriptDataTable = new Dictionary<string, ScriptTypeData>( );
             var scripts = AssetDatabase.FindAssets( "t:Script" ).Select( v => AssetDatabase.LoadAssetAtPath<MonoScript>(  AssetDatabase.GUIDToAssetPath( v )));
             foreach ( var script in scripts ) {
@@ -73,7 +73,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 // IExportPostProcessを実装しているか
                 var type = script.GetClass( );
-                if ( type == null || !type.GetInterfaces( ).Contains( typeof( IExportPostProcess ) ) ) {
+                if ( type == null || !type.IsSubclassOf( scriptType ) ) {
                     continue;
                 }
                 scriptDataTable[type.FullName] = new ScriptTypeData {
@@ -119,7 +119,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( scriptDataTable.TryGetValue( t.postProcessScriptTypeName, out var scriptData ) ) {
                 // Fieldの初期値取得用にインスタンス化しておく
                 var postProcessScriptType = scriptData.type;
-                IExportPostProcess postProcessTemp = System.Activator.CreateInstance( postProcessScriptType ) as IExportPostProcess;
+                var postProcessTemp = System.Activator.CreateInstance( postProcessScriptType ) as ExportPostProcess;
                 typeName = postProcessScriptType.FullName;
                 fieldInfos = postProcessScriptType.GetFields( );
                 foreach ( var field in fieldInfos ) {
@@ -253,7 +253,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
                     EditorGUI.BeginChangeCheck( );
                     Rect fieldRect;
-                    value = FieldEditor.Field( field, value, valueOverrided, out fieldRect );
+                    value = FieldEditor.Field( field, value, valueOverrided, out fieldRect, targetlist );
                     if ( EditorGUI.EndChangeCheck( ) ) {
                         postProcessTempValues[fieldName] = value;
                         t.postProcessScriptFieldValues[fieldName] = ExporterUtils.ToJson( field.FieldType, value );

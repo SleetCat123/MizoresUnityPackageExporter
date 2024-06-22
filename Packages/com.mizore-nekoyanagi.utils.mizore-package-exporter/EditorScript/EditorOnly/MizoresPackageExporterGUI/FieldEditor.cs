@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class FieldEditor {
-        public static object Field( FieldInfo field, object value, bool edited, out Rect fieldRect ) {
+        public static object Field( FieldInfo field, object value, bool edited, out Rect fieldRect, MizoresPackageExporter[] targets ) {
             var space = field. GetCustomAttributes( typeof( SpaceAttribute ), true ).FirstOrDefault( ) as SpaceAttribute;
             if ( space != null ) {
                 EditorGUILayout.Space( );
@@ -33,9 +33,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 rangeAttribute = field.GetCustomAttributes( typeof( RangeAttribute ), false ).FirstOrDefault( ) as RangeAttribute;
             }
 
-            return Field( content, value, type, rangeAttribute, out fieldRect );
+            return Field( content, value, type, rangeAttribute, out fieldRect, targets );
         }
-        public static object Field( GUIContent content, object value, System.Type type, RangeAttribute rangeAttribute, out Rect fieldRect ) {
+        public static object Field( GUIContent content, object value, System.Type type, RangeAttribute rangeAttribute, out Rect fieldRect, MizoresPackageExporter[] targets ) {
             EditorGUI.BeginChangeCheck( );
             if ( type == typeof( string ) ) {
                 value = EditorGUILayout.TextField( content, ( string )value );
@@ -97,7 +97,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.indentLevel++;
                         Rect dummy;
-                        var v = Field(new GUIContent(i.ToString()), array.GetValue( i ),elementType, rangeAttribute, out dummy);
+                        var v = Field(new GUIContent(i.ToString()), array.GetValue( i ),elementType, rangeAttribute, out dummy, targets);
                         EditorGUI.indentLevel--;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             array.SetValue( v, i );
@@ -144,41 +144,50 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             } else if ( type.IsGenericType && type.GetGenericTypeDefinition( ) == typeof( System.Collections.Generic.List<> ) ) {
                 fieldRect = EditorGUILayout.GetControlRect( );
                 EditorGUI.LabelField( fieldRect, content, EditorStyles.boldLabel );
-                var list = value as System.Collections.IList;
-                var elementType = type.GetGenericArguments( )[0];
-                for ( int i = 0; i < list.Count; i++ ) {
-                    using ( new EditorGUILayout.HorizontalScope( ) ) {
-                        EditorGUI.BeginChangeCheck( );
-                        EditorGUI.indentLevel++;
-                        Rect dummy;
-                        var v = Field(new GUIContent(i.ToString()), list[i], elementType, rangeAttribute, out dummy);
-                        EditorGUI.indentLevel--;
-                        if ( EditorGUI.EndChangeCheck( ) ) {
-                            list[i] = v;
-                            GUI.changed = true;
-                        }
+                var listType = type.GenericTypeArguments[0];
+                if ( typeof( ObjectRefElement ).IsAssignableFrom( listType ) ) {
+                    EditorGUI.indentLevel--;
+                    var list = (value as System.Collections.IList).Cast<ObjectRefElement>( ).ToList( );
+                    GUIElement_PackagePrefsElementList<Object, ObjectRefElement>.Draw( targets, ( t ) => list );
+                    value = list;
+                    EditorGUI.indentLevel++;
+                } else {
+                    var list = value as System.Collections.IList;
+                    var elementType = type.GetGenericArguments( )[0];
+                    for ( int i = 0; i < list.Count; i++ ) {
+                        using ( new EditorGUILayout.HorizontalScope( ) ) {
+                            EditorGUI.BeginChangeCheck( );
+                            EditorGUI.indentLevel++;
+                            Rect dummy;
+                            var v = Field(new GUIContent(i.ToString()), list[i], elementType, rangeAttribute, out dummy, targets);
+                            EditorGUI.indentLevel--;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                list[i] = v;
+                                GUI.changed = true;
+                            }
 
-                        int index_after = GUIElement_Utils.UpDownButton( i, list.Count );
-                        if ( i != index_after ) {
-                            list.Swap( i, index_after );
-                            GUI.changed = true;
-                        }
-                        EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
-                        if ( GUILayout.Button( "-", GUILayout.Width( 20 ) ) ) {
-                            list.RemoveAt( i );
-                            GUI.changed = true;
-                            i--;
+                            int index_after = GUIElement_Utils.UpDownButton( i, list.Count );
+                            if ( i != index_after ) {
+                                list.Swap( i, index_after );
+                                GUI.changed = true;
+                            }
+                            EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                            if ( GUILayout.Button( "-", GUILayout.Width( 20 ) ) ) {
+                                list.RemoveAt( i );
+                                GUI.changed = true;
+                                i--;
+                            }
                         }
                     }
-                }
-                EditorGUI.indentLevel++;
-                var rect = EditorGUILayout.GetControlRect( GUILayout.Width( 20 ) );
-                rect = EditorGUI.IndentedRect( rect );
-                rect.width = 20;
-                EditorGUI.indentLevel--;
-                if ( GUI.Button( rect, "+" ) ) {
-                    list.Add( list[list.Count - 1] );
-                    GUI.changed = true;
+                    EditorGUI.indentLevel++;
+                    var rect = EditorGUILayout.GetControlRect( GUILayout.Width( 20 ) );
+                    rect = EditorGUI.IndentedRect( rect );
+                    rect.width = 20;
+                    EditorGUI.indentLevel--;
+                    if ( GUI.Button( rect, "+" ) ) {
+                        list.Add( list[list.Count - 1] );
+                        GUI.changed = true;
+                    }
                 }
             } else {
                 EditorGUILayout.LabelField( content, new GUIContent( "Unsupported Type: " + type ) );

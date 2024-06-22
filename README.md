@@ -186,7 +186,7 @@ unitypackageの名前はMizoresPackageExporterのファイル名が使用され�
 MizoresPackageExporter上で上級者向け機能を有効化することで使用できる機能です。
 ### ◇Post Process Script
 unitypackageのエクスポート後に追加でスクリプトを実行できる機能です。  
-IExportPostProcessを継承したスクリプトを作成し、MizoresPackageExporter上で指定することで使用できます。  
+ExportPostProcessを継承したスクリプトを作成し、MizoresPackageExporter上で指定することで使用できます。  
 
 **注：スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。**
 

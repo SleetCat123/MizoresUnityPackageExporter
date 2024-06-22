@@ -4,10 +4,6 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 #if UNITY_EDITOR
     public class GUI_Objects {
-        GUIElement_PackagePrefsElementList<Object, ExportTargetObjectElement> list;
-        public GUI_Objects( ) {
-            list = new GUIElement_PackagePrefsElementList<Object, ExportTargetObjectElement>( t => t.objects );
-        }
         public void Draw( MizoresPackageExporterEditor ed, MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
             MinMax objects_count = MinMax.Create( targetlist, v => v.objects.Count );
             if ( CustomFoldout.EditorPrefFoldout(
@@ -19,7 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     onRightClick = ( ) => GUIElement_CopyPasteList.OnRightClickFoldout( targetlist, ExporterTexts.FoldoutObjects, ( ex ) => ex.objects, ( ex, list ) => ex.objects = list )
                 }
                 ) ) {
-                list.Draw( t, targetlist );
+                GUIElement_PackagePrefsElementList<Object, ExportTargetObjectElement>.Draw( targetlist, v => v.objects );
             }
         }
 

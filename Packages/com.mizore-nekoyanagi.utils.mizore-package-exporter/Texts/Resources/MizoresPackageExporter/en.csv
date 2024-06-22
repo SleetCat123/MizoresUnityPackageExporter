@@ -106,7 +106,7 @@ UseRelativePath,Use relative path as default
 
 AdvancedMode,Advanced
 UsePostProcessScript,Use Post Process Script
-UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from IExportPostProcess to be executed after exporting the unitypackage.\n\nWarning: Please make sure that the scripts are reliable and use them at your own risk.\n\nDo you want to activate it?
+UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from {0} to be executed after exporting the unitypackage.\n\nWarning: Please make sure that the scripts are reliable and use them at your own risk.\n\nDo you want to activate it?
 FoldoutPostProcessScript,[Advanced] Post Process Script
 PostProcessScript,Script
 PostProcessScriptFields,Fields

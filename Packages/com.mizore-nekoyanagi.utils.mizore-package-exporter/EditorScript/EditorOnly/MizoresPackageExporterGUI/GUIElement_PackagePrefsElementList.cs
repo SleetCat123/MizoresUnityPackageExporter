@@ -2,25 +2,18 @@
 using UnityEngine;
 using static MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterUtils;
 using System.Linq;
-using System.Runtime.InteropServices;
-
 
 #if UNITY_EDITOR
 using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
-    public class GUIElement_PackagePrefsElementList<T, TElement> where T : Object where TElement : ObjectRefElement, new() {
-        System.Func<MizoresPackageExporter, List<TElement>> getList;
+    public static class GUIElement_PackagePrefsElementList<TAsset, TElement> where TAsset : Object where TElement : ObjectRefElement, new() {
 
-        public GUIElement_PackagePrefsElementList( System.Func<MizoresPackageExporter, List<TElement>> getList ) {
-            this.getList = getList;
-        }
+        public delegate List<TElement> GetListDelegate( MizoresPackageExporter t );
 
-        public List<TElement> GetList( MizoresPackageExporter t ) {
-            return getList( t );
-        }
-
-        public void Draw( MizoresPackageExporter t, MizoresPackageExporter[] targetlist ) {
+        public static void Draw( MizoresPackageExporter[] targetlist, GetListDelegate GetList ) {
+            var t = targetlist[0];
+            var tList = GetList( t );
             VerticalBoxScope.BeginVerticalBox( );
             MinMax objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
             bool multiple = targetlist.Length > 1;
@@ -30,12 +23,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 bool samevalue_in_all = true;
                 if ( multiple ) {
                     samevalue_in_all = i < objects_count.min && targetlist.All( v => {
-                        var el1 = GetList( t )[i];
+                        var el1 = tList[i];
                         el1.exporter = t;
                         var el2 = GetList( v )[i];
                         el2.exporter = v;
                         return el1.Object == el2.Object;
-                        } );
+                    } );
                 }
 
                 EditorGUI.indentLevel++;
@@ -51,11 +44,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.BeginChangeCheck( );
                 ObjectRefElement element;
                 if ( samevalue_in_all ) {
-                    element = GetList( t )[i];
+                    element = tList[i];
                 } else {
                     element = new ObjectRefElement( );
                 }
-                bool browse = PackagePrefsElementInspector.Draw<T>( t, element );
+                bool browse = PackagePrefsElementInspector.Draw<TAsset>( t, element );
                 EditorGUI.showMixedValue = false;
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     var path = element.Path;
@@ -109,20 +102,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.indentLevel += 2;
                         var samevalue_searchReference = true;
                         if ( multiple ) {
-                            samevalue_searchReference = i < objects_count.min && targetlist.All( v => t.objects[i].searchReference == v.objects[i].searchReference );
+                            samevalue_searchReference = i < objects_count.min && targetlist.All( v => ( tList[i] as ExportTargetObjectElement ).searchReference == ( GetList( v )[i] as ExportTargetObjectElement ).searchReference );
                         }
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.showMixedValue = !samevalue_searchReference;
                         var content = new GUIContent( ExporterTexts.SearchReference, ExporterTexts.SearchReferenceTooltip );
-                        bool searchReference = EditorGUILayout.Toggle(content, t.objects[i].searchReference );
+                        bool searchReference = EditorGUILayout.Toggle(content, ( tList[i] as ExportTargetObjectElement ).searchReference );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             foreach ( var item in targetlist ) {
-                                ExporterUtils.ResizeList( item.objects, Mathf.Max( i + 1, item.objects.Count ), ( ) => new ExportTargetObjectElement( ) );
-                                item.objects[i].searchReference = searchReference;
+                                ExporterUtils.ResizeList( tList, Mathf.Max( i + 1, tList.Count ), ( ) => new TElement( ) );
+                                ( tList[i] as ExportTargetObjectElement ).searchReference = searchReference;
                                 EditorUtility.SetDirty( item );
                             }
-                            objects_count = MinMax.Create( targetlist, v => v.objects.Count );
+                            objects_count = MinMax.Create( targetlist, v => tList.Count );
                         }
                         EditorGUI.indentLevel -= 2;
                     }

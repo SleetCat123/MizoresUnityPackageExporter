@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace MizoreNekoyanagi.Private.ExportPackage {
-    public class PackagingAvatar : IExportPostProcess {
+    public class PackagingAvatar : ExportPostProcess {
         [Tooltip( "エクスポート対象のfbxファイルをfbxフォルダにコピーするか" )]
         public bool copyFbx = true;
 
@@ -17,8 +17,11 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
         public string zipFolderName = "_zip";
 
         [Space]
-        public List<string> copyFolders = new List<string>{"./../_common","./_release"};
-        public void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
+        public List<ObjectRefElement> copyFolders = new List<ObjectRefElement>{
+            new ObjectRefElement( "./../_common"),
+            new ObjectRefElement( "./_release"),
+            };
+        public override void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
             var paths = list.paths;
 
             Debug.Log( "!!! OnExported: " + packagePath );
@@ -64,25 +67,23 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
 
             var packageExporterFolder = packageExporter.GetDirectoryPath( );
             foreach ( var copyFolder in copyFolders ) {
-                if ( string.IsNullOrWhiteSpace( copyFolder ) ) {
+                copyFolder.exporter = packageExporter;
+                var copyFolderPath = copyFolder.ConvertedPath;
+                if ( string.IsNullOrWhiteSpace( copyFolderPath ) ) {
                     continue;
                 }
                 // 指定されたフォルダの中身をコピー
-                string copyFolderActualPath = packageExporter.ConvertDynamicPath( copyFolder );
-                if ( PathUtils.IsRelativePath( copyFolderActualPath ) ) {
-                    copyFolderActualPath = PathUtils.GetProjectAbsolutePath( packageExporterFolder, copyFolderActualPath );
-                }
-                if ( Directory.Exists( copyFolderActualPath ) ) {
-                    Debug.Log( "Copy Folder: " + copyFolderActualPath );
-                    logs.Add( "Copy Folder: " + copyFolderActualPath );
-                    var files = Directory.GetFiles( copyFolderActualPath, "*", SearchOption.AllDirectories );
+                if ( Directory.Exists( copyFolderPath ) ) {
+                    Debug.Log( "Copy Folder: " + copyFolderPath );
+                    logs.Add( "Copy Folder: " + copyFolderPath );
+                    var files = Directory.GetFiles( copyFolderPath, "*", SearchOption.AllDirectories );
                     foreach ( var file in files ) {
                         // .metaファイルはコピーしない
                         if ( Path.GetExtension( file ) == ".meta" ) {
                             continue;
                         }
                         // フォルダ構造を維持してコピー
-                        var relativePath = file.Substring( copyFolderActualPath.Length + 1 );
+                        var relativePath = file.Substring( copyFolderPath.Length + 1 );
                         var destPath = Path.Combine( folderPath, relativePath );
                         Directory.CreateDirectory( Path.GetDirectoryName( destPath ) );
                         File.Copy( file, destPath );

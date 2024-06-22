@@ -162,7 +162,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string AdvancedMode => Get( "AdvancedMode" );
 
         public static string UsePostProcessScript => Get( "UsePostProcessScript" );
-        public static string UsePostProcessScriptConfirm => Get( "UsePostProcessScriptConfirm" );
+        public static string UsePostProcessScriptConfirm => Get( "UsePostProcessScriptConfirm", ExporterConsts.POSTPROCESS_BASECLASS_NAME );
         public static string PostProcessScript => Get( "PostProcessScript" );
         public static string PostProcessScriptPopupNotFound( string name ) => string.Format( Get( "PostProcessScriptPopupNotFound" ), name );
 
