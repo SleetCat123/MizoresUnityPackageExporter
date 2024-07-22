@@ -22,5 +22,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public IEnumerable<string> paths;
         public IEnumerable<string> excludePaths;
         public Dictionary<string, HashSet<string>> referencedPaths;
+        public IEnumerable<PostProcessFileListElement> postprocessPaths;
     }
 }

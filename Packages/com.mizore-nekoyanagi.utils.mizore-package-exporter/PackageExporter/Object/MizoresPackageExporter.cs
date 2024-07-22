@@ -394,6 +394,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 for ( int i = 0; i < maxCount; i++ ) {
                     temp_batchExportCurrentKey = texts[i];
                     string path = GetExportPath( );
+                    ExporterUtils.DebugLog( path );
                     if ( filter != null && !filter.Contains( path ) ) {
                         continue;
                     }
@@ -516,11 +517,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 ExporterUtils.DebugLog( ExporterTexts.ExcludesWereEmpty );
             }
 
-            callback?.Invoke( new FilePathList( ) {
+            var filePathList = new FilePathList( ) {
                 paths = result_enumerable,
                 excludePaths = excludeResults,
-                referencedPaths = referencesResults
-            } );
+                referencedPaths = referencesResults,
+            };
+
+            // PostProcessScriptによるパスの追加
+            var instanceData = ExportPostProcessUtils.CreateInstance( this );
+            if ( instanceData != null ) {
+                var postprocessPaths = instanceData.instance.GetPathList( this, filePathList );
+                if ( postprocessPaths != null ) {
+                    filePathList.postprocessPaths = postprocessPaths;
+                }
+            }
+
+            callback?.Invoke( filePathList );
 #else
             callback?.Invoke( new FilePathList( ) );
 #endif
@@ -639,41 +651,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public static void CallPostProcessScript( MizoresPackageExporter p, string exportPath, FilePathList list, ExporterEditorLogs logs ) {
 #if UNITY_EDITOR
-            if ( !ExporterEditorPrefs.UsePostProcessScript ) {
+            var instanceData = ExportPostProcessUtils.CreateInstance( p );
+            if ( instanceData == null ) {
                 return;
             }
-            if ( string.IsNullOrEmpty( p.postProcessScriptTypeName ) ) {
-                return;
-            }
-            // 後処理スクリプトを実行
-            var type = System.Type.GetType( p.postProcessScriptTypeName );
-            if ( type == null ) {
-                Debug.LogError( ExporterTexts.PostProcessScriptNotFound( p.postProcessScriptTypeName ) );
-            } else {
-                if ( !type.IsSubclassOf( typeof( ExportPostProcess ) ) ) {
-                    Debug.LogError( ExporterTexts.PostProcessScriptNotImplement );
-                    return;
-                }
-                var fields = type.GetFields( System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance );
-                // インスタンス化
-                var instance = System.Activator.CreateInstance( type ) as ExportPostProcess;
-                // フィールドに値を設定
-                foreach ( var field in fields ) {
-                    string valueStr;
-                    if ( p.postProcessScriptFieldValues.TryGetValue( field.Name, out valueStr ) ) {
-                        Debug.Log( $"Set field value: {field.Name} = {valueStr} ({field.FieldType})" );
-                        object value;
-                        if ( ExporterUtils.FromJson( valueStr, field.FieldType, out value ) ) {
-                            field.SetValue( instance, value );
-                        }
-                    }
-                }
-                Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
-                logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
-                instance.OnExported( p, exportPath, list, logs );
-                Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
-                logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
-            }
+            var type = instanceData.type;
+            var instance = instanceData.instance;
+            var fields = instanceData.fields;
+            Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
+            logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
+            instance.OnExported( p, exportPath, list, logs );
+            Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
+            logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
 #endif
         }
 

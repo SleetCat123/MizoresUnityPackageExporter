@@ -25,6 +25,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                 for ( int i = 0; i < exporters.Length; i++ ) {
                     var item = exporters[i];
                     MizoresPackageExporter.LockEditor = true;
+                    ExporterUtils.DebugLog( item.name );
                     Dictionary<string, FilePathList> table = null;
                     await item.GetAllPath_Batch( filter, ( t, max, currentPath, finished ) => {
                         var text = ExporterTexts.ProgressBarInfo_CreateFileList( item.name, currentPath );
@@ -34,9 +35,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                             table = t;
                         }
                     } );
+                    ExporterUtils.DebugLog( "GetAllPath_Batch finished" );
                     foreach ( var kvp in table ) {
                         await Task.Delay( 1 );
                         string exportPath = kvp.Key;
+                        var list = kvp.Value;
                         if ( root.Contains( exportPath ) ) {
                             Debug.Log( "skip: " + exportPath );
                             //_action?.filelist_postprocessing?.Invoke( item, i );
@@ -44,7 +47,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                         }
                         packages.Add( exportPath );
                         ExporterUtils.DebugLog( exportPath );
-                        var list = kvp.Value;
 
                         FileListNode node = new FileListNode( );
                         node.AddOrGetCategoryNode( NodeType.Default );
@@ -56,6 +58,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
                         var referencedPaths = list.referencedPaths;
                         foreach ( var path in list.excludePaths ) {
+                            // 除外リストにあるものは参照リストから削除
                             referencedPaths.Remove( path );
                         }
                         foreach ( var refkvp in referencedPaths ) {
@@ -67,12 +70,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                         foreach ( var path in list.excludePaths ) {
                             node.Add( path, NodeType.Excludes );
                         }
+                        if ( list.postprocessPaths != null ) {
+                            foreach ( var element in list.postprocessPaths ) {
+                                if ( element == null ) {
+                                    continue;
+                                }
+                                if ( string.IsNullOrEmpty( element.path ) ) {
+                                    continue;
+                                }
+                                node.Add( element.path, NodeType.PostProcess, element.args );
+                            }
+                        }
+
                         node.id = exportPath;
                         node.path = exportPath;
                         root.Add( node );
                     }
                 }
                 callback?.Invoke( new FileListData( root, packages ) );
+            } catch ( Exception e ) {
+                Debug.LogError( e );
             } finally {
                 MizoresPackageExporter.LockEditor = false;
                 EditorUtility.ClearProgressBar( );

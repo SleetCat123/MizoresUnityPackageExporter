@@ -17,10 +17,43 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
         public string zipFolderName = "_zip";
 
         [Space]
-        public List<ObjectRefElement> copyFolders = new List<ObjectRefElement>{
+        public List<ObjectRefElement> copyPaths = new List<ObjectRefElement>{
             new ObjectRefElement( "./../_common"),
             new ObjectRefElement( "./_release"),
             };
+        public override List<PostProcessFileListElement> GetPathList( MizoresPackageExporter packageExporter, FilePathList list ) {
+            var result = new List<PostProcessFileListElement>( );
+            foreach ( var copyPath in copyPaths ) {
+                if ( copyPath == null ) {
+                    continue;
+                }
+                copyPath.exporter = packageExporter;
+                var convertedPath = copyPath.ConvertedPath;
+                if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
+                    continue;
+                }
+                if ( File.Exists( convertedPath ) ) {
+                    result.Add( new PostProcessFileListElement( convertedPath ) );
+                } else if ( Directory.Exists( convertedPath ) ) {
+                    var files = Directory.GetFiles( convertedPath, "*", SearchOption.AllDirectories );
+                    foreach ( var file in files ) {
+                        // .metaファイルはコピーしない
+                        if ( Path.GetExtension( file ) == ".meta" ) {
+                            continue;
+                        }
+                        result.Add( new PostProcessFileListElement( file ) );
+                    }
+                }
+            }
+            var paths = list.paths;
+            if ( copyFbx ) {
+                var fbxFiles = paths.Where( v => Path.GetExtension( v ) == ".fbx" );
+                foreach ( var fbx in fbxFiles ) {
+                    result.Add( new PostProcessFileListElement( fbx ) );
+                }
+            }
+            return result;
+        }
         public override void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
             var paths = list.paths;
 
@@ -65,25 +98,30 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                 }
             }
 
-            var packageExporterFolder = packageExporter.GetDirectoryPath( );
-            foreach ( var copyFolder in copyFolders ) {
-                copyFolder.exporter = packageExporter;
-                var copyFolderPath = copyFolder.ConvertedPath;
-                if ( string.IsNullOrWhiteSpace( copyFolderPath ) ) {
+            foreach ( var copyPath in copyPaths ) {
+                var convertedPath = copyPath.ConvertedPath;
+                if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
                     continue;
                 }
-                // 指定されたフォルダの中身をコピー
-                if ( Directory.Exists( copyFolderPath ) ) {
-                    Debug.Log( "Copy Folder: " + copyFolderPath );
-                    logs.Add( "Copy Folder: " + copyFolderPath );
-                    var files = Directory.GetFiles( copyFolderPath, "*", SearchOption.AllDirectories );
+                copyPath.exporter = packageExporter;
+                if ( File.Exists( convertedPath ) ) {
+                    // ファイルの場合はコピー
+                    Debug.Log( "Copy File: " + convertedPath );
+                    logs.Add( "Copy File: " + convertedPath );
+                    var destPath = Path.Combine( folderPath, Path.GetFileName( convertedPath ) );
+                    File.Copy( convertedPath, destPath );
+                } else if ( Directory.Exists( convertedPath ) ) {
+                    // 指定されたフォルダの中身をコピー
+                    Debug.Log( "Copy Folder: " + convertedPath );
+                    logs.Add( "Copy Folder: " + convertedPath );
+                    var files = Directory.GetFiles( convertedPath, "*", SearchOption.AllDirectories );
                     foreach ( var file in files ) {
                         // .metaファイルはコピーしない
                         if ( Path.GetExtension( file ) == ".meta" ) {
                             continue;
                         }
                         // フォルダ構造を維持してコピー
-                        var relativePath = file.Substring( copyFolderPath.Length + 1 );
+                        var relativePath = file.Substring( convertedPath.Length + 1 );
                         var destPath = Path.Combine( folderPath, relativePath );
                         Directory.CreateDirectory( Path.GetDirectoryName( destPath ) );
                         File.Copy( file, destPath );

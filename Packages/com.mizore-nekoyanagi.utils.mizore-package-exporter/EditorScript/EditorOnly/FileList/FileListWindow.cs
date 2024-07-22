@@ -27,11 +27,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             window._targets = targets;
             window._logs = logs;
             FileListData data = null;
+            ExporterUtils.DebugLog("CreateFileList");
             await CreateFileList.Create( targets, filter, (d) => data = d );
+            ExporterUtils.DebugLog("FileListCreated");
             window.InitTreeView( data );
             window.ShowAuxWindow( );
         }
         void InitTreeView( FileListData data ) {
+            ExporterUtils.DebugLog("InitTreeView");
             _treeViewState = new TreeViewState( );
             _treeView = new FileListTreeView( _treeViewState, data.rootNode );
             exportPaths = data.packages;

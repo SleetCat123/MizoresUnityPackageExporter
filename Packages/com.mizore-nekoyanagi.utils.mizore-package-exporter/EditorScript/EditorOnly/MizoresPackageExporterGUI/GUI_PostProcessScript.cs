@@ -176,6 +176,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             bool multiple = targetlist.Length > 1;
             // PostProcessScript
             var sameValuePostProcess = targetlist.All( v => v.postProcessScriptTypeName == t.postProcessScriptTypeName );
+            EditorGUILayout.HelpBox( ExporterTexts.PostProcessScriptHelp, MessageType.Info );
             using ( new EditorGUILayout.HorizontalScope( ) ) {
                 if ( !sameValuePostProcess ) {
                     ExporterUtils.DiffLabel( );

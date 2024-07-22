@@ -1,7 +1,4 @@
-﻿#if UNITY_EDITOR
-#endif
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public abstract class ExportPostProcess {

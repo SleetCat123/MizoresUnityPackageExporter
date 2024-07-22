@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
     public enum NodeType {
-        Default, NotFound, Excludes, References
+        Default, NotFound, Excludes, References, PostProcess
     }
     public class FileListNode {
         public FileListNode parent;
@@ -31,6 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             string prefix;
             switch ( type ) {
                 default:
+                    throw new NotImplementedException( );
                 case NodeType.Default:
                     prefix = ExporterConsts.PATH_PREFIX_EXPORT;
                     break;
@@ -42,6 +43,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                     break;
                 case NodeType.Excludes:
                     prefix = ExporterConsts.PATH_PREFIX_EXCLUDES;
+                    break;
+                case NodeType.PostProcess:
+                    prefix = ExporterConsts.PATH_PREFIX_POSTPROCESS;
                     break;
             }
             FileListNode categoryNode;
