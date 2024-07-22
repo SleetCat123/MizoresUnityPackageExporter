@@ -52,7 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     EditorGUI.indentLevel--;
 
                     EditorGUI.BeginChangeCheck( );
-                    Rect textrect = EditorGUILayout.GetControlRect( );
+                    Rect textrect = EditorGUILayout.GetControlRect( GUILayout.MinWidth( 30 ) );
                     string path;
                     if ( samevalue_in_all_value ) {
                         path = EditorGUI.TextField( textrect, t.excludes[i].value );
@@ -148,7 +148,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorUtility.SetDirty( item );
                         }
                     }
-                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                    EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 3 ) );
                     if ( GUIElement_Utils.MinusButton( ) ) {
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );

@@ -78,7 +78,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorUtility.SetDirty( item );
                     }
                 }
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 3 ) );
                 if ( GUIElement_Utils.MinusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         ExporterUtils.ResizeList( GetList( item ), Mathf.Max( i + 1, GetList( item ).Count ), ( ) => new TElement( ) );

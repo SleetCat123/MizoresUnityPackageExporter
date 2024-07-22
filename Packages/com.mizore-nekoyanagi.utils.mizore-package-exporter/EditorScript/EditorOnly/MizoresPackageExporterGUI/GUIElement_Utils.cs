@@ -22,18 +22,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             bool browse = false;
             bool folder = false;
+            float minWidth = 25;
             float width = 30;
             float height = 20;
             if ( browseType.HasFlag( BrowseType.Folder ) ) {
                 var folderContent = new GUIContent( IconCache.FolderIcon, ExporterTexts.ButtonFolder );
-                if ( GUILayout.Button( folderContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
+                if ( GUILayout.Button( folderContent, GUILayout.MinWidth( minWidth ), GUILayout.MaxWidth( width ), GUILayout.Height( height ) ) ) {
                     browse = true;
                     folder = true;
                 }
             }
             if ( browseType.HasFlag( BrowseType.File ) ) {
                 var fileContent = new GUIContent( IconCache.FileIcon, ExporterTexts.ButtonFile );
-                if ( GUILayout.Button( fileContent, GUILayout.Width( width ), GUILayout.Height( height ) ) ) {
+                if ( GUILayout.Button( fileContent, GUILayout.MinWidth( minWidth ), GUILayout.MaxWidth( width ), GUILayout.Height( height ) ) ) {
                     browse = true;
                     folder = false;
                 }

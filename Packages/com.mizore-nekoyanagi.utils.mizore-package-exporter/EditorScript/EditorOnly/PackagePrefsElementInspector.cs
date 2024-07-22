@@ -10,7 +10,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             element.exporter = t;
             EditorGUILayout.BeginHorizontal( );
 
-            Rect textrect = EditorGUILayout.GetControlRect( );
+            Rect textrect = EditorGUILayout.GetControlRect( GUILayout.MinWidth( 30 ) );
             string path = element.Path;
             string prevPath = path;
             // 右クリックメニュー
@@ -52,7 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             EditorGUI.BeginChangeCheck( );
-            var obj = EditorGUILayout.ObjectField( element.Object, typeof( T ), false );
+            var obj = EditorGUILayout.ObjectField( element.Object, typeof( T ), false, GUILayout.MinWidth( 30 ), GUILayout.MaxWidth( 100 ) );
             if ( EditorGUI.EndChangeCheck( ) ) {
                 element.exporter = t;
                 element.SetObject( obj );

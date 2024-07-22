@@ -46,7 +46,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         var el2 = v.references[i].element;
                         el2.exporter = v;
                         return el1.Object == el2.Object;
-                        } );
+                    } );
                 }
 
                 EditorGUI.indentLevel++;
@@ -95,7 +95,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 EditorGUI.showMixedValue = !samevalue_in_all_mode;
                 EditorGUI.BeginChangeCheck( );
-                referenceMode = ( ReferenceMode )EditorGUILayout.EnumPopup( referenceMode, GUILayout.Width( 80 ) );
+                referenceMode = ( ReferenceMode )EditorGUILayout.EnumPopup( referenceMode, GUILayout.MinWidth( 50 ), GUILayout.MaxWidth( 80 ) );
                 EditorGUI.showMixedValue = false;
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     foreach ( var item in targetlist ) {
@@ -120,7 +120,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorUtility.SetDirty( item );
                     }
                 }
-                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 10 ) );
+                EditorGUILayout.LabelField( string.Empty, GUILayout.Width( 3 ) );
                 if ( GUIElement_Utils.MinusButton( ) ) {
                     foreach ( var item in targetlist ) {
                         var refs = item.references;
