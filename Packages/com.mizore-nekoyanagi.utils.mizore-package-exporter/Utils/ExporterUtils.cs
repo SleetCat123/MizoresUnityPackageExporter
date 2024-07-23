@@ -78,8 +78,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 Where( v => EditorUtility.IsPersistent( v ) ).
                 Select( v => {
                     var r = new TElement( );
-                    r.exporter = item;
-                    r.SetObject( v );
+                    r.SetObject( item, v );
                     return r;
                 });
                 getList( item ).AddRange( add );

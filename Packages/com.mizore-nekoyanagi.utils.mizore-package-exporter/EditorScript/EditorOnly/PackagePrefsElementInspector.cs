@@ -7,7 +7,6 @@ using UnityEngine;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public static class PackagePrefsElementInspector {
         public static bool Draw<T>( MizoresPackageExporter t, ObjectRefElement element ) where T : Object {
-            element.exporter = t;
             EditorGUILayout.BeginHorizontal( );
 
             Rect textrect = EditorGUILayout.GetControlRect( GUILayout.MinWidth( 30 ) );
@@ -52,11 +51,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             EditorGUI.BeginChangeCheck( );
-            var obj = element.GetObject( );
+            var obj = element.GetObject( t );
             obj = EditorGUILayout.ObjectField( obj, typeof( T ), false, GUILayout.MinWidth( 30 ), GUILayout.MaxWidth( 100 ) );
             if ( EditorGUI.EndChangeCheck( ) ) {
-                element.exporter = t;
-                element.SetObject( obj );
+                element.SetObject( t, obj );
             }
 
             GUIElement_Utils.BrowseType browseType;

@@ -170,11 +170,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     break;
                 case BatchExportMode.Folders:
                     string path;
-                    if ( batchExportFolderRoot == null || batchExportFolderRoot.GetObject( string.Empty ) == null ) {
+                    if ( batchExportFolderRoot == null || batchExportFolderRoot.GetObject( this, string.Empty ) == null ) {
                         // Objectが空ならExporterの場所をルートにする
                         path = GetDirectoryPath( );
                     } else {
-                        path = AssetDatabase.GetAssetPath( batchExportFolderRoot.GetObject( string.Empty ) );
+                        path = AssetDatabase.GetAssetPath( batchExportFolderRoot.GetObject( this, string.Empty ) );
                     }
                     Regex regex;
                     try {
@@ -200,12 +200,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     temp_batchExportKeys = files.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.ListFile:
-                    if ( batchExportFolderRoot == null || batchExportFolderRoot.GetObject( string.Empty ) == null ) {
+                    if ( batchExportFolderRoot == null || batchExportFolderRoot.GetObject( this, string.Empty ) == null ) {
                         temp_batchExportKeys = new string[0];
                         break;
                     }
                     var list = new List<string>( );
-                    var file = batchExportListFile.GetObject( string.Empty ) as TextAsset;
+                    var file = batchExportListFile.GetObject( this, string.Empty ) as TextAsset;
                     if ( file != null ) {
                         using ( var reader = new StringReader( file.text ) ) {
                             while ( reader.Peek( ) > -1 ) {
@@ -320,8 +320,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             List<string> referencePaths = new List<string>( );
             List<string> excludeReferences = new List<string>( );
             foreach ( var v in references ) {
-                v.element.exporter = this;
-                var path = v.element.GetConvertedPath(batchExportKey);
+                var path = v.element.GetConvertedPath(this, batchExportKey);
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
@@ -396,8 +395,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
             List<FilePath> list = new List<FilePath>();
             foreach ( var v in objects ) {
-                v.exporter = this;
-                var path = v.GetConvertedPath( batchExportKey );
+                var path = v.GetConvertedPath( this, batchExportKey );
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
@@ -433,11 +431,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // 除外指定ファイル・フォルダの検索用
             List< SearchPath> excludeSearchPaths = new List<SearchPath>( );
             foreach ( var v in excludeObjects ) {
-                v.exporter = this;
-                if ( v == null || v.GetObject( batchExportKey ) == null ) {
+                if ( v == null || v.GetObject( this, batchExportKey ) == null ) {
                     continue;
                 }
-                excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, v.GetConvertedPath( batchExportKey ) ) );
+                excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, v.GetConvertedPath( this, batchExportKey ) ) );
             }
             foreach ( var v in excludes ) {
                 excludeSearchPaths.Add( new SearchPath( v.searchType, ConvertDynamicPath( v.value, batchExportKey ) ) );
@@ -527,6 +524,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             Debug.Log( "Export Target: \n" + string.Join( "\n", result_enumerable ) );
 
             var filePathList = new FilePathList( ) {
+                batchExportKey = batchExportKey,
                 paths = result_enumerable,
                 excludePaths = excludeResults,
                 referencedPaths = referencesResults,
@@ -535,7 +533,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             // PostProcessScriptによるパスの追加
             var instanceData = ExportPostProcessUtils.CreateInstance( this );
             if ( instanceData != null ) {
-                var postprocessPaths = instanceData.instance.GetPathList( this, batchExportKey, filePathList );
+                var postprocessPaths = instanceData.instance.GetPathList( this, filePathList );
                 if ( postprocessPaths != null ) {
                     filePathList.postprocessPaths = postprocessPaths;
                 }
@@ -642,21 +640,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 } );
                 foreach ( var kvp in table ) {
                     string exportPath = kvp.Key;
+                    var list = kvp.Value;
                     if ( exportPaths.Contains( exportPath ) == false ) {
                         ExporterUtils.DebugLog( "Ignore Export: " + exportPath );
                         continue;
                     }
-                    var list = kvp.Value;
                     bool exported = Export_Internal( logs, exportPath, list.paths );
                     if ( exported ) {
-                        if ( batchExportMode == BatchExportMode.Single ) {
-                            CallPostProcessScript( this, string.Empty, exportPath, list, logs );
-                        } else {
-                            var texts = GetBatchExportKeysConverted( );
-                            foreach ( var batchExportKey in texts ) {
-                                CallPostProcessScript( this, batchExportKey, exportPath, list, logs );
-                            }
-                        }
+                        CallPostProcessScript( this, list.batchExportKey, exportPath, list, logs );
                     }
                 }
             } finally {
@@ -676,7 +667,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var fields = instanceData.fields;
             Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
             logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
-            instance.OnExported( p, batchExportKey, exportPath, list, logs );
+            instance.OnExported( p, exportPath, list, logs );
             Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
             logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
 #endif

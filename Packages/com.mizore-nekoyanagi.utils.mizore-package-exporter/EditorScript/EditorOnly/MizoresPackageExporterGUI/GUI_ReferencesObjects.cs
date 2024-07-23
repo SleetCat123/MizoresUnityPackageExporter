@@ -42,10 +42,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 if ( multiple ) {
                     samevalue_in_all = i < objects_count.min && targetlist.All( v => {
                         var el1 = t.references[i].element;
-                        el1.exporter = t;
                         var el2 = v.references[i].element;
-                        el2.exporter = v;
-                        return el1.GetObject( ) == el2.GetObject( );
+                        return el1.GetObject( t ) == el2.GetObject( v );
                     } );
                 }
 
@@ -137,8 +135,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 for ( int j = 0; j < targetlist.Length; j++ ) {
                     var item = targetlist[j];
                     var el = item.references[i].element;
-                    el.exporter = item;
-                    var preview = el.GetConvertedPath(ExporterConsts.BATCH_EXPORT_KEY_DUMMY);
+                    var preview = el.GetConvertedPath(item, ExporterConsts.BATCH_EXPORT_KEY_DUMMY);
                     EditorGUI.indentLevel += 2;
                     if ( targetlist.Length > 1 ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {

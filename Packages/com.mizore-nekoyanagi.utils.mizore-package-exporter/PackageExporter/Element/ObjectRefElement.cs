@@ -6,9 +6,6 @@ using UnityEditor;
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
     public class ObjectRefElement : System.ICloneable, System.IEquatable<ObjectRefElement> {
-        [System.NonSerialized]
-        public MizoresPackageExporter exporter;
-
         [SerializeField]
         protected Object obj;
         [SerializeField]
@@ -16,12 +13,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public ObjectRefElement( ) { }
         public ObjectRefElement( MizoresPackageExporter exporter, Object obj, bool relativePath ) {
-            this.exporter = exporter;
-            SetObject( obj, relativePath );
+            SetObject( exporter, obj, relativePath );
         }
         public ObjectRefElement( MizoresPackageExporter exporter, Object obj ) {
-            this.exporter = exporter;
-            SetObject( obj );
+            SetObject( exporter, obj );
         }
         public ObjectRefElement( string path ) {
             this.Path = path;
@@ -31,7 +26,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             this.path = source.path;
         }
 
-        public Object GetObject( string batchExportKey = "" ) {
+        public Object GetObject( MizoresPackageExporter exporter, string batchExportKey = "" ) {
 #if UNITY_EDITOR
             if ( obj != null ) {
                 return obj;
@@ -39,18 +34,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( string.IsNullOrEmpty( path ) ) {
                 return null;
             } else {
-                return AssetDatabase.LoadAssetAtPath<Object>( GetConvertedPath( batchExportKey ) );
+                return AssetDatabase.LoadAssetAtPath<Object>( GetConvertedPath( exporter, batchExportKey ) );
             }
 #else
                 return obj;
 #endif
         }
-        public void SetObject( Object value ) {
+        public void SetObject( MizoresPackageExporter exporter, Object value ) {
 #if UNITY_EDITOR
-            SetObject( value, ExporterEditorPrefs.UseRelativePath );
+            SetObject( exporter, value, ExporterEditorPrefs.UseRelativePath );
 #endif
         }
-        public void SetObject( Object value, bool relativePath ) {
+        public void SetObject( MizoresPackageExporter exporter, Object value, bool relativePath ) {
 #if UNITY_EDITOR
             if ( value != null ) {
                 path = AssetDatabase.GetAssetPath( value.GetInstanceID( ) );
@@ -67,7 +62,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public string GetConvertedPath( string batchExportKey = "" ) {
+        public string GetConvertedPath( MizoresPackageExporter exporter, string batchExportKey = "" ) {
             var result = Path;
             if ( PathUtils.IsDynamicPath( path ) ) {
                 result = exporter.ConvertDynamicPath( path, batchExportKey );

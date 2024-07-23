@@ -109,8 +109,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         break;
                     }
                     case BatchExportMode.Folders: {
-                        var tObj = t.batchExportFolderRoot.GetObject();
-                        var samevalue_in_all_obj = targetlist.All( v => tObj == v.batchExportFolderRoot.GetObject() );
+                        var tObj = t.batchExportFolderRoot.GetObject(t);
+                        var samevalue_in_all_obj = targetlist.All( v => tObj == v.batchExportFolderRoot.GetObject(t) );
 
                         if ( !samevalue_in_all_obj ) {
                             ExporterUtils.DiffLabel( );
@@ -125,9 +125,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
-                            var obj = t.batchExportFolderRoot.GetObject();
+                            var obj = t.batchExportFolderRoot.GetObject(t);
                             foreach ( var item in targetlist ) {
-                                item.batchExportFolderRoot.SetObject( obj );
+                                item.batchExportFolderRoot.SetObject( t, obj );
                                 item.UpdateBatchExportKeys( );
                                 EditorUtility.SetDirty( item );
                             }
@@ -166,8 +166,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         break;
                     }
                     case BatchExportMode.ListFile: {
-                        var tObj = t.batchExportListFile.GetObject();
-                        var samevalue_in_all_obj = targetlist.All( v => tObj == v.batchExportListFile.GetObject() );
+                        var tObj = t.batchExportListFile.GetObject(t);
+                        var samevalue_in_all_obj = targetlist.All( v => tObj == v.batchExportListFile.GetObject(t) );
 
                         if ( !samevalue_in_all_obj ) {
                             ExporterUtils.DiffLabel( );
@@ -180,9 +180,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.indentLevel--;
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
-                            var obj = t.batchExportListFile.GetObject();
+                            var obj = t.batchExportListFile.GetObject(t);
                             foreach ( var item in targetlist ) {
-                                item.batchExportListFile.SetObject( obj );
+                                item.batchExportListFile.SetObject( t, obj );
                                 item.UpdateBatchExportKeys( );
                                 EditorUtility.SetDirty( item );
                             }

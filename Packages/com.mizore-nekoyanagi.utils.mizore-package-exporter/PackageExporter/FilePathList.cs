@@ -19,6 +19,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
     }
     public class FilePathList {
+        public string batchExportKey;
         public IEnumerable<string> paths;
         public IEnumerable<string> excludePaths;
         public Dictionary<string, HashSet<string>> referencedPaths;

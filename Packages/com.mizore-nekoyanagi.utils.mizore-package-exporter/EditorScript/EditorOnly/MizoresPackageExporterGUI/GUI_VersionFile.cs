@@ -47,7 +47,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         break;
                     }
                     case VersionSource.File: {
-                        var samevalue_in_all_obj = settings.All( v => s.versionFile.GetObject() == v.versionFile.GetObject() );
+                        var samevalue_in_all_obj = settings.All( v => s.versionFile.GetObject(t) == v.versionFile.GetObject(t) );
 
                         if ( !samevalue_in_all_obj ) {
                             ExporterUtils.DiffLabel( );
@@ -57,9 +57,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
-                            var obj = s.versionFile.GetObject();
+                            var obj = s.versionFile.GetObject(t);
                             for ( int i = 0; i < targetlist.Length; i++ ) {
-                                settings[i].versionFile.SetObject( obj );
+                                settings[i].versionFile.SetObject( t, obj );
                                 targetlist[i].packageNameSettings.UpdateExportVersion( );
                                 EditorUtility.SetDirty( targetlist[i] );
                             }

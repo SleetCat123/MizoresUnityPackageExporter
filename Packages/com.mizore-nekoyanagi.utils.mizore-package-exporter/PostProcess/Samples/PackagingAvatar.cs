@@ -21,14 +21,13 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
             new ObjectRefElement( "./../_common"),
             new ObjectRefElement( "./_release"),
             };
-        public override List<PostProcessFileListElement> GetPathList( MizoresPackageExporter packageExporter, string batchExportKey, FilePathList list ) {
+        public override List<PostProcessFileListElement> GetPathList( MizoresPackageExporter packageExporter, FilePathList list ) {
             var result = new List<PostProcessFileListElement>( );
             foreach ( var copyPath in copyPaths ) {
                 if ( copyPath == null ) {
                     continue;
                 }
-                copyPath.exporter = packageExporter;
-                var convertedPath = copyPath.GetConvertedPath(batchExportKey);
+                var convertedPath = copyPath.GetConvertedPath(packageExporter, list.batchExportKey);
                 if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
                     Debug.LogWarning( "Invalid path: " + copyPath );
                     continue;
@@ -55,7 +54,7 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
             }
             return result;
         }
-        public override void OnExported( MizoresPackageExporter packageExporter, string batchExportKey, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
+        public override void OnExported( MizoresPackageExporter packageExporter, string packagePath, FilePathList list, ExporterEditorLogs logs ) {
             var paths = list.paths;
 
             Debug.Log( "!!! OnExported: " + packagePath );
@@ -100,8 +99,7 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
             }
 
             foreach ( var copyPath in copyPaths ) {
-                copyPath.exporter = packageExporter;
-                var convertedPath = copyPath.GetConvertedPath(batchExportKey);
+                var convertedPath = copyPath.GetConvertedPath(packageExporter, list.batchExportKey);
                 if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
                     Debug.LogWarning( "Invalid path: " + copyPath );
                     continue;
