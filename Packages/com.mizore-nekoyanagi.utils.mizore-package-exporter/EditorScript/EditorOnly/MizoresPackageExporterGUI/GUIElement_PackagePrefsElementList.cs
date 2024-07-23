@@ -27,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         el1.exporter = t;
                         var el2 = GetList( v )[i];
                         el2.exporter = v;
-                        return el1.Object == el2.Object;
+                        return el1.GetObject( ) == el2.GetObject( );
                     } );
                 }
 
@@ -130,7 +130,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                     var el = list[i];
                     el.exporter = item;
-                    var preview = el.ConvertedPath;
+                    var preview = el.GetConvertedPath();
                     EditorGUI.indentLevel += 2;
                     if ( multiple ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {

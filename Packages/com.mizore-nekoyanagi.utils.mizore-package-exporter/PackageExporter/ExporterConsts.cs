@@ -9,6 +9,8 @@
         public const string PATH_PREFIX_EXCLUDES = "[EXC]";
         public const string PATH_PREFIX_POSTPROCESS = "[_PP]";
 
+        public const string BATCH_EXPORT_KEY_DUMMY = "BATCH";
+
         public static readonly string POSTPROCESS_BASECLASS_NAME = typeof(ExportPostProcess).Name;
     }
 }

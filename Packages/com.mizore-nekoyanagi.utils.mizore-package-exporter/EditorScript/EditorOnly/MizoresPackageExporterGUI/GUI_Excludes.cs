@@ -175,7 +175,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUI.indentLevel++;
                         }
                         EditorGUILayout.BeginHorizontal( );
-                        string previewpath = item.ConvertDynamicPath( item.excludes[i].value );
+                        string previewpath = item.ConvertDynamicPath( item.excludes[i].value, ExporterConsts.BATCH_EXPORT_KEY_DUMMY );
                         EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
                         if ( multiple ) {
                             EditorGUI.indentLevel--;

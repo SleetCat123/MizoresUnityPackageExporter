@@ -31,24 +31,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             this.path = source.path;
         }
 
-        public Object Object {
-            get {
+        public Object GetObject( string batchExportKey = "" ) {
 #if UNITY_EDITOR
-                if ( obj != null ) {
-                    return obj;
-                }
-                if ( string.IsNullOrEmpty( path ) ) {
-                    return null;
-                } else {
-                    return AssetDatabase.LoadAssetAtPath<Object>( ConvertedPath );
-                }
+            if ( obj != null ) {
+                return obj;
+            }
+            if ( string.IsNullOrEmpty( path ) ) {
+                return null;
+            } else {
+                return AssetDatabase.LoadAssetAtPath<Object>( GetConvertedPath( batchExportKey ) );
+            }
 #else
                 return obj;
 #endif
-            }
-            set {
-                SetObject( value );
-            }
         }
         public void SetObject( Object value ) {
 #if UNITY_EDITOR
@@ -72,17 +67,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public string ConvertedPath {
-            get {
-                var result = Path;
-                if ( PathUtils.IsDynamicPath( path ) ) {
-                    result = exporter.ConvertDynamicPath( path );
-                }
-                if ( PathUtils.IsRelativePath( result ) ) {
-                    result = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), result );
-                }
-                return result;
+        public string GetConvertedPath( string batchExportKey = "" ) {
+            var result = Path;
+            if ( PathUtils.IsDynamicPath( path ) ) {
+                result = exporter.ConvertDynamicPath( path, batchExportKey );
             }
+            if ( PathUtils.IsRelativePath( result ) ) {
+                result = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), result );
+            }
+            return result;
         }
         public string Path {
             get {

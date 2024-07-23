@@ -27,6 +27,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public static InstanceData CreateInstance( MizoresPackageExporter p ) {
             var type = GetType( p );
+            if ( type == null ) {
+                return null;
+            }
             var fields = type.GetFields( System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance );
             // インスタンス化
             var instance = System.Activator.CreateInstance( type ) as ExportPostProcess;

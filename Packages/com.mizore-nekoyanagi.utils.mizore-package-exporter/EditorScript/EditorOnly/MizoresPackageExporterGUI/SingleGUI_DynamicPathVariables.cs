@@ -38,9 +38,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.BeginDisabledGroup( true );
                 DrawBuiltInVariable( Const_Keys.KEY_NAME, t.name );
                 DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_RELATIVE_NAME, t.ReplaceRelativeName( Const_Keys.KEY_SAMPLE_RELATIVE_NAME ) );
-                DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.CurrentSettings.GetExportVersion( ) );
-                DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.GetFormattedVersion( ) );
-                DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.GetPackageName( ) );
+                var batchExportKey = ExporterConsts.BATCH_EXPORT_KEY_DUMMY;
+                DrawBuiltInVariable( Const_Keys.KEY_VERSION, t.packageNameSettings.GetExportVersion( ) );
+                DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_VERSION, t.GetFormattedVersion( batchExportKey ) );
+                DrawBuiltInVariable( Const_Keys.KEY_PACKAGE_NAME, t.GetPackageName( batchExportKey ) );
                 if ( t.batchExportMode != BatchExportMode.Single ) {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
                     DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, ExporterTexts.FormattedBatchVariableTooltip );

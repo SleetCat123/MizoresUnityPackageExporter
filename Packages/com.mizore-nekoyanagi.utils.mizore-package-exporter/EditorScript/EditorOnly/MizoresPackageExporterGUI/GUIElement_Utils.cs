@@ -41,7 +41,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             if ( browse ) {
                 if ( t != null ) {
-                    path = t.ConvertDynamicPath( path );
+                    path = t.ConvertDynamicPath( path, string.Empty );
                     if ( PathUtils.IsRelativePath( path ) ) {
                         var dir = t.GetDirectoryPath( );
                         path = PathUtils.GetProjectAbsolutePath( dir, path );

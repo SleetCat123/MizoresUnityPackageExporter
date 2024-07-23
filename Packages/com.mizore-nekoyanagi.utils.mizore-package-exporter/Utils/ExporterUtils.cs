@@ -79,7 +79,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 Select( v => {
                     var r = new TElement( );
                     r.exporter = item;
-                    r.Object = v;
+                    r.SetObject( v );
                     return r;
                 });
                 getList( item ).AddRange( add );

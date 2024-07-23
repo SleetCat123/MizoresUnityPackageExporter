@@ -23,7 +23,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             string[][] fileList = new string[targetlist.Length][];
             bool any = false;
             for ( int i = 0; i < targetlist.Length; i++ ) {
-                var files = targetlist[i].GetAllExportFileName( );
+                var files = targetlist[i].GetAllExportFileName( string.Empty );
                 fileList[i] = files;
                 any |= files.Length != 0;
             }
@@ -75,8 +75,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );
             }
             if ( GUILayout.Button( ExporterTexts.ButtonOpen, GUILayout.Width( 60 ) ) ) {
-                if ( File.Exists( ed.t.GetExportPath( ) ) ) {
-                    EditorUtility.RevealInFinder( ed.t.GetExportPath( ) );
+                if ( File.Exists( ed.t.GetExportPath( string.Empty ) ) ) {
+                    EditorUtility.RevealInFinder( ed.t.GetExportPath( string.Empty ) );
                 } else {
                     if ( !Directory.Exists( Const.EXPORT_FOLDER_PATH ) ) {
                         Directory.CreateDirectory( Const.EXPORT_FOLDER_PATH );

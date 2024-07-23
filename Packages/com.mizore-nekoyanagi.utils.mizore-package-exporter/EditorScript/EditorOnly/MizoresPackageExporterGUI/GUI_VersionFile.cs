@@ -21,7 +21,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( EditorGUI.EndChangeCheck( ) ) {
                 for ( int i = 0; i < targetlist.Length; i++ ) {
                     settings[i].versionSource = versionSource;
-                    targetlist[i].CurrentSettings.UpdateExportVersion( );
+                    targetlist[i].packageNameSettings.UpdateExportVersion( );
                     EditorUtility.SetDirty( targetlist[i] );
                 }
             }
@@ -40,14 +40,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             for ( int i = 0; i < targetlist.Length; i++ ) {
                                 settings[i].versionString = versionString;
-                                targetlist[i].CurrentSettings.UpdateExportVersion( );
+                                targetlist[i].packageNameSettings.UpdateExportVersion( );
                                 EditorUtility.SetDirty( targetlist[i] );
                             }
                         }
                         break;
                     }
                     case VersionSource.File: {
-                        var samevalue_in_all_obj = settings.All( v => s.versionFile.Object == v.versionFile.Object );
+                        var samevalue_in_all_obj = settings.All( v => s.versionFile.GetObject() == v.versionFile.GetObject() );
 
                         if ( !samevalue_in_all_obj ) {
                             ExporterUtils.DiffLabel( );
@@ -57,10 +57,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
-                            var obj = s.versionFile.Object;
+                            var obj = s.versionFile.GetObject();
                             for ( int i = 0; i < targetlist.Length; i++ ) {
-                                settings[i].versionFile.Object = obj;
-                                targetlist[i].CurrentSettings.UpdateExportVersion( );
+                                settings[i].versionFile.SetObject( obj );
+                                targetlist[i].packageNameSettings.UpdateExportVersion( );
                                 EditorUtility.SetDirty( targetlist[i] );
                             }
                         }
@@ -125,7 +125,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 if ( EditorGUI.EndChangeCheck( ) ) {
                     for ( int i = 0; i < targetlist.Length; i++ ) {
                         settings[i].packageName = value;
-                        targetlist[i].CurrentSettings.UpdateExportVersion( );
+                        targetlist[i].packageNameSettings.UpdateExportVersion( );
                         EditorUtility.SetDirty( targetlist[i] );
                     }
                 }

@@ -45,7 +45,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         el1.exporter = t;
                         var el2 = v.references[i].element;
                         el2.exporter = v;
-                        return el1.Object == el2.Object;
+                        return el1.GetObject( ) == el2.GetObject( );
                     } );
                 }
 
@@ -138,7 +138,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     var item = targetlist[j];
                     var el = item.references[i].element;
                     el.exporter = item;
-                    var preview = el.ConvertedPath;
+                    var preview = el.GetConvertedPath(ExporterConsts.BATCH_EXPORT_KEY_DUMMY);
                     EditorGUI.indentLevel += 2;
                     if ( targetlist.Length > 1 ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {
