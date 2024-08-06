@@ -3,6 +3,7 @@
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     public static class ExportPostProcessUtils {
         public static System.Type GetType( MizoresPackageExporter p ) {
+#if UNITY_EDITOR
             if ( !ExporterEditorPrefs.UsePostProcessScript ) {
                 return null;
             }
@@ -19,6 +20,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return null;
             }
             return type;
+#else
+            return null;
+#endif
         }
         public class InstanceData {
             public System.Type type;
