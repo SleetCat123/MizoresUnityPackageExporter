@@ -541,6 +541,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
             callback?.Invoke( filePathList );
 #else
+            await Task.Delay( 1 );
             callback?.Invoke( new FilePathList( ) );
 #endif
         }

@@ -82,20 +82,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 if ( path != null ) {
                     path = path.Replace( "%20", " " );
                 }
+                UpdateObject( );
 #endif
                 return path;
             }
             set {
                 path = value;
-#if UNITY_EDITOR
-                // PathがDynamicPathではない場合はObjectを設定
-                if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsDynamicPath( path ) ) {
-                    obj = AssetDatabase.LoadAssetAtPath<Object>( path );
-                } else {
-                    obj = null;
-                }
-#endif
+                UpdateObject( );
             }
+        }
+        void UpdateObject( ) {
+#if UNITY_EDITOR
+            // PathがDynamicPathではない場合はObjectを設定
+            if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsDynamicPath( path ) ) {
+                obj = AssetDatabase.LoadAssetAtPath<Object>( path );
+            } else {
+                obj = null;
+            }
+#endif
         }
 
         public virtual object Clone( ) {
