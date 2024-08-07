@@ -15,8 +15,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             Folder = 1 << 1,
             FileAndFolder = File | Folder,
         }
-        public static bool BrowseButtons( MizoresPackageExporter t, string path, out string result, BrowseType browseType, string fileExtension = null, bool forceAbsolute = false ) {
-            result = path;
+        public static bool BrowseButtons( MizoresPackageExporter t, ref ObjectRefElement element, BrowseType browseType, string fileExtension = null, bool forceAbsolute = false ) {
             if ( browseType == BrowseType.None ) {
                 return false;
             }
@@ -40,33 +39,54 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
             }
             if ( browse ) {
-                if ( t != null ) {
-                    path = t.ConvertDynamicPath( path, string.Empty );
-                    if ( PathUtils.IsRelativePath( path ) ) {
-                        var dir = t.GetDirectoryPath( );
-                        path = PathUtils.GetProjectAbsolutePath( dir, path );
-                    }
-                }
+                var path = element.GetConvertedPath( t );
                 if ( folder ) {
-                    if ( !Directory.Exists( path ) ) {
+                    if ( string.IsNullOrEmpty( path ) ) {
                         path = t.GetDirectoryPath( );
+                    } else {
+                        if ( File.Exists( path ) ) {
+                            path = Path.GetDirectoryName( path );
+                        } else if ( !Directory.Exists( path ) ) {
+                            path = Path.GetDirectoryName( path );
+                            if ( !Directory.Exists( path ) ) {
+                                path = t.GetDirectoryPath( );
+                            }
+                        }
                     }
                     path = EditorUtility.OpenFolderPanel( null, path, null );
                 } else {
-                    if ( !File.Exists( path ) ) {
+                    if ( string.IsNullOrEmpty( path ) ) {
                         path = t.GetDirectoryPath( );
+                    } else {
+                        if ( !File.Exists( path ) ) {
+                            path = Path.GetDirectoryName( path );
+                            if ( !Directory.Exists( path ) ) {
+                                path = t.GetDirectoryPath( );
+                            }
+                        }
                     }
                     path = EditorUtility.OpenFilePanel( null, path, fileExtension );
                 }
                 if ( string.IsNullOrEmpty( path ) == false ) {
                     path = PathUtils.ToValidPath( path );
-                    if ( ExporterEditorPrefs.UseRelativePath && !forceAbsolute ) {
-                        var dir = t.GetDirectoryPath( );
-                        path = PathUtils.GetRelativePath( dir, path );
+                    var type = ExporterEditorPrefs.DefaultPathType;
+                    if ( forceAbsolute ) {
+                        type = PathType.Absolute;
                     }
-                    GUI.changed = true;
-                    //EditorUtility.SetDirty( t );
-                    result = path;
+                    var prevElement = new ObjectRefElement( element );
+                    switch ( type ) {
+                        case PathType.Absolute:
+                            element.SetPath( path );
+                            break;
+                        case PathType.Relative:
+                            element.SetPath( PathUtils.GetRelativePath( t.GetDirectoryPath( ), path ) );
+                            break;
+                        case PathType.GUID:
+                            element.SetGUID( AssetDatabase.GUIDToAssetPath( path ) );
+                            break;
+                    }
+                    ExporterUtils.DebugLog( "Path changed: " + prevElement + " -> " + element );
+                    EditorUtility.SetDirty( t );
                 }
             }
             return browse;

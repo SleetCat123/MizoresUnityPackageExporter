@@ -29,43 +29,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( same_versionSource_valueInAllObj ) {
                 switch ( s.versionSource.value ) {
                     case VersionSource.String: {
-                        var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
-                        EditorGUI.BeginChangeCheck( );
-                        string versionString;
+                            var samevalue_in_all_obj = settings.All( v => s.versionString == v.versionString );
+                            EditorGUI.BeginChangeCheck( );
+                            string versionString;
 
-                        EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                        versionString = EditorGUILayout.TextField( ExporterTexts.Version, s.versionString );
-                        EditorGUI.showMixedValue = false;
+                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                            versionString = EditorGUILayout.TextField( ExporterTexts.Version, s.versionString );
+                            EditorGUI.showMixedValue = false;
 
-                        if ( EditorGUI.EndChangeCheck( ) ) {
-                            for ( int i = 0; i < targetlist.Length; i++ ) {
-                                settings[i].versionString = versionString;
-                                targetlist[i].packageNameSettings.UpdateExportVersion( );
-                                EditorUtility.SetDirty( targetlist[i] );
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                for ( int i = 0; i < targetlist.Length; i++ ) {
+                                    settings[i].versionString = versionString;
+                                    targetlist[i].packageNameSettings.UpdateExportVersion( );
+                                    EditorUtility.SetDirty( targetlist[i] );
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
                     case VersionSource.File: {
-                        var samevalue_in_all_obj = settings.All( v => s.versionFile.GetObject(t) == v.versionFile.GetObject(t) );
+                            var samevalue_in_all_obj = settings.All( v => s.versionFile.GetObject( t ) == v.versionFile.GetObject( t ) );
 
-                        if ( !samevalue_in_all_obj ) {
-                            ExporterUtils.DiffLabel( );
-                        }
-                        EditorGUI.showMixedValue = !samevalue_in_all_obj;
-                        EditorGUI.BeginChangeCheck( );
-                        PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
-                        EditorGUI.showMixedValue = false;
-                        if ( EditorGUI.EndChangeCheck( ) ) {
-                            var obj = s.versionFile.GetObject(t);
-                            for ( int i = 0; i < targetlist.Length; i++ ) {
-                                settings[i].versionFile.SetObject( t, obj );
-                                targetlist[i].packageNameSettings.UpdateExportVersion( );
-                                EditorUtility.SetDirty( targetlist[i] );
+                            if ( !samevalue_in_all_obj ) {
+                                ExporterUtils.DiffLabel( );
                             }
+                            EditorGUI.showMixedValue = !samevalue_in_all_obj;
+                            EditorGUI.BeginChangeCheck( );
+                            PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
+                            EditorGUI.showMixedValue = false;
+                            if ( EditorGUI.EndChangeCheck( ) ) {
+                                var obj = s.versionFile.GetObject( t );
+                                for ( int i = 0; i < targetlist.Length; i++ ) {
+                                    settings[i].versionFile.SetPathAutoDetect( t, obj );
+                                    targetlist[i].packageNameSettings.UpdateExportVersion( );
+                                    EditorUtility.SetDirty( targetlist[i] );
+                                }
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
 

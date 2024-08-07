@@ -84,9 +84,9 @@ FileListViewReferencedFiles,View Referenced Files
 FileListViewExcludeFiles,View Excludes Files
 FileListClose,Close
 
-FileListNotFoundPathPrefix,[ ! not found ! ] 
-FileListExcludesPathPrefix,[Excludes] 
-FileListReferencesPathPrefix,[Referenced] 
+FileListNotFoundPathPrefix,[ ! not found ! ]
+FileListExcludesPathPrefix,[Excludes]
+FileListReferencesPathPrefix,[Referenced]
 
 FileListCategoryExport,Actual Export Target Files
 FileListCategoryExportEmpty,(Empty) Actual Export Target Files
@@ -100,9 +100,11 @@ ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.
 
 ConvertToRelativePath,Convert to relative path
 ConvertToAbsolutePath,Convert to absolute path
+ConvertToGUID,Convert to GUID
 ConvertAllPathsToRelative,Convert all paths to relative
 ConvertAllPathsToAbsolute,Convert all paths to absolute
-UseRelativePath,Use relative path as default
+ConvertAllPathsToGUID,Convert all paths to GUID
+DefaultPathType,Default Path Type
 
 AdvancedMode,Advanced
 UsePostProcessScript,Use Post Process Script

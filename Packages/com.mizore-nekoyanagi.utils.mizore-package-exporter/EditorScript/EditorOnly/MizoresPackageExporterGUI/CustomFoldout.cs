@@ -22,10 +22,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return EditorPrefFoldout( key, label, null );
         }
         public static bool EditorPrefFoldout( string key, GUIContent label, FoldoutFuncs funcs ) {
-            bool before = EditorPrefsCache.GetBool( key, true );
+            bool before = EditorPrefs.GetBool( key, true );
             Rect rect = EditorGUILayout.GetControlRect( GUILayout.Height( 22 ) );
 
-            var style = new GUIStyle("ShurikenModuleTitle");
+            var style = new GUIStyle( "ShurikenModuleTitle" );
             style.font = new GUIStyle( EditorStyles.label ).font;
             style.fontSize = 13;
             style.fixedHeight = 22;
@@ -38,10 +38,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             bool result = before;
             if ( pushed ) {
                 result = !before;
-            } 
+            }
             // result = EditorGUILayout.Foldout( before, label, true, EditorStyles.foldoutHeader );
             var ev = Event.current;
-            var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
+            var toggleRect = new Rect( rect.x + 4f, rect.y + 2f, 13f, 13f );
             if ( ev.type == EventType.Repaint ) {
                 EditorStyles.foldout.Draw( toggleRect, false, false, result, false );
             }
@@ -52,7 +52,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 
             if ( before != result ) {
-                EditorPrefsCache.SetBool( key, result );
+                EditorPrefs.SetBool( key, result );
             }
 
             Event currentEvent = Event.current;

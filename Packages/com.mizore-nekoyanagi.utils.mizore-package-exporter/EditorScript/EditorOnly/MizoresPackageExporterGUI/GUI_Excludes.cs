@@ -53,31 +53,41 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
                     EditorGUI.BeginChangeCheck( );
                     Rect textrect = EditorGUILayout.GetControlRect( GUILayout.MinWidth( 30 ) );
-                    string path;
+                    string filter;
                     if ( samevalue_in_all_value ) {
-                        path = EditorGUI.TextField( textrect, t.excludes[i].value );
+                        filter = EditorGUI.TextField( textrect, t.excludes[i].value );
                     } else {
                         EditorGUI.showMixedValue = true;
-                        path = EditorGUI.TextField( textrect, string.Empty );
+                        filter = EditorGUI.TextField( textrect, string.Empty );
                         EditorGUI.showMixedValue = false;
                     }
-                    bool browse = GUIElement_Utils.BrowseButtons( t, path, out string browseResult, GUIElement_Utils.BrowseType.FileAndFolder );
+                    var element = new ObjectRefElement( filter );
+                    bool browse = GUIElement_Utils.BrowseButtons( t, ref element, GUIElement_Utils.BrowseType.FileAndFolder );
                     if ( browse ) {
-                        path = browseResult;
-                    }
-                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
-                        GUI.changed = true;
-                        path = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
-                        if ( ExporterEditorPrefs.UseRelativePath ) {
-                            var dir = t.GetDirectoryPath( );
-                            path = PathUtils.GetRelativePath( dir, path );
+                        if ( element.IsGUID ) {
+                            filter = AssetDatabase.GUIDToAssetPath( element.Path );
+                        } else {
+                            filter = element.Path;
                         }
                     }
+                    if ( ExporterUtils.DragDrop( textrect, ExporterUtils.Filter_HasPersistentObject ) ) {
+                        filter = AssetDatabase.GetAssetPath( DragAndDrop.objectReferences[0] );
+                        switch ( ExporterEditorPrefs.DefaultPathType ) {
+                            case PathType.GUID:
+                            case PathType.Absolute:
+                                break;
+                            case PathType.Relative:
+                                var dir = t.GetDirectoryPath( );
+                                filter = PathUtils.GetRelativePath( dir, filter );
+                                break;
+                        }
+                        GUI.changed = true;
+                    }
                     if ( EditorGUI.EndChangeCheck( ) ) {
-                        path = PathUtils.ToValidPath( path );
+                        filter = PathUtils.ToValidPath( filter );
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
-                            item.excludes[i].value = path;
+                            item.excludes[i].value = filter;
                             EditorUtility.SetDirty( item );
                         }
                         minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );

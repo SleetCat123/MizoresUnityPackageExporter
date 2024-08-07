@@ -54,7 +54,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         // 全ての選択中インスタンスに対してパスを設定
                         // 要素数が足りなかったらリサイズ
                         ExporterUtils.ResizeList( GetList( item ), Mathf.Max( i + 1, GetList( item ).Count ), ( ) => new TElement( ) );
-                        GetList( item )[i].Path = path;
+                        GetList( item )[i].SetPath( path );
                         EditorUtility.SetDirty( item );
                     }
                     objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
@@ -105,7 +105,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.BeginChangeCheck( );
                         EditorGUI.showMixedValue = !samevalue_searchReference;
                         var content = new GUIContent( ExporterTexts.SearchReference, ExporterTexts.SearchReferenceTooltip );
-                        bool searchReference = EditorGUILayout.Toggle(content, ( tList[i] as ExportTargetObjectElement ).searchReference );
+                        bool searchReference = EditorGUILayout.Toggle( content, ( tList[i] as ExportTargetObjectElement ).searchReference );
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             foreach ( var item in targetlist ) {
@@ -127,7 +127,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         continue;
                     }
                     var el = list[i];
-                    var preview = el.GetConvertedPath(item);
+                    var preview = el.GetConvertedPath( item );
                     EditorGUI.indentLevel += 2;
                     if ( multiple ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {

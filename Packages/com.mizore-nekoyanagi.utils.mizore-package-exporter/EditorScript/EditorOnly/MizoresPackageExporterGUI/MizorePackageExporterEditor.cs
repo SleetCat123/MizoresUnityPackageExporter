@@ -65,14 +65,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             EditorGUI.BeginDisabledGroup( MizoresPackageExporter.LockEditor );
             // デフォルトで相対パスを使用するか
             EditorGUI.BeginChangeCheck( );
-            bool useRelativePath = EditorGUILayout.Toggle( ExporterTexts.UseRelativePath, ExporterEditorPrefs.UseRelativePath );
+            PathType defaultPathType = ( PathType )EditorGUILayout.EnumPopup( ExporterTexts.DefaultPathType, ExporterEditorPrefs.DefaultPathType );
             if ( EditorGUI.EndChangeCheck( ) ) {
-                ExporterEditorPrefs.UseRelativePath = useRelativePath;
+                ExporterEditorPrefs.DefaultPathType = defaultPathType;
             }
 
             // 上級者向け
             EditorGUI.BeginChangeCheck( );
-            bool advanced = EditorGUILayout.Toggle( ExporterTexts.AdvancedMode, ExporterEditorPrefs.AdvancedMode);
+            bool advanced = EditorGUILayout.Toggle( ExporterTexts.AdvancedMode, ExporterEditorPrefs.AdvancedMode );
             if ( EditorGUI.EndChangeCheck( ) ) {
                 ExporterEditorPrefs.AdvancedMode = advanced;
             }
@@ -139,7 +139,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
 
             gui_ExcludeObjects.Draw( this, t, targetlist );
             GUI_Excludes.Draw( this, t, targetlist );
-            
+
             if ( targets.Length == 1 ) {
                 ExporterUtils.SeparateLine( );
                 SingleGUI_DynamicPathVariables.Draw( this, t );

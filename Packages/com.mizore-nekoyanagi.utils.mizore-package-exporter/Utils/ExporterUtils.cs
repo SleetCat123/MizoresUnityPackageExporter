@@ -57,7 +57,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #if UNITY_EDITOR
             // EditorGUILayout.LabelField( string.Empty, GUI.skin.horizontalSlider );
             var baseRect = EditorGUILayout.GetControlRect( GUILayout.Height( margins + lineHeight + margins ) );
-            var rect = new Rect(baseRect );
+            var rect = new Rect( baseRect );
             rect.y += margins;
             rect.height = lineHeight;
             var color = Color.gray;
@@ -71,30 +71,30 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[] objectReferences ) where TElement : ObjectRefElement, new() {
+        public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[ ] objectReferences ) where TElement : ObjectRefElement, new() {
 #if UNITY_EDITOR
             foreach ( var item in targetlist ) {
                 var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
                 Select( v => {
                     var r = new TElement( );
-                    r.SetObject( item, v );
+                    r.SetPathAutoDetect( item, v );
                     return r;
-                });
+                } );
                 getList( item ).AddRange( add );
                 EditorUtility.SetDirty( item );
             }
 #endif
         }
 
-        public static bool Filter_HasPersistentObject( Object[] objectReferences ) {
+        public static bool Filter_HasPersistentObject( Object[ ] objectReferences ) {
 #if UNITY_EDITOR
             return objectReferences.Any( v => EditorUtility.IsPersistent( v ) );
 #else
             return false;
 #endif
         }
-        public static bool DragDrop( Rect rect, System.Func<Object[], bool> canDragDrop ) {
+        public static bool DragDrop( Rect rect, System.Func<Object[ ], bool> canDragDrop ) {
 #if UNITY_EDITOR
             if ( canDragDrop != null && rect.Contains( Event.current.mousePosition ) && canDragDrop( DragAndDrop.objectReferences ) ) {
                 var eventType = Event.current.type;
@@ -111,7 +111,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return false;
         }
 
-        public static void Swap<T>( this T[] array, int indexA, int indexB ) {
+        public static void Swap<T>( this T[ ] array, int indexA, int indexB ) {
             T temp = array[indexA];
             array[indexA] = array[indexB];
             array[indexB] = temp;
@@ -158,8 +158,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         [System.Serializable]
         class StringArray {
-            public string[] array;
-            public StringArray( string[] array ) {
+            public string[ ] array;
+            public StringArray( string[ ] array ) {
                 this.array = array;
             }
         }

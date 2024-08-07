@@ -59,7 +59,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return "[NotFound: " + key + "]";
             }
         }
-        
+
         public const string AssetName = "MizoresPackageExporter";
         public static string Undo => Get( "Undo" );
         public static string Yes => Get( "Yes" );
@@ -155,9 +155,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string ConvertToRelativePath => Get( "ConvertToRelativePath" );
         public static string ConvertToAbsolutePath => Get( "ConvertToAbsolutePath" );
+        public static string ConvertToGUID => Get( "ConvertToGUID" );
         public static string ConvertAllPathsToAbsolute => Get( "ConvertAllPathsToAbsolute" );
         public static string ConvertAllPathsToRelative => Get( "ConvertAllPathsToRelative" );
-        public static string UseRelativePath => Get( "UseRelativePath" );
+        public static string ConvertAllPathsToGUID => Get( "ConvertAllPathsToGUID" );
+        public static string DefaultPathType => Get( "DefaultPathType" );
 
         public static string AdvancedMode => Get( "AdvancedMode" );
 

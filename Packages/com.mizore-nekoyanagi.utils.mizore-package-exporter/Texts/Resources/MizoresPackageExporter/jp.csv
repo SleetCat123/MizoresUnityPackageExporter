@@ -41,9 +41,11 @@ FileListCategoryReferences,参照されているファイル（エクスポー�
 
 ConvertToRelativePath,相対パスに変換
 ConvertToAbsolutePath,絶対パスに変換
+ConvertToGUID,GUIDに変換
 ConvertAllPathsToRelative,全てのパスを相対パスに変換
 ConvertAllPathsToAbsolute,全てのパスを絶対パスに変換
-UseRelativePath,デフォルトで相対パスを使用
+ConvertAllPathsToGUID,全てのパスをGUIDに変換
+DefaultPathType,パス追加時の形式
 
 UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、{0}を継承したスクリプトをunitypackageのエクスポート後に実行できるようになります。\n\n警告: スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。\n\n有効化しますか？
 

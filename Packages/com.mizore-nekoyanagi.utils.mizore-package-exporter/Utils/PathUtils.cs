@@ -50,9 +50,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         //    return path;
         //}
         public static string ToValidPath( string path ) {
+            if ( string.IsNullOrEmpty( path ) ) {
+                return string.Empty;
+            }
             path = path.Replace( "\\", "/" );
             // AssetDatabaseのパスに変換
-            var dataPath = Path.GetDirectoryName( Application.dataPath).Replace( "\\", "/" );
+            var dataPath = Path.GetDirectoryName( Application.dataPath ).Replace( "\\", "/" );
             if ( path.StartsWith( dataPath ) ) {
                 path = path.Substring( dataPath.Length + 1 );
             }

@@ -115,7 +115,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 AssetDatabase.Refresh( );
                 // オブジェクトを選択
                 latest = AssetDatabase.LoadAssetAtPath<MizoresPackageExporter>( path );
-                Selection.objects = Selection.objects.Concat( new Object[] { latest } ).ToArray( );
+                Selection.objects = new Object[] { latest };
             }
             return latest;
 #pragma warning restore 612

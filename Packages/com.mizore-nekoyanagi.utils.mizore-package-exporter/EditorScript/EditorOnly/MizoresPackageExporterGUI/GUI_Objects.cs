@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {

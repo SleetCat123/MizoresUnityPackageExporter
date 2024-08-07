@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -7,99 +8,120 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
     public class ObjectRefElement : System.ICloneable, System.IEquatable<ObjectRefElement> {
         [SerializeField]
-        protected Object obj;
-        [SerializeField]
         protected string path;
+        public string Path => path;
+
+        [SerializeField]
+        protected bool isGUID;
+        public bool IsGUID => isGUID;
 
         public ObjectRefElement( ) { }
-        public ObjectRefElement( MizoresPackageExporter exporter, Object obj, bool relativePath ) {
-            SetObject( exporter, obj, relativePath );
-        }
-        public ObjectRefElement( MizoresPackageExporter exporter, Object obj ) {
-            SetObject( exporter, obj );
+        public ObjectRefElement( Object obj, bool isGUID = false ) {
+            if ( isGUID ) {
+                SetGUID( obj );
+            } else {
+                SetPath( obj );
+            }
         }
         public ObjectRefElement( string path ) {
-            this.Path = path;
+            this.path = path;
+        }
+        public ObjectRefElement( MizoresPackageExporter exporter, Object obj ) {
+            SetPathAutoDetect( exporter, obj );
         }
         public ObjectRefElement( ObjectRefElement source ) {
-            this.obj = source.obj;
             this.path = source.path;
         }
 
         public Object GetObject( MizoresPackageExporter exporter, string batchExportKey = "" ) {
 #if UNITY_EDITOR
-            if ( obj != null ) {
-                return obj;
-            }
             if ( string.IsNullOrEmpty( path ) ) {
                 return null;
+            } else if ( isGUID ) {
+                return AssetDatabase.LoadAssetAtPath<Object>( AssetDatabase.GUIDToAssetPath( path ) );
             } else {
                 return AssetDatabase.LoadAssetAtPath<Object>( GetConvertedPath( exporter, batchExportKey ) );
             }
 #else
-                return obj;
-#endif
-        }
-        public void SetObject( MizoresPackageExporter exporter, Object value ) {
-#if UNITY_EDITOR
-            SetObject( exporter, value, ExporterEditorPrefs.UseRelativePath );
-#endif
-        }
-        public void SetObject( MizoresPackageExporter exporter, Object value, bool relativePath ) {
-#if UNITY_EDITOR
-            if ( value != null ) {
-                path = AssetDatabase.GetAssetPath( value.GetInstanceID( ) );
-                if ( relativePath ) {
-                    path = PathUtils.GetRelativePath( exporter.GetDirectoryPath( ), path );
-                }
-            } else {
-                ExporterUtils.DebugLog( "Set Path to empty" );
-                path = string.Empty;
-            }
-            obj = value;
-#else
-    throw new System.NotSupportedException( "This method is only supported in the editor." );
+                return null;
 #endif
         }
 
+        public void SetGUID( string value ) {
+            isGUID = true;
+            path = value;
+        }
+        public void SetGUID( Object value ) {
+            isGUID = true;
+            path = AssetDatabase.GUIDToAssetPath( AssetDatabase.GetAssetPath( value ) );
+        }
+
+        public void SetPath( string value ) {
+            isGUID = false;
+            path = value.Replace( "%20", " " );
+        }
+        public void SetPath( Object value ) {
+            isGUID = false;
+            path = AssetDatabase.GetAssetPath( value );
+        }
+        public void SetPathAutoDetect( MizoresPackageExporter exporter, Object value ) {
+            isGUID = false;
+            PathType pathType = PathType.Absolute;
+#if UNITY_EDITOR
+            pathType = ExporterEditorPrefs.DefaultPathType;
+#endif
+            switch ( pathType ) {
+                case PathType.Relative:
+                    SetRelativePath( exporter, value );
+                    break;
+                case PathType.Absolute:
+                    SetPath( value );
+                    break;
+                case PathType.GUID:
+                    SetGUID( value );
+                    break;
+            }
+        }
+
+        public void SetRelativePath( MizoresPackageExporter exporter, Object value ) {
+            isGUID = false;
+            path = PathUtils.GetRelativePath( exporter.GetDirectoryPath( ), AssetDatabase.GetAssetPath( value ) );
+        }
+        public void SetPathAutoDetect( MizoresPackageExporter exporter, string path ) {
+            PathType pathType = PathType.Absolute;
+#if UNITY_EDITOR
+            pathType = ExporterEditorPrefs.DefaultPathType;
+#endif
+            path = path.Replace( "%20", " " );
+            switch ( pathType ) {
+                case PathType.Relative:
+                    isGUID = false;
+                    this.path = PathUtils.GetRelativePath( exporter.GetDirectoryPath( ), path );
+                    break;
+                case PathType.Absolute:
+                    isGUID = false;
+                    this.path = path;
+                    break;
+                case PathType.GUID:
+                    isGUID = true;
+                    this.path = AssetDatabase.GUIDToAssetPath( path );
+                    break;
+            }
+        }
+
         public string GetConvertedPath( MizoresPackageExporter exporter, string batchExportKey = "" ) {
-            var result = Path;
-            if ( PathUtils.IsDynamicPath( path ) ) {
-                result = exporter.ConvertDynamicPath( path, batchExportKey );
-            }
-            if ( PathUtils.IsRelativePath( result ) ) {
-                result = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), result );
-            }
-            return result;
-        }
-        public string Path {
-            get {
-#if UNITY_EDITOR
-                // Pathが相対パスでもDynamicPathでもなく、Objectがnullでない場合はAssetPathを取得
-                if ( obj != null && !PathUtils.IsRelativePath( path ) && !PathUtils.IsDynamicPath( path ) ) {
-                    path = AssetDatabase.GetAssetPath( obj );
-                }
-                if ( path != null ) {
-                    path = path.Replace( "%20", " " );
-                }
-                UpdateObject( );
-#endif
-                return path;
-            }
-            set {
-                path = value;
-                UpdateObject( );
-            }
-        }
-        void UpdateObject( ) {
-#if UNITY_EDITOR
-            // PathがDynamicPathではない場合はObjectを設定
-            if ( !string.IsNullOrEmpty( path ) && !PathUtils.IsDynamicPath( path ) ) {
-                obj = AssetDatabase.LoadAssetAtPath<Object>( path );
+            if ( isGUID ) {
+                return AssetDatabase.GUIDToAssetPath( path );
             } else {
-                obj = null;
+                var result = path;
+                if ( PathUtils.IsDynamicPath( path ) ) {
+                    result = exporter.ConvertDynamicPath( path, batchExportKey );
+                }
+                if ( PathUtils.IsRelativePath( result ) ) {
+                    result = PathUtils.GetProjectAbsolutePath( exporter.GetDirectoryPath( ), result );
+                }
+                return result;
             }
-#endif
         }
 
         public virtual object Clone( ) {
@@ -111,11 +133,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public bool Equals( ObjectRefElement other ) {
-            return this.obj == other.obj && this.path == other.path;
+            return this.path == other.path;
         }
 
         public override int GetHashCode( ) {
-            return obj.GetHashCode( ) ^ path.GetHashCode( );
+            return path.GetHashCode( );
+        }
+
+        public override string ToString( ) {
+            if ( isGUID ) {
+                return $"[GUID]{path}";
+            } else {
+                return path;
+            }
         }
     }
 }
