@@ -52,8 +52,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             path = value;
         }
         public void SetGUID( Object value ) {
+#if UNITY_EDITOR
             isGUID = true;
             path = AssetDatabase.GUIDToAssetPath( AssetDatabase.GetAssetPath( value ) );
+#else
+            throw new System.NotImplementedException( );
+#endif
         }
 
         public void SetPath( string value ) {
@@ -61,8 +65,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             path = value.Replace( "%20", " " );
         }
         public void SetPath( Object value ) {
+#if UNITY_EDITOR
             isGUID = false;
             path = AssetDatabase.GetAssetPath( value );
+#else
+            throw new System.NotImplementedException( );
+#endif
         }
         public void SetPathAutoDetect( MizoresPackageExporter exporter, Object value ) {
             isGUID = false;
@@ -84,14 +92,17 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public void SetRelativePath( MizoresPackageExporter exporter, Object value ) {
+#if UNITY_EDITOR
             isGUID = false;
             path = PathUtils.GetRelativePath( exporter.GetDirectoryPath( ), AssetDatabase.GetAssetPath( value ) );
+#else
+            throw new System.NotImplementedException( );
+#endif
         }
         public void SetPathAutoDetect( MizoresPackageExporter exporter, string path ) {
-            PathType pathType = PathType.Absolute;
 #if UNITY_EDITOR
+            PathType pathType = PathType.Absolute;
             pathType = ExporterEditorPrefs.DefaultPathType;
-#endif
             path = path.Replace( "%20", " " );
             switch ( pathType ) {
                 case PathType.Relative:
@@ -107,9 +118,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     this.path = AssetDatabase.GUIDToAssetPath( path );
                     break;
             }
+#else
+            throw new System.NotImplementedException( );
+#endif
         }
 
         public string GetConvertedPath( MizoresPackageExporter exporter, string batchExportKey = "" ) {
+#if UNITY_EDITOR
             if ( isGUID ) {
                 return AssetDatabase.GUIDToAssetPath( path );
             } else {
@@ -122,6 +137,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 }
                 return result;
             }
+#else
+            throw new System.NotImplementedException( );
+#endif
         }
 
         public virtual object Clone( ) {
