@@ -12,7 +12,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
         public static void AddObjects( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<SearchPath>> getList, Object[] objectReferences ) {
             var add = objectReferences.
                 Where( v => EditorUtility.IsPersistent( v ) ).
-                Select( v => new SearchPath( SearchPathType.Exact, AssetDatabase.GetAssetPath( v ) ) );
+                Select( v => new SearchPath( SearchPathType.Partial, false, AssetDatabase.GetAssetPath( v ) ) );
             foreach ( var item in targetlist ) {
                 getList( item ).AddRange( add );
                 EditorUtility.SetDirty( item );
@@ -33,13 +33,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 VerticalBoxScope.BeginVerticalBox( );
                 Event currentEvent = Event.current;
                 for ( int i = 0; i < minmax_count.max; i++ ) {
-                    var scopeRect = EditorGUILayout.BeginHorizontal( );
+                    var scopeRect = EditorGUILayout.BeginVertical( );
+                    EditorGUILayout.BeginHorizontal( );
                     // 全てのオブジェクトの値が同じか
                     bool samevalue_in_all_value = true;
                     bool samevalue_in_all_type = true;
+                    bool samevalue_in_all_preservecase = true;
                     if ( multiple ) {
-                        samevalue_in_all_value = i < minmax_count.min && targetlist.All( v => t.excludes[i].value == v.excludes[i].value );
+                        samevalue_in_all_value = i < minmax_count.min && targetlist.All( v => t.excludes[i].Value == v.excludes[i].Value );
                         samevalue_in_all_type = i < minmax_count.min && targetlist.All( v => t.excludes[i].searchType == v.excludes[i].searchType );
+                        samevalue_in_all_preservecase = i < minmax_count.min && targetlist.All( v => t.excludes[i].PreserveCase == v.excludes[i].PreserveCase );
                     }
 
                     EditorGUI.indentLevel++;
@@ -55,7 +58,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     Rect textrect = EditorGUILayout.GetControlRect( GUILayout.MinWidth( 30 ) );
                     string filter;
                     if ( samevalue_in_all_value ) {
-                        filter = EditorGUI.TextField( textrect, t.excludes[i].value );
+                        filter = EditorGUI.TextField( textrect, t.excludes[i].Value );
                     } else {
                         EditorGUI.showMixedValue = true;
                         filter = EditorGUI.TextField( textrect, string.Empty );
@@ -87,7 +90,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         filter = PathUtils.ToValidPath( filter );
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
-                            item.excludes[i].value = filter;
+                            item.excludes[i].Value = filter;
                             EditorUtility.SetDirty( item );
                         }
                         minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
@@ -96,24 +99,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         // OpenFilePanelなどを使用した場合に以下のエラーが出るのでreturnして回避
                         // 'EndLayoutGroup: BeginLayoutGroup must be called first.'
                         return;
-                    }
-
-                    EditorGUI.BeginChangeCheck( );
-                    SearchPathType searchType;
-                    if ( samevalue_in_all_type ) {
-                        searchType = ( SearchPathType )EditorGUILayout.EnumPopup( t.excludes[i].searchType, GUILayout.Width( 70 ) );
-                    } else {
-                        EditorGUI.showMixedValue = true;
-                        searchType = ( SearchPathType )EditorGUILayout.EnumPopup( SearchPathType.Exact, GUILayout.Width( 70 ) );
-                        EditorGUI.showMixedValue = false;
-                    }
-                    if ( EditorGUI.EndChangeCheck( ) ) {
-                        foreach ( var item in targetlist ) {
-                            ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
-                            item.excludes[i].searchType = searchType;
-                            EditorUtility.SetDirty( item );
-                        }
-                        minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                     }
 
                     // Copy&Paste
@@ -170,6 +155,38 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                     EditorGUILayout.EndHorizontal( );
 
+                    EditorGUI.BeginChangeCheck( );
+                    EditorGUI.indentLevel += 2;
+                    EditorGUILayout.BeginHorizontal( );
+                    SearchPathType searchType;
+                    if ( samevalue_in_all_type ) {
+                        searchType = ( SearchPathType )LocalizedEnumPopup.EnumPopup( t.excludes[i].searchType );
+                    } else {
+                        EditorGUI.showMixedValue = true;
+                        searchType = ( SearchPathType )LocalizedEnumPopup.EnumPopup( SearchPathType.Exact );
+                        EditorGUI.showMixedValue = false;
+                    }
+
+                    if ( samevalue_in_all_preservecase ) {
+                        t.excludes[i].PreserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
+                    } else {
+                        EditorGUI.showMixedValue = true;
+                        t.excludes[i].PreserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
+                        EditorGUI.showMixedValue = false;
+                    }
+                    EditorGUI.indentLevel -= 2;
+                    EditorGUILayout.EndHorizontal( );
+
+                    if ( EditorGUI.EndChangeCheck( ) ) {
+                        foreach ( var item in targetlist ) {
+                            ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
+                            item.excludes[i].searchType = searchType;
+                            EditorUtility.SetDirty( item );
+                        }
+                        minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
+                    }
+
+
                     // プレビュー
                     for ( int j = 0; j < targetlist.Length; j++ ) {
                         var item = targetlist[j];
@@ -185,7 +202,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUI.indentLevel++;
                         }
                         EditorGUILayout.BeginHorizontal( );
-                        string previewpath = item.ConvertDynamicPath( item.excludes[i].value, ExporterConsts.BATCH_EXPORT_KEY_DUMMY );
+                        string previewpath = item.ConvertDynamicPath( item.excludes[i].Value, ExporterConsts.BATCH_EXPORT_KEY_DUMMY );
                         EditorGUILayout.LabelField( new GUIContent( previewpath, previewpath ) );
                         if ( multiple ) {
                             EditorGUI.indentLevel--;
@@ -198,6 +215,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         EditorGUILayout.EndHorizontal( );
                     }
+                    EditorGUILayout.EndVertical( );
                 }
                 EditorGUI.indentLevel++;
                 if ( GUIElement_Utils.PlusButton( ) ) {

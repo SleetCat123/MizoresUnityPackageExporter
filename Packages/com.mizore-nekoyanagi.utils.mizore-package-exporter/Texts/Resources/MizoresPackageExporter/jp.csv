@@ -47,6 +47,14 @@ ConvertAllPathsToAbsolute,全てのパスを絶対パスに変換
 ConvertAllPathsToGUID,全てのパスをGUIDに変換
 DefaultPathType,パス追加時の形式
 
+SearchPathType_Disabled,無効
+SearchPathType_Exact,完全一致
+SearchPathType_Partial,部分一致
+SearchPathType_StartsWith,先頭が一致
+SearchPathType_EndsWith,末尾が一致
+SearchPathType_Regex,正規表現
+PreserveCase,大文字小文字を区別
+
 UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、{0}を継承したスクリプトをunitypackageのエクスポート後に実行できるようになります。\n\n警告: スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。\n\n有効化しますか？
 
 SearchReference,Referencesを検索

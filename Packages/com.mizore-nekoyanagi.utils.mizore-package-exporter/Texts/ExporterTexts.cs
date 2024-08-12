@@ -15,10 +15,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static void Clear( ) {
             _table.Clear( );
         }
-        static string Get( string key, params object[] args ) {
+        public static string Get( string key, params object[] args ) {
             return string.Format( Get( key ), args );
         }
-        static string Get( string key ) {
+        public static string Get( string key ) {
 #if UNITY_EDITOR
             return GetFromLanguage( ExporterEditorPrefs.Language, key );
 #else
@@ -125,6 +125,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ExportLogAllFileExists => Get( "ExportLogAllFileExists" );
         public static string ExportLogSuccess( string path ) => Get( "ExportLogSuccess", path );
         public static string ExcludesWereEmpty => Get( "ExcludesWereEmpty" );
+        public static string PreserveCase => Get( "PreserveCase" );
         public static string CopyTarget( string text ) => Get( "CopyTarget", text );
         public static string CopyTargetWithValue( string type, int index ) => Get( "CopyTargetWithValue", type, index );
         public static string CopyTargetNoValue => Get( "CopyTargetNoValue" );

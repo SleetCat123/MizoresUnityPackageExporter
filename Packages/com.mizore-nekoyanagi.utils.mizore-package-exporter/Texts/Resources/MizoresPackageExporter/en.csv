@@ -106,6 +106,14 @@ ConvertAllPathsToAbsolute,Convert all paths to absolute
 ConvertAllPathsToGUID,Convert all paths to GUID
 DefaultPathType,Default Path Type
 
+SearchPathType_Disabled,Disabled
+SearchPathType_Exact,Exact
+SearchPathType_Partial,Partial
+SearchPathType_StartsWith,StartsWith
+SearchPathType_EndsWith,EndsWith
+SearchPathType_Regex,Regex
+PreserveCase,Preserve Case
+
 AdvancedMode,Advanced
 UsePostProcessScript,Use Post Process Script
 UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from {0} to be executed after exporting the unitypackage.\n\nWarning: Please make sure that the scripts are reliable and use them at your own risk.\n\nDo you want to activate it?

@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 using System.Threading.Tasks;
+using System.Text;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -95,7 +97,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( batchExportMode == BatchExportMode.Single ) {
                 return new string[] { GetExportFileName( string.Empty ) };
             } else {
-                var texts = GetBatchExportKeysConverted();
+                var texts = GetBatchExportKeysConverted( );
                 var result = new string[texts.Length];
                 for ( int i = 0; i < texts.Length; i++ ) {
                     result[i] = GetExportFileName( texts[i] );
@@ -123,7 +125,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #region BatchExport
         public BatchExportModeData batchExportMode;
         public BatchExportFolderModeData batchExportFolderMode;
-        public List<string> batchExportTexts = new List<string>();
+        public List<string> batchExportTexts = new List<string>( );
         public ObjectRefElement batchExportFolderRoot;
         public ObjectRefElement batchExportListFile;
         public string batchExportFolderRegex;
@@ -320,7 +322,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             List<string> referencePaths = new List<string>( );
             List<string> excludeReferences = new List<string>( );
             foreach ( var v in references ) {
-                var path = v.element.GetConvertedPath(this, batchExportKey);
+                var path = v.element.GetConvertedPath( this, batchExportKey );
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
@@ -385,7 +387,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public async Task GetAllPath( System.Action<FilePathList> callback, string batchExportKey ) {
 #if UNITY_EDITOR
-            var referencesPaths = GetReferencesPath( batchExportKey);
+            var referencesPaths = GetReferencesPath( batchExportKey );
             if ( ExporterEditorPrefs.DebugMode ) {
                 Debug.Log( "References: \n" + string.Join( "\n", referencesPaths ) );
             }
@@ -393,64 +395,63 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
             Debug.Log( "%batch%: " + batchExportKey );
 
-            List<FilePath> list = new List<FilePath>();
+            List<FilePath> list = new List<FilePath>( );
             foreach ( var v in objects ) {
                 var path = v.GetConvertedPath( this, batchExportKey );
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
-                list.Add( new FilePath( path, v.searchReference ) );
-            }
-
-            await Task.Delay( 1 );
-            var list_include_sub = new List<FilePath>( );
-            foreach ( var item in list ) {
-                if ( Directory.Exists( item.path ) ) {
-                    list_include_sub.Add( item );
+                var element = new FilePath( path, v.searchReference );
+                list.Add( element );
+                if ( Directory.Exists( element.path ) ) {
+                    list.Add( element );
                     // サブファイル・フォルダを取得
-                    var subdirs = Directory.GetFileSystemEntries( item.path, "*", SearchOption.AllDirectories );
+                    var subdirs = Directory.GetFileSystemEntries( element.path, "*", SearchOption.AllDirectories );
                     foreach ( var sub in subdirs ) {
-                        var path = sub.Replace( '\\', '/' );
-                        if ( !list_include_sub.Any( v => v.path == path ) ) {
-                            list_include_sub.Add( new FilePath( path, item.searchReference ) );
+                        var subpath = sub.Replace( '\\', '/' );
+                        if ( !list.Any( v => v.path == subpath ) ) {
+                            list.Add( new FilePath( subpath, element.searchReference ) );
                         }
                     }
                 } else {
-                    if ( !list_include_sub.Any( v => v.path == item.path ) ) {
-                        list_include_sub.Add( item );
+                    if ( !list.Any( v => v.path == element.path ) ) {
+                        list.Add( element );
                     }
                 }
             }
+
+            await Task.Delay( 1 );
+
             // .metaファイルを除外
-            list_include_sub = list_include_sub.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
+            list = list.Where( v => Path.GetExtension( v.path ) != ".meta" ).ToList( );
             if ( ExporterEditorPrefs.DebugMode ) {
-                Debug.Log( "Include(Init): \n" + string.Join( "\n", list_include_sub.Select( v => v.path ) ) );
+                Debug.Log( "Include(Init): \n" + string.Join( "\n", list.Select( v => v.path ) ) );
             }
             await Task.Delay( 1 );
 
             // 除外指定ファイル・フォルダの検索用
-            List< SearchPath> excludeSearchPaths = new List<SearchPath>( );
+            List<SearchPath> excludeSearchPaths = new List<SearchPath>( );
             foreach ( var v in excludeObjects ) {
                 if ( v == null || v.GetObject( this, batchExportKey ) == null ) {
                     continue;
                 }
-                excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, v.GetConvertedPath( this, batchExportKey ) ) );
+                excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, true, v.GetConvertedPath( this, batchExportKey ) ) );
             }
             foreach ( var v in excludes ) {
-                excludeSearchPaths.Add( new SearchPath( v.searchType, ConvertDynamicPath( v.value, batchExportKey ) ) );
+                excludeSearchPaths.Add( new SearchPath( v.searchType, v.PreserveCase, ConvertDynamicPath( v.Value, batchExportKey ) ) );
             }
 
             await Task.Delay( 1 );
 
-            var result = new HashSet<string>( );
-            var result_exclude1 = new HashSet<string>( );
+            var paths = new HashSet<string>( );
+            var excludePaths = new HashSet<string>( );
             var referencesResults = new Dictionary<string, HashSet<string>>( );
-            var logging_dependencies = new HashSet<string>( );
-            var logging_ignoreDependencies = new HashSet<string>( );
-            foreach ( var item in list_include_sub ) {
+            var logging_dependencies = new StringBuilder( "Dependencies: \n" );
+            var logging_ignoreDependencies = new StringBuilder( "Ignore Dependencies: \n" );
+            foreach ( var item in list ) {
                 if ( excludeSearchPaths.Any( v => v.IsMatch( item.path ) ) ) {
                     // 除外対象ならスキップ
-                    result_exclude1.Add( item.path );
+                    excludePaths.Add( item.path );
                     continue;
                 }
                 if ( Path.GetExtension( item.path ).Length != 0 ) {
@@ -460,10 +461,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         foreach ( var dp in dependencies ) {
                             if ( dp == item.path ) {
                                 // 自分自身
-                                result.Add( dp );
+                                paths.Add( dp );
                             } else if ( referencesPaths.Contains( dp ) ) {
                                 // 依存AssetがReferencesに含まれていたらエクスポート対象に追加
-                                result.Add( dp );
+                                paths.Add( dp );
 
                                 HashSet<string> referenceFrom;
                                 if ( !referencesResults.TryGetValue( dp, out referenceFrom ) ) {
@@ -474,47 +475,47 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
                                 //ExporterUtils.DebugLog( "Dependency: " + dp );
                                 //ExporterUtils.DebugLog( "Referenced by: " + item );
-                                logging_dependencies.Add( $"{dp} (Referenced by: {item.path})" );
+                                logging_dependencies.AppendLine( $"{dp} (Referenced by: {item.path})" );
                             } else {
                                 // 依存AssetがReferencesに含まれていない場合は無視
                                 //ExporterUtils.DebugLog( "Ignore Dependency: " + dp );
-                                logging_ignoreDependencies.Add( dp );
+                                logging_ignoreDependencies.AppendLine( dp );
                             }
                         }
                     } else {
                         // 依存Assetを検索しない場合はそのまま追加
-                        result.Add( item.path );
+                        paths.Add( item.path );
                     }
                 } else if ( Directory.Exists( item.path ) ) {
                     // 何もしない
                 } else {
                     // 拡張子が無いファイルはそのまま追加
-                    result.Add( item.path );
+                    paths.Add( item.path );
                 }
             }
             if ( ExporterEditorPrefs.DebugMode ) {
-                Debug.Log( "Dependencies: \n" + string.Join( "\n", logging_dependencies ) );
-                Debug.Log( "Ignore Dependencies: \n" + string.Join( "\n", logging_ignoreDependencies ) );
+                Debug.Log( logging_dependencies.ToString( ) );
+                Debug.Log( logging_ignoreDependencies.ToString( ) );
             }
 
             await Task.Delay( 1 );
             // 除外指定されたファイル・フォルダを処理（2回目　Referencesで追加されたファイルを除外するために再度処理）
             if ( ExporterEditorPrefs.DebugMode ) {
-                Debug.Log( "Before Exclude: \n" + string.Join( "\n", result ) );
+                Debug.Log( "Before Exclude: \n" + string.Join( "\n", paths ) );
             }
-            IEnumerable<string> result_enumerable = result;
+            IEnumerable<string> result_enumerable = paths;
             foreach ( var exclude in excludeSearchPaths ) {
-                result_enumerable = exclude.Filter( result_enumerable, exclude: true, includeSubfiles: true );
+                var matchPaths = exclude.GetMatchPaths( result_enumerable, includeSubfiles: true );
+                result_enumerable = result_enumerable.Except( matchPaths );
                 await Task.Delay( 1 );
             }
-            var result_exclude2 = result.Except( result_enumerable );
-
             await Task.Delay( 1 );
-            // 除外処理1回目と2回目の結果を結合
-            var excludeResults =  result_exclude1.Concat( result_exclude2 );
+            // 除外処理前後の差分をとる
+            excludePaths.UnionWith( paths.Except( result_enumerable ) );
+            await Task.Delay( 1 );
             if ( ExporterEditorPrefs.DebugMode ) {
-                if ( excludeResults.Any( ) ) {
-                    Debug.Log( "Excludes Result: \n" + string.Join( "\n", excludeResults ) );
+                if ( excludePaths.Any( ) ) {
+                    Debug.Log( "Excludes Result: \n" + string.Join( "\n", excludePaths ) );
                 } else {
                     Debug.Log( ExporterTexts.ExcludesWereEmpty );
                 }
@@ -526,7 +527,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var filePathList = new FilePathList( ) {
                 batchExportKey = batchExportKey,
                 paths = result_enumerable,
-                excludePaths = excludeResults,
+                excludePaths = excludePaths,
                 referencedPaths = referencesResults,
             };
 
@@ -633,7 +634,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 Dictionary<string, FilePathList> table = null;
                 await GetAllPath_Batch( ( t, max, currentPath, finished ) => {
                     var text = ExporterTexts.ProgressBarInfo_Export( name, currentPath );
-                    var progress = t.Count / (float)max;
+                    var progress = t.Count / ( float )max;
                     EditorUtility.DisplayProgressBar( ExporterTexts.AssetName, text, progress );
                     if ( finished ) {
                         table = t;

@@ -81,7 +81,39 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
                     v2.variables = v1.variables.ToDictionary( v => v.Key, v => v.Value );
                     v2.excludeObjects = v1.excludeObjects.Select( v => new ObjectRefElement( v.Path ) ).ToList( );
-                    v2.excludes = v1.excludes.Select( v => new SearchPath( ( SearchPathType )v.searchType, v.value ) ).ToList( );
+                    v2.excludes = v1.excludes.Select( v => {
+                        var searchType = SearchPathType.Disabled;
+                        var ignoreCase = false;
+                        switch ( v.searchType ) {
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Disabled:
+                                searchType = SearchPathType.Disabled;
+                                ignoreCase = false;
+                                break;
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Exact:
+                                searchType = SearchPathType.Exact;
+                                ignoreCase = true;
+                                break;
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Partial:
+                                searchType = SearchPathType.Partial;
+                                ignoreCase = false;
+                                break;
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Partial_IgnoreCase:
+                                searchType = SearchPathType.Partial;
+                                ignoreCase = true;
+                                break;
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Regex:
+                                searchType = SearchPathType.Regex;
+                                ignoreCase = false;
+                                break;
+                            case MizoresPackageExporterV1.SearchPath.SearchPathType.Regex_IgnoreCase:
+                                searchType = SearchPathType.Regex;
+                                ignoreCase = true;
+                                break;
+                            default:
+                                break;
+                        }
+                        return new SearchPath( searchType, ignoreCase, v.value );
+                    } ).ToList( );
                     v2.references = v1.references.Select( v => new ReferenceElement( new ObjectRefElement( v.Path ), ReferenceMode.Include ) ).ToList( );
                     v2.packageNameSettings = ( PackageNameSettings )v1.packageNameSettings;
                     v2.packageNameSettingsOverride = v1.packageNameSettingsOverride.ToDictionary( v => v.Key, v => ( PackageNameSettings )v.Value );
@@ -102,7 +134,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 var path = AssetDatabase.GetAssetPath( obj );
                 // 既存のAssetのファイル名の末尾に_bakをつける
                 // すでに同名のAssetが存在する場合はユニークな名前に変更
-                var bakPath = Path.Combine( Path.GetDirectoryName( path ),  name + "_bak.asset" );
+                var bakPath = Path.Combine( Path.GetDirectoryName( path ), name + "_bak.asset" );
                 if ( File.Exists( bakPath ) ) {
                     bakPath = AssetDatabase.GenerateUniqueAssetPath( path );
                 }

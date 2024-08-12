@@ -9,18 +9,55 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
     [System.Serializable]
     public class SearchPath : System.IEquatable<SearchPath>, System.ICloneable {
         public SearchPathTypeData searchType;
-        public string value;
+        [SerializeField]
+        private bool preserveCase;
+        public bool PreserveCase {
+            get {
+                return preserveCase;
+            }
+            set {
+                preserveCase = value;
+                UpdateRegex( );
+            }
+        }
+        [SerializeField]
+        private string value;
+        public string Value {
+            get {
+                return value;
+            }
+            set {
+                this.value = value;
+                UpdateRegex( );
+            }
+        }
+        Regex regex;
+        void UpdateRegex( ) {
+            if ( searchType.value != SearchPathType.Regex ) {
+                regex = null;
+                return;
+            }
+            try {
+                regex = new Regex( value, preserveCase ? RegexOptions.None : RegexOptions.IgnoreCase );
+            } catch ( System.Exception e ) {
+                Debug.LogError( e );
+                regex = null;
+            }
+        }
 
         public SearchPath( ) {
-            this.searchType = SearchPathType.Exact;
+            this.searchType = SearchPathType.Partial;
+            this.preserveCase = false;
             this.value = string.Empty;
         }
-        public SearchPath( SearchPathType searchType, string value ) {
+        public SearchPath( SearchPathType searchType, bool preserveCase, string value ) {
             this.searchType = searchType;
+            this.preserveCase = preserveCase;
             this.value = value;
         }
         public SearchPath( SearchPath source ) {
             this.searchType = source.searchType.value;
+            this.preserveCase = source.preserveCase;
             this.value = source.value;
         }
         public object Clone( ) {
@@ -28,14 +65,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public override string ToString( ) {
-            return $"{value}({EnumCache.GetName( searchType )})";
+            return $"{value}({EnumCache.GetName( searchType )} {( preserveCase ? "(PreserveCase)" : "" )})";
         }
 
         public override int GetHashCode( ) {
-            return value.GetHashCode( ) ^ searchType.GetHashCode( );
+            return value.GetHashCode( ) ^ preserveCase.GetHashCode( ) ^ searchType.GetHashCode( );
         }
         public bool Equals( SearchPath other ) {
-            return this.value == other.value && this.searchType == other.searchType;
+            return this.value == other.value && this.searchType == other.searchType && this.preserveCase == other.preserveCase;
         }
         public override bool Equals( object obj ) {
             return Equals( ( SearchPath )obj );
@@ -48,111 +85,46 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public bool IsMatch( string path ) {
+            if ( searchType.value == SearchPathType.Regex ) {
+                UpdateRegex( );
+                return regex.IsMatch( path );
+            }
+            var a = path;
+            var b = value;
+            if ( preserveCase == false ) {
+                a = path.ToLowerInvariant( );
+                b = value.ToLowerInvariant( );
+            }
             switch ( searchType.value ) {
                 default:
+                    throw new System.Exception( $"Unknown search type: {searchType.value}" );
                 case SearchPathType.Disabled:
                     return false;
                 case SearchPathType.Exact:
-                    return value == path;
+                    return a == b;
                 case SearchPathType.Partial:
-                    return path.Contains( value );
-                case SearchPathType.Partial_IgnoreCase:
-                    return path.ToLowerInvariant( ).Contains( value.ToLowerInvariant( ) );
-                case SearchPathType.Regex:
-                    return Regex.IsMatch( path, value );
-                case SearchPathType.Regex_IgnoreCase:
-                    return Regex.IsMatch( path, value, RegexOptions.IgnoreCase );
+                    return a.Contains( b );
+                case SearchPathType.StartsWith:
+                    return a.StartsWith( b );
+                case SearchPathType.EndsWith:
+                    return a.EndsWith( b );
             }
         }
-        public IEnumerable<string> Filter( IEnumerable<string> paths, bool exclude, bool includeSubfiles ) {
+        public IEnumerable<string> GetMatchPaths( IEnumerable<string> paths, bool includeSubfiles ) {
             ExporterUtils.DebugLog( ToString( ) );
             ExporterUtils.DebugLog( "Paths: \n" + string.Join( "\n", paths ) + "\n" );
-            Regex regex = null;
-            if ( searchType == SearchPathType.Regex || searchType == SearchPathType.Regex_IgnoreCase ) {
-                try {
-                    if ( searchType == SearchPathType.Regex_IgnoreCase ) {
-                        regex = new Regex( value, RegexOptions.IgnoreCase );
-                    } else {
-                        regex = new Regex( value, RegexOptions.None );
-                    }
-                } catch ( System.Exception e ) {
-                    Debug.LogError( e );
-                    if ( exclude ) {
-                        return paths;
-                    } else {
-                        return new string[0];
-                    }
-                }
-            }
+
             if ( searchType == SearchPathType.Disabled || string.IsNullOrEmpty( value ) ) {
-                if ( exclude ) {
-                    return paths;
-                } else {
-                    return new string[0];
-                }
+                return new string[0];
             }
 
-            List<string> folders = new List<string>( );
-            List<string> result;
-            if ( exclude ) {
-                result = new List<string>( paths );
-            } else {
-                result = new List<string>( );
-            }
-            if ( searchType == SearchPathType.Exact ) {
-                if ( Directory.Exists( value ) && paths.Any( v => v.StartsWith( value ) ) ) {
-                    if ( exclude ) {
-                        result.Remove( value );
-                    } else {
-                        result.Add( value );
-                    }
+            HashSet<string> folders = new HashSet<string>( );
+            List<string> result = new List<string>( );
+            foreach ( var path in paths ) {
+                if ( IsMatch( path ) ) {
+                    result.Add( path );
                     if ( includeSubfiles ) {
-                        ExporterUtils.DebugLog( "Folder: " + value + "/" );
-                        folders.Add( value + "/" );
-                    }
-                } else if ( paths.Contains( value ) ) {
-                    if ( exclude ) {
-                        result.Remove( value );
-                    } else {
-                        result.Add( value );
-                    }
-                }
-            } else {
-                foreach ( var path in paths ) {
-                    switch ( searchType.value ) {
-                        case SearchPathType.Partial:
-                        case SearchPathType.Partial_IgnoreCase:
-                            bool b;
-                            if ( searchType == SearchPathType.Partial_IgnoreCase ) {
-                                // 小文字に変換
-                                b = path.ToLowerInvariant( ).Contains( value.ToLowerInvariant( ) );
-                            } else {
-                                b = path.Contains( value );
-                            }
-                            if ( b ) {
-                                if ( exclude ) {
-                                    result.Remove( path );
-                                } else {
-                                    result.Add( path );
-                                }
-                                if ( includeSubfiles ) {
-                                    folders.Add( path + "/" );
-                                }
-                            }
-                            break;
-                        case SearchPathType.Regex:
-                        case SearchPathType.Regex_IgnoreCase:
-                            if ( regex.IsMatch( path ) ) {
-                                if ( exclude ) {
-                                    result.Remove( path );
-                                } else {
-                                    result.Add( path );
-                                }
-                                if ( includeSubfiles ) {
-                                    folders.Add( path + "/" );
-                                }
-                            }
-                            break;
+                        folders.Add( path + "/" );
                     }
                 }
             }
@@ -160,11 +132,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 ExporterUtils.DebugLog( "Folders: \n" + string.Join( "\n", folders ) + "\n" );
                 var subfiles = paths.Where( v1 => folders.Any( v2 => v1.StartsWith( v2 ) ) );
                 ExporterUtils.DebugLog( "Subfiles: \n" + string.Join( "\n", subfiles ) + "\n" );
-                if ( exclude ) {
-                    return result.Except( subfiles );
-                } else {
-                    return result.Concat( subfiles );
-                }
+                return result.Concat( subfiles );
             } else {
                 return result;
             }

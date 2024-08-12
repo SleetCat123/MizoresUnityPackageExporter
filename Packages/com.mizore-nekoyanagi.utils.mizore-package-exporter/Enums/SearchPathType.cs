@@ -10,17 +10,17 @@
         /// </summary>
         Partial,
         /// <summary>
-        /// 部分一致（大文字小文字を無視）
+        /// 先頭が一致
         /// </summary>
-        Partial_IgnoreCase,
+        StartsWith,
+        /// <summary>
+        /// 末尾が一致
+        /// </summary>
+        EndsWith,
         /// <summary>
         /// 正規表現
         /// </summary>
         Regex,
-        /// <summary>
-        /// 正規表現（大文字小文字を無視）
-        /// </summary>
-        Regex_IgnoreCase,
     }
     [System.Serializable]
     public class SearchPathTypeData : EnumData<SearchPathType> {

@@ -5,7 +5,9 @@
 - add: Objectsなどの項目にもフォルダ／ファイルの選択ボタンを追加
 - add: 特定のパッケージだけを個別にエクスポートできるようにした
 - add: ファイル一覧の表示とエクスポート時にプログレスバーを表示するようにした
-- change: DynamicPathをObjectsに統合
+- add: Excludesの条件にStartsWithとEndsWithを追加
+- add: Objects、References、ExcludeObjectsでDynamicVariableを使用できるようにした
+- change: 上記変更にともないDynamicPathをObjectsに統合
 - change: フォルダ／ファイルの選択ボタンの表示を変更
 - change: PostProcessScriptの選択をPopupにした
 - change: （内部処理）各種Enumの値を文字列で保存するように変更
@@ -33,8 +35,8 @@ Dynamic Export Pathのタイトル部分か、各項目の数字部分を右ク�
 - change: Package Manager対応に伴いフォルダ構成を変更
 
 ## [v7] (2023-11-20
-- fix: エクスポートログに改行が含まれていると表示が崩れてしまっていたのを修正  
-- fix:  Excludesにフォルダを指定した場合に機能していなかったのを修正  
+- fix: エクスポートログに改行が含まれていると表示が崩れてしまっていたのを修正
+- fix:  Excludesにフォルダを指定した場合に機能していなかったのを修正
 - change: エクスポート対象ファイルの表示方法をツリー表示に変更
 - change: エクスポートが中断されたログにファイルパスを書くようにした
 - add: 複数のunitypackageを一括で出力できる機能（Batch Export）を追加
@@ -42,7 +44,7 @@ Dynamic Export Pathのタイトル部分か、各項目の数字部分を右ク�
 - add: UIのテキストをcsvから読み込むようにした
 - add: UIのテキストの言語切替を実装
 - add: %date:yyyyMMdd%のように書くと現在の日付をformatして表示できるようにした
-  
+
 ◆内部処理
 - change: SingleとMultipleエディターのソースファイルを共通化
 - change: その他ソースコード整理

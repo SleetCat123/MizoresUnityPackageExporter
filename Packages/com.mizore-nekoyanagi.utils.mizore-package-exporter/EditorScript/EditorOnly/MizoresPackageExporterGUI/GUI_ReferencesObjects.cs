@@ -84,28 +84,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     return;
                 }
 
-                var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references[i].mode == v.references[i].mode );
-                ReferenceMode referenceMode;
-                if ( samevalue_in_all_mode ) {
-                    referenceMode = t.references[i].mode;
-                } else {
-                    referenceMode = ReferenceMode.Include;
-                }
-                EditorGUI.showMixedValue = !samevalue_in_all_mode;
-                EditorGUI.BeginChangeCheck( );
-                referenceMode = ( ReferenceMode )EditorGUILayout.EnumPopup( referenceMode, GUILayout.MinWidth( 50 ), GUILayout.MaxWidth( 80 ) );
-                EditorGUI.showMixedValue = false;
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    foreach ( var item in targetlist ) {
-                        // 全ての選択中インスタンスに対してオブジェクトを設定
-                        // 要素数が足りなかったらリサイズ
-                        var refs = item.references;
-                        ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
-                        refs[i].mode = referenceMode;
-                        EditorUtility.SetDirty( item );
-                    }
-                }
-
                 // Button
                 int index_after = GUIElement_Utils.UpDownButton( i, objects_count.max );
                 if ( i != index_after ) {
@@ -131,11 +109,36 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
                 EditorGUILayout.EndHorizontal( );
 
+                // モード
+                EditorGUI.indentLevel += 2;
+                var samevalue_in_all_mode = samevalue_in_all && targetlist.All( v => t.references[i].mode == v.references[i].mode );
+                ReferenceMode referenceMode;
+                if ( samevalue_in_all_mode ) {
+                    referenceMode = t.references[i].mode;
+                } else {
+                    referenceMode = ReferenceMode.Include;
+                }
+                EditorGUI.showMixedValue = !samevalue_in_all_mode;
+                EditorGUI.BeginChangeCheck( );
+                referenceMode = ( ReferenceMode )EditorGUILayout.EnumPopup( referenceMode );
+                EditorGUI.showMixedValue = false;
+                if ( EditorGUI.EndChangeCheck( ) ) {
+                    foreach ( var item in targetlist ) {
+                        // 全ての選択中インスタンスに対してオブジェクトを設定
+                        // 要素数が足りなかったらリサイズ
+                        var refs = item.references;
+                        ExporterUtils.ResizeList( refs, Mathf.Max( i + 1, refs.Count ), ( ) => new ReferenceElement( ) );
+                        refs[i].mode = referenceMode;
+                        EditorUtility.SetDirty( item );
+                    }
+                }
+                EditorGUI.indentLevel -= 2;
+
                 // プレビュー
                 for ( int j = 0; j < targetlist.Length; j++ ) {
                     var item = targetlist[j];
                     var el = item.references[i].element;
-                    var preview = el.GetConvertedPath(item, ExporterConsts.BATCH_EXPORT_KEY_DUMMY);
+                    var preview = el.GetConvertedPath( item, ExporterConsts.BATCH_EXPORT_KEY_DUMMY );
                     EditorGUI.indentLevel += 2;
                     if ( targetlist.Length > 1 ) {
                         using ( new EditorGUI.DisabledScope( true ) ) {
