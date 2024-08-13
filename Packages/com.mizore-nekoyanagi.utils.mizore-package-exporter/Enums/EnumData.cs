@@ -27,7 +27,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return value.Equals( other );
         }
         public override bool Equals( object obj ) {
-            if ( obj is null || GetType( ) != obj.GetType( ) ) {
+            if ( obj == null || GetType( ) != obj.GetType( ) ) {
                 return false;
             }
             return Equals( ( EnumData<T> )obj );
@@ -36,37 +36,37 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return value.GetHashCode( );
         }
         public static bool operator ==( EnumData<T> a, EnumData<T> b ) {
-            if ( a is null ) {
-                return b is null;
+            if ( a == null ) {
+                return b == null;
             }
             return a.Equals( b );
         }
         public static bool operator !=( EnumData<T> a, EnumData<T> b ) {
-            if ( a is null ) {
-                return b is not null;
+            if ( a == null ) {
+                return b != null;
             }
             return !a.Equals( b );
         }
         public static bool operator ==( EnumData<T> a, T b ) {
-            if ( a is null ) {
+            if ( a == null ) {
                 return false;
             }
             return a.Equals( b );
         }
         public static bool operator !=( EnumData<T> a, T b ) {
-            if ( a is null ) {
+            if ( a == null ) {
                 return true;
             }
             return !a.Equals( b );
         }
         public static bool operator ==( T a, EnumData<T> b ) {
-            if ( b is null ) {
+            if ( b == null ) {
                 return false;
             }
             return b.Equals( a );
         }
         public static bool operator !=( T a, EnumData<T> b ) {
-            if ( b is null ) {
+            if ( b == null ) {
                 return true;
             }
             return !b.Equals( a );
@@ -90,7 +90,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
     }
     public static class EnumCache {
-        static Dictionary<Type, string[ ]> enumNames = new Dictionary<Type, string[ ]>( );
+        static Dictionary<Type, string[]> enumNames = new Dictionary<Type, string[]>( );
         static Dictionary<Type, Array> enumValues = new Dictionary<Type, Array>( );
 
         public static string[] GetNames( Type type ) {

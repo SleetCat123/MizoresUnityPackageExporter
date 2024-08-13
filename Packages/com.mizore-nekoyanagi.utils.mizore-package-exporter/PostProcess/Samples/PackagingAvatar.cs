@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using UnityEngine;
+#if CSHARP_9_0_OR_NEWER
+using System.IO.Compression;
+#endif
 
 namespace MizoreNekoyanagi.Private.ExportPackage {
     public class PackagingAvatar : ExportPostProcess {
@@ -27,7 +29,7 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                 if ( copyPath == null ) {
                     continue;
                 }
-                var convertedPath = copyPath.GetConvertedPath(packageExporter, list.batchExportKey);
+                var convertedPath = copyPath.GetConvertedPath( packageExporter, list.batchExportKey );
                 if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
                     Debug.LogWarning( "Invalid path: " + copyPath );
                     continue;
@@ -99,7 +101,7 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
             }
 
             foreach ( var copyPath in copyPaths ) {
-                var convertedPath = copyPath.GetConvertedPath(packageExporter, list.batchExportKey);
+                var convertedPath = copyPath.GetConvertedPath( packageExporter, list.batchExportKey );
                 if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
                     Debug.LogWarning( "Invalid path: " + copyPath );
                     continue;
@@ -131,26 +133,36 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                 }
             }
 
-            if ( createZip ) {
+#if CSHARP_9_0_OR_NEWER
+            if (createZip)
+            {
                 // zip化
                 string zipDir;
-                if ( string.IsNullOrEmpty( zipFolderName ) ) {
+                if (string.IsNullOrEmpty(zipFolderName))
+                {
                     zipDir = dir;
-                } else {
-                    zipDir = Path.Combine( dir, zipFolderName );
-                    if ( !Directory.Exists( zipDir ) ) {
-                        Directory.CreateDirectory( zipDir );
+                }
+                else
+                {
+                    zipDir = Path.Combine(dir, zipFolderName);
+                    if (!Directory.Exists(zipDir))
+                    {
+                        Directory.CreateDirectory(zipDir);
                     }
                 }
-                var zipPath = Path.Combine( zipDir, packageName + ".zip" );
-                if ( File.Exists( zipPath ) ) {
-                    File.Delete( zipPath );
+                var zipPath = Path.Combine(zipDir, packageName + ".zip");
+                if (File.Exists(zipPath))
+                {
+                    File.Delete(zipPath);
                 }
-                Debug.Log( "Create zip: " + zipPath );
-                ZipFile.CreateFromDirectory( folderPath, zipPath, compressionLevel, false );
-                Debug.Log( "zip created: " + zipPath );
-                logs.Add( "zip created: " + zipPath );
+                Debug.Log("Create zip: " + zipPath);
+                ZipFile.CreateFromDirectory(folderPath, zipPath, compressionLevel, false);
+                Debug.Log("zip created: " + zipPath);
+                logs.Add("zip created: " + zipPath);
             }
+#else
+            Debug.LogError( "createZip is not supported on this version of Unity." );
+#endif
         }
     }
 }

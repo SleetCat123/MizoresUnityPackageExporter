@@ -396,12 +396,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             Debug.Log( "%batch%: " + batchExportKey );
 
             List<FilePath> list = new List<FilePath>( );
-            foreach ( var v in objects ) {
-                var path = v.GetConvertedPath( this, batchExportKey );
+            foreach ( var obj in objects ) {
+                var path = obj.GetConvertedPath( this, batchExportKey );
                 if ( string.IsNullOrWhiteSpace( path ) ) {
                     continue;
                 }
-                var element = new FilePath( path, v.searchReference );
+                var element = new FilePath( path, obj.searchReference );
                 list.Add( element );
                 if ( Directory.Exists( element.path ) ) {
                     list.Add( element );
@@ -542,8 +542,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
             callback?.Invoke( filePathList );
 #else
-            await Task.Delay( 1 );
-            callback?.Invoke( new FilePathList( ) );
+            await Task.Delay(1);
+            callback?.Invoke(new FilePathList());
 #endif
         }
         public static bool AllFileExists( ExporterEditorLogs logs, IEnumerable<string> list ) {
