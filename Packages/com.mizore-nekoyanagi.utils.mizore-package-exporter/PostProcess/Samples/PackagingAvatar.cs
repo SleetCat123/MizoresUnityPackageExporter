@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-#if CSHARP_9_0_OR_NEWER
+#if UNITY_2022_1_OR_NEWER
 using System.IO.Compression;
 #endif
 
@@ -133,32 +133,26 @@ namespace MizoreNekoyanagi.Private.ExportPackage {
                 }
             }
 
-#if CSHARP_9_0_OR_NEWER
-            if (createZip)
-            {
+#if UNITY_2022_1_OR_NEWER
+            if ( createZip ) {
                 // zip化
                 string zipDir;
-                if (string.IsNullOrEmpty(zipFolderName))
-                {
+                if ( string.IsNullOrEmpty( zipFolderName ) ) {
                     zipDir = dir;
-                }
-                else
-                {
-                    zipDir = Path.Combine(dir, zipFolderName);
-                    if (!Directory.Exists(zipDir))
-                    {
-                        Directory.CreateDirectory(zipDir);
+                } else {
+                    zipDir = Path.Combine( dir, zipFolderName );
+                    if ( !Directory.Exists( zipDir ) ) {
+                        Directory.CreateDirectory( zipDir );
                     }
                 }
-                var zipPath = Path.Combine(zipDir, packageName + ".zip");
-                if (File.Exists(zipPath))
-                {
-                    File.Delete(zipPath);
+                var zipPath = Path.Combine( zipDir, packageName + ".zip" );
+                if ( File.Exists( zipPath ) ) {
+                    File.Delete( zipPath );
                 }
-                Debug.Log("Create zip: " + zipPath);
-                ZipFile.CreateFromDirectory(folderPath, zipPath, compressionLevel, false);
-                Debug.Log("zip created: " + zipPath);
-                logs.Add("zip created: " + zipPath);
+                Debug.Log( "Create zip: " + zipPath );
+                ZipFile.CreateFromDirectory( folderPath, zipPath, compressionLevel, false );
+                Debug.Log( "zip created: " + zipPath );
+                logs.Add( "zip created: " + zipPath );
             }
 #else
             Debug.LogError( "createZip is not supported on this version of Unity." );
