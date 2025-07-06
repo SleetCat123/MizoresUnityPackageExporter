@@ -79,6 +79,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public void Clear( ) {
             logs.Clear( );
         }
+        
+        /// <summary>
+        /// デバッグログを追加
+        /// </summary>
+        public void LogDebug( string text ) {
+            Add( LogType.Info, text );
+        }
+        
+        /// <summary>
+        /// 警告ログを追加
+        /// </summary>
+        public void LogWarning( string text ) {
+            Add( LogType.Warning, text );
+        }
+        
+        /// <summary>
+        /// エラーログを追加
+        /// </summary>
+        public void LogError( string text ) {
+            Add( LogType.Error, text );
+        }
         public void DrawUI( ) {
 #if UNITY_EDITOR
             using ( new EditorGUILayout.VerticalScope( EditorStyles.helpBox ) ) {

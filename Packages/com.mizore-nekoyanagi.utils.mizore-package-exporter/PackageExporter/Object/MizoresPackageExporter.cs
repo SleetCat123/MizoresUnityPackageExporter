@@ -162,6 +162,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #if UNITY_EDITOR
             //ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
+            
+            // ログ出力用インスタンスを作成
+            var logs = new ExporterEditorLogs();
             switch ( batchExportMode.value ) {
                 default:
                 case BatchExportMode.Single:
@@ -198,7 +201,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                             break;
                     }
                     files = files.Where( v => Path.GetExtension( v ) != ".meta" ).Select( v => Path.GetFileName( v ) );
-                    files = files.Select( v => Path.GetFileNameWithoutExtension( v ) ).Where( v => regex.IsMatch( v ) );
+                    files = files.Select( v => GetBatchKeyFromFileSystemEntry( v, path, logs ) ).Where( v => regex.IsMatch( v ) );
                     temp_batchExportKeys = files.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.ListFile:
@@ -690,6 +693,58 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
             if ( s_postProcessScriptFieldValues != null ) {
                 postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary( v => v.key, v => v.value );
+            }
+        }
+
+        /// <summary>
+        /// ファイルシステムエントリからバッチキーを生成する
+        /// Phase1基本実装：ファイルとフォルダを適切に判別してバッチキーを生成
+        /// </summary>
+        /// <param name="fileName">ファイル名またはフォルダ名</param>
+        /// <param name="basePath">ベースパス</param>
+        /// <param name="logs">ログ出力用</param>
+        /// <returns>バッチキー</returns>
+        private string GetBatchKeyFromFileSystemEntry( string fileName, string basePath, ExporterEditorLogs logs ) {
+            try {
+                // 入力値検証
+                if ( string.IsNullOrEmpty( fileName ) || string.IsNullOrEmpty( basePath ) ) {
+                    logs?.LogWarning( $"GetBatchKeyFromFileSystemEntry: 不正な入力値: fileName={fileName}, basePath={basePath}" );
+                    return fileName ?? string.Empty;
+                }
+
+                string fullPath = Path.Combine( basePath, fileName );
+                
+                // ファイル存在チェック
+                if ( IsFileWithErrorHandling( fullPath, logs ) ) {
+                    // ファイルの場合：拡張子を除去
+                    string result = Path.GetFileNameWithoutExtension( fileName );
+                    logs?.LogDebug( $"GetBatchKeyFromFileSystemEntry: ファイル処理: {fileName} → {result}" );
+                    return result;
+                }
+
+                // フォルダの場合：フォルダ名をそのまま使用
+                logs?.LogDebug( $"GetBatchKeyFromFileSystemEntry: フォルダ処理: {fileName} → {fileName}" );
+                return fileName;
+            } catch ( System.Exception ex ) {
+                // 予期しないエラー時のフォールバック
+                logs?.LogError( $"GetBatchKeyFromFileSystemEntry: バッチキー生成エラー: {fileName}, エラー詳細: {ex.Message}" );
+                return fileName; // フォールバック: フォルダとして処理
+            }
+        }
+
+        /// <summary>
+        /// ファイル存在チェック（エラーハンドリング付き）
+        /// Phase1基本実装：基本的な例外処理のみ
+        /// </summary>
+        /// <param name="path">チェック対象パス</param>
+        /// <param name="logs">ログ出力用</param>
+        /// <returns>ファイルが存在する場合true</returns>
+        private bool IsFileWithErrorHandling( string path, ExporterEditorLogs logs ) {
+            try {
+                return File.Exists( path );
+            } catch ( System.Exception ex ) {
+                logs?.LogWarning( $"IsFileWithErrorHandling: ファイル存在チェックエラー: {path}, エラー: {ex.Message}" );
+                return false; // エラー時はフォルダとして処理
             }
         }
 

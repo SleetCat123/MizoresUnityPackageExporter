@@ -62,3 +62,10 @@ crashlytics-build.properties
 MizorePackageExporter/
 Test
 Test.meta
+
+prefab test*
+*.log
+docs/tasks/
+
+docs/2*
+docs/progress/
