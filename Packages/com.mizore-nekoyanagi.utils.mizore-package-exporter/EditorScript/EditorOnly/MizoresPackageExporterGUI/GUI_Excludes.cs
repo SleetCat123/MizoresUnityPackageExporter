@@ -217,7 +217,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         // 正規表現エラー表示
                         if ( !string.IsNullOrEmpty( el.RegexError ) ) {
                             EditorGUI.indentLevel += 2;
-                            EditorGUILayout.HelpBox( el.RegexError, MessageType.Error );
+                            EditorGUILayout.HelpBox( ExporterTexts.RegexParseError + "\n" + el.RegexError, MessageType.Error );
+                            EditorGUILayout.BeginHorizontal( );
+                            GUILayout.Space( EditorGUI.indentLevel * 15 );
+                            if ( GUILayout.Button( ExporterTexts.RegexCopyToLog, GUILayout.ExpandWidth( false ) ) ) {
+                                Debug.LogError( ExporterTexts.RegexParseError + "\n" + el.RegexError );
+                            }
+                            EditorGUILayout.EndHorizontal( );
                             EditorGUI.indentLevel -= 2;
                         }
                     }
