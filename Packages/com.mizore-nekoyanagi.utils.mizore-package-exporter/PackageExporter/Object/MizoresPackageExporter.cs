@@ -12,24 +12,30 @@ using System.Text;
 using UnityEditor;
 #endif
 
-namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
-    [CreateAssetMenu( menuName = "MizoreNekoyanagi/UnityPackageExporter" )]
-    public class MizoresPackageExporter : ScriptableObject, ISerializationCallbackReceiver {
+namespace MizoreNekoyanagi.PublishUtil.PackageExporter
+{
+    [CreateAssetMenu(menuName = "MizoreNekoyanagi/UnityPackageExporter")]
+    public class MizoresPackageExporter : ScriptableObject, ISerializationCallbackReceiver
+    {
         [System.Serializable]
-        private class PackageNameSettingsKVP {
+        private class PackageNameSettingsKVP
+        {
             public string key;
             public PackageNameSettings value;
 
-            public PackageNameSettingsKVP( string key, PackageNameSettings value ) {
+            public PackageNameSettingsKVP(string key, PackageNameSettings value)
+            {
                 this.key = key;
                 this.value = value;
             }
         }
         [System.Serializable]
-        public class StringPair {
+        public class StringPair
+        {
             public string key;
             public string value;
-            public StringPair( string key, string value ) {
+            public StringPair(string key, string value)
+            {
                 this.key = key;
                 this.value = value;
             }
@@ -43,81 +49,100 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         [SerializeField]
         public int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
 
-        public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>( );
+        public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>();
 
         [SerializeField]
         DynamicPathVariable[] s_variables;
         [System.NonSerialized]
-        public Dictionary<string, string> variables = new Dictionary<string, string>( );
+        public Dictionary<string, string> variables = new Dictionary<string, string>();
 
-        public List<ObjectRefElement> excludeObjects = new List<ObjectRefElement>( );
-        public List<SearchPath> excludes = new List<SearchPath>( );
+        public List<ObjectRefElement> excludeObjects = new List<ObjectRefElement>();
+        public List<SearchPath> excludes = new List<SearchPath>();
 
-        public List<ReferenceElement> references = new List<ReferenceElement>( );
+        public List<ReferenceElement> references = new List<ReferenceElement>();
 
 
         public string postProcessScriptTypeName;
         [System.NonSerialized]
-        public Dictionary<string, string> postProcessScriptFieldValues = new Dictionary<string, string>( );
+        public Dictionary<string, string> postProcessScriptFieldValues = new Dictionary<string, string>();
         [SerializeField]
         StringPair[] s_postProcessScriptFieldValues;
 
         #region PackageName
-        public PackageNameSettings packageNameSettings = new PackageNameSettings( );
+        public PackageNameSettings packageNameSettings = new PackageNameSettings();
 
         [SerializeField]
         PackageNameSettingsKVP[] s_packageNameSettingsOverride;
         [System.NonSerialized]
-        public Dictionary<string, PackageNameSettings> packageNameSettingsOverride = new Dictionary<string, PackageNameSettings>( );
-        public PackageNameSettings GetOverridedSettings( string batchExportKey ) {
-            if ( string.IsNullOrEmpty( batchExportKey ) ) {
+        public Dictionary<string, PackageNameSettings> packageNameSettingsOverride = new Dictionary<string, PackageNameSettings>();
+        public PackageNameSettings GetOverridedSettings(string batchExportKey)
+        {
+            if (string.IsNullOrEmpty(batchExportKey))
+            {
                 return packageNameSettings;
             }
             PackageNameSettings ov;
-            if ( packageNameSettingsOverride.TryGetValue( batchExportKey, out ov ) ) {
-                ov.SetBase( packageNameSettings );
+            if (packageNameSettingsOverride.TryGetValue(batchExportKey, out ov))
+            {
+                ov.SetBase(packageNameSettings);
                 ov.debug_id = batchExportKey;
                 return ov;
-            } else {
+            }
+            else
+            {
                 return packageNameSettings;
             }
         }
 
-        public string GetPackageName( string batchExportKey ) {
-            var currentSettings = GetOverridedSettings( batchExportKey );
-            return ConvertDynamicPath( currentSettings.packageName, batchExportKey );
+        public string GetPackageName(string batchExportKey)
+        {
+            var currentSettings = GetOverridedSettings(batchExportKey);
+            return ConvertDynamicPath(currentSettings.packageName, batchExportKey);
         }
-        public string GetExportFileName( string batchExportKey ) {
-            return GetPackageName( batchExportKey ) + ".unitypackage";
+        public string GetExportFileName(string batchExportKey)
+        {
+            return GetPackageName(batchExportKey) + ".unitypackage";
         }
-        public string GetExportPath( string batchExportKey ) {
-            return Const.EXPORT_FOLDER_PATH + GetExportFileName( batchExportKey );
+        public string GetExportPath(string batchExportKey)
+        {
+            return Const.EXPORT_FOLDER_PATH + GetExportFileName(batchExportKey);
         }
-        public string[] GetAllExportFileName( string batchExportKey ) {
-            if ( batchExportMode == BatchExportMode.Single ) {
-                return new string[] { GetExportFileName( string.Empty ) };
-            } else {
-                var texts = GetBatchExportKeysConverted( );
+        public string[] GetAllExportFileName(string batchExportKey)
+        {
+            if (batchExportMode == BatchExportMode.Single)
+            {
+                return new string[] { GetExportFileName(string.Empty) };
+            }
+            else
+            {
+                var texts = GetBatchExportKeysConverted();
                 var result = new string[texts.Length];
-                for ( int i = 0; i < texts.Length; i++ ) {
-                    result[i] = GetExportFileName( texts[i] );
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    result[i] = GetExportFileName(texts[i]);
                 }
-                return result.Distinct( ).ToArray( );
+                return result.Distinct().ToArray();
             }
         }
-        public string GetFormattedVersion( string batchExportKey ) {
-            var currentSettings = GetOverridedSettings( batchExportKey );
-            if ( string.IsNullOrWhiteSpace( currentSettings.GetExportVersion( ) ) ) {
+        public string GetFormattedVersion(string batchExportKey)
+        {
+            var currentSettings = GetOverridedSettings(batchExportKey);
+            if (string.IsNullOrWhiteSpace(currentSettings.GetExportVersion()))
+            {
                 return string.Empty;
-            } else {
-                return ConvertDynamicPath( currentSettings.versionFormat, batchExportKey );
+            }
+            else
+            {
+                return ConvertDynamicPath(currentSettings.versionFormat, batchExportKey);
             }
         }
 
-        public void UpdateAllExportVersions( ) {
-            packageNameSettings.UpdateExportVersion( );
-            foreach ( var item in packageNameSettingsOverride.Keys ) {
-                GetOverridedSettings( item ).UpdateExportVersion( );
+        public void UpdateAllExportVersions()
+        {
+            packageNameSettings.UpdateExportVersion();
+            foreach (var item in packageNameSettingsOverride.Keys)
+            {
+                GetOverridedSettings(item).UpdateExportVersion();
             }
         }
         #endregion
@@ -125,7 +150,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #region BatchExport
         public BatchExportModeData batchExportMode;
         public BatchExportFolderModeData batchExportFolderMode;
-        public List<string> batchExportTexts = new List<string>( );
+        public List<string> batchExportTexts = new List<string>();
         public ObjectRefElement batchExportFolderRoot;
         public ObjectRefElement batchExportListFile;
         public string batchExportFolderRegex;
@@ -133,22 +158,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         string[] temp_batchExportKeys;
 
         double lastUpdate_BatchExportKeys;
-        public string[] GetBatchExportKeysConverted( ) {
+        public string[] GetBatchExportKeysConverted()
+        {
             var list = BatchExportKeys;
-            for ( int i = 0; i < list.Length; i++ ) {
-                list[i] = ConvertDynamicPath( list[i], string.Empty );
+            for (int i = 0; i < list.Length; i++)
+            {
+                list[i] = ConvertDynamicPath(list[i], string.Empty);
             }
             return list;
         }
-        public bool CanUpdateBatchExportKeys( ) {
+        public bool CanUpdateBatchExportKeys()
+        {
 #if UNITY_EDITOR
             return 5f < EditorApplication.timeSinceStartup - lastUpdate_BatchExportKeys;
 #else
             return false;
 #endif
         }
-        public string[] BatchExportKeys {
-            get {
+        public string[] BatchExportKeys
+        {
+            get
+            {
 #if UNITY_EDITOR
                 // 短時間に連続してファイルを読めないようにする
                 if ( CanUpdateBatchExportKeys( ) || temp_batchExportKeys == null ) {
@@ -158,7 +188,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 return temp_batchExportKeys;
             }
         }
-        public void UpdateBatchExportKeys( ) {
+        public void UpdateBatchExportKeys()
+        {
 #if UNITY_EDITOR
             //ExporterUtils.DebugLog( "UpdateBatchExportKeys\n" + name );
             lastUpdate_BatchExportKeys = EditorApplication.timeSinceStartup;
@@ -227,86 +258,106 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         #endregion
 
         #region DynamicPath
-        public string ReplaceRelativeName( string key ) {
-            return Const_Keys.REGEX_RELATIVE_NAME.Replace( key, m => {
+        public string ReplaceRelativeName(string key)
+        {
+            return Const_Keys.REGEX_RELATIVE_NAME.Replace(key, m =>
+            {
                 var value = m.Groups[1].Value;
                 // 現在のパスから.の個数だけ上の階層にあるフォルダの名前を取得
-                var path = GetDirectoryPath( );
+                var path = GetDirectoryPath();
                 var count = value.Length;
-                for ( int i = 0; i < count; i++ ) {
-                    if ( path.Length == 0 ) {
+                for (int i = 0; i < count; i++)
+                {
+                    if (path.Length == 0)
+                    {
                         break;
                     }
-                    path = Path.GetDirectoryName( path );
+                    path = Path.GetDirectoryName(path);
                 }
-                if ( path.Length == 0 ) {
+                if (path.Length == 0)
+                {
                     // 上の階層が無い場合はそのまま返す
                     return key;
                 }
-                return Path.GetFileName( path );
+                return Path.GetFileName(path);
             }
             );
         }
-        public static string ReplaceDate( string key ) {
+        public static string ReplaceDate(string key)
+        {
             var date = System.DateTime.Now;
-            return Const_Keys.REGEX_DATE_FORMAT.Replace( key, m => date.ToString( m.Groups[1].Value ) );
+            return Const_Keys.REGEX_DATE_FORMAT.Replace(key, m => date.ToString(m.Groups[1].Value));
         }
-        public string ConvertDynamicPath( string path, string batchExportKey ) {
-            return ConvertDynamicPath_Main( path, 0, batchExportKey );
+        public string ConvertDynamicPath(string path, string batchExportKey)
+        {
+            return ConvertDynamicPath_Main(path, 0, batchExportKey);
         }
-        string ConvertDynamicPath_Main( string path, int recursiveCount, string batchExportKey ) {
-            if ( string.IsNullOrWhiteSpace( path ) ) return string.Empty;
-            if ( 2 < recursiveCount ) {
+        string ConvertDynamicPath_Main(string path, int recursiveCount, string batchExportKey)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return string.Empty;
+            if (2 < recursiveCount)
+            {
                 return path;
             }
             recursiveCount += 1;
 
-            foreach ( var kvp in variables ) {
-                var key = string.Format( "%{0}%", kvp.Key );
-                path = path.Replace( key, kvp.Value );
+            foreach (var kvp in variables)
+            {
+                var key = string.Format("%{0}%", kvp.Key);
+                path = path.Replace(key, kvp.Value);
             }
 
-            path = path.Replace( Const_Keys.KEY_BATCH_EXPORTER, batchExportKey );
+            path = path.Replace(Const_Keys.KEY_BATCH_EXPORTER, batchExportKey);
 
             var key_batchf = Const_Keys.KEY_FORMATTED_BATCH_EXPORTER;
-            var currentSettings = GetOverridedSettings( batchExportKey );
-            if ( path.Contains( key_batchf ) ) {
-                if ( string.IsNullOrWhiteSpace( batchExportKey ) ) {
-                    path = path.Replace( key_batchf, string.Empty );
-                } else {
-                    path = path.Replace( key_batchf, ConvertDynamicPath_Main( currentSettings.batchFormat, recursiveCount, batchExportKey ) );
+            var currentSettings = GetOverridedSettings(batchExportKey);
+            if (path.Contains(key_batchf))
+            {
+                if (string.IsNullOrWhiteSpace(batchExportKey))
+                {
+                    path = path.Replace(key_batchf, string.Empty);
+                }
+                else
+                {
+                    path = path.Replace(key_batchf, ConvertDynamicPath_Main(currentSettings.batchFormat, recursiveCount, batchExportKey));
                 }
             }
 
-            path = ReplaceDate( path );
+            path = ReplaceDate(path);
 
-            path = path.Replace( Const_Keys.KEY_NAME, name );
+            path = path.Replace(Const_Keys.KEY_NAME, name);
 
-            path = ReplaceRelativeName( path );
+            path = ReplaceRelativeName(path);
 
-            path = path.Replace( Const_Keys.KEY_VERSION, currentSettings.GetExportVersion( ) );
+            path = path.Replace(Const_Keys.KEY_VERSION, currentSettings.GetExportVersion());
             var key_versionf = Const_Keys.KEY_FORMATTED_VERSION;
-            if ( path.Contains( key_versionf ) ) {
-                if ( string.IsNullOrWhiteSpace( currentSettings.GetExportVersion( ) ) ) {
-                    path = path.Replace( key_versionf, string.Empty );
-                } else {
-                    path = path.Replace( key_versionf, ConvertDynamicPath_Main( currentSettings.versionFormat, recursiveCount, batchExportKey ) );
+            if (path.Contains(key_versionf))
+            {
+                if (string.IsNullOrWhiteSpace(currentSettings.GetExportVersion()))
+                {
+                    path = path.Replace(key_versionf, string.Empty);
+                }
+                else
+                {
+                    path = path.Replace(key_versionf, ConvertDynamicPath_Main(currentSettings.versionFormat, recursiveCount, batchExportKey));
                 }
             }
 
             var key_packagename = Const_Keys.KEY_PACKAGE_NAME;
-            if ( path.Contains( key_packagename ) ) {
-                var str = ConvertDynamicPath_Main( currentSettings.packageName, recursiveCount, batchExportKey );
+            if (path.Contains(key_packagename))
+            {
+                var str = ConvertDynamicPath_Main(currentSettings.packageName, recursiveCount, batchExportKey);
                 // ファイル名に使用できない文字を_に置き換え
-                str = ExporterUtils.InvalidFileCharsRegex.Replace( str, "_" );
-                path = path.Replace( key_packagename, str );
+                str = ExporterUtils.InvalidFileCharsRegex.Replace(str, "_");
+                path = path.Replace(key_packagename, str);
             }
 
             return path;
         }
         #endregion
 
-        public string GetDirectoryPath( ) {
+        public string GetDirectoryPath()
+        {
 #if UNITY_EDITOR
             return Path.GetDirectoryName( AssetDatabase.GetAssetPath( this ) ) + "\\";
 #else
@@ -318,16 +369,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         /// Referencesの候補を取得
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> GetReferencesPath( string batchExportKey ) {
-            List<string> referencePaths = new List<string>( );
-            List<string> excludeReferences = new List<string>( );
-            foreach ( var v in references ) {
-                var path = v.element.GetConvertedPath( this, batchExportKey );
-                if ( string.IsNullOrWhiteSpace( path ) ) {
+        IEnumerable<string> GetReferencesPath(string batchExportKey)
+        {
+            List<string> referencePaths = new List<string>();
+            List<string> excludeReferences = new List<string>();
+            foreach (var v in references)
+            {
+                var path = v.element.GetConvertedPath(this, batchExportKey);
+                if (string.IsNullOrWhiteSpace(path))
+                {
                     continue;
                 }
                 List<string> list;
-                switch ( v.mode.value ) {
+                switch (v.mode.value)
+                {
                     default:
                     case ReferenceMode.Include:
                         list = referencePaths;
@@ -336,56 +391,68 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                         list = excludeReferences;
                         break;
                 }
-                if ( File.Exists( path ) ) {
-                    list.Add( path );
-                } else if ( Directory.Exists( path ) ) {
-                    list.AddRange( Directory.GetFiles( path, "*", SearchOption.AllDirectories ) );
+                if (File.Exists(path))
+                {
+                    list.Add(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    list.AddRange(Directory.GetFiles(path, "*", SearchOption.AllDirectories));
                 }
             }
             // バックスラッシュをスラッシュに統一（Unityのファイル処理ではスラッシュ推奨らしい？）
-            referencePaths = referencePaths.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
-            excludeReferences = excludeReferences.Select( v => v.Replace( '\\', '/' ) ).Distinct( ).ToList( );
+            referencePaths = referencePaths.Select(v => v.Replace('\\', '/')).Distinct().ToList();
+            excludeReferences = excludeReferences.Select(v => v.Replace('\\', '/')).Distinct().ToList();
             // includeからexcludeを除外
-            return referencePaths.Except( excludeReferences );
+            return referencePaths.Except(excludeReferences);
         }
-        public delegate void GetAllPath_BatchCallback( Dictionary<string, FilePathList> result, int maxCount, string currentPath, bool finished );
-        public async Task GetAllPath_Batch( GetAllPath_BatchCallback callback ) {
-            await GetAllPath_Batch( null, callback );
+        public delegate void GetAllPath_BatchCallback(Dictionary<string, FilePathList> result, int maxCount, string currentPath, bool finished);
+        public async Task GetAllPath_Batch(GetAllPath_BatchCallback callback)
+        {
+            await GetAllPath_Batch(null, callback);
         }
-        public async Task GetAllPath_Batch( IEnumerable<string> filter, GetAllPath_BatchCallback callback ) {
-            var result = new Dictionary<string, FilePathList>( );
-            if ( batchExportMode == BatchExportMode.Single ) {
-                var path = GetExportPath( string.Empty );
+        public async Task GetAllPath_Batch(IEnumerable<string> filter, GetAllPath_BatchCallback callback)
+        {
+            var result = new Dictionary<string, FilePathList>();
+            if (batchExportMode == BatchExportMode.Single)
+            {
+                var path = GetExportPath(string.Empty);
                 FilePathList list = null;
-                await GetAllPath( ( v ) => list = v, string.Empty );
-                result.Add( path, list );
-                callback?.Invoke( result, 1, path, true );
-            } else {
-                var texts = GetBatchExportKeysConverted( );
+                await GetAllPath((v) => list = v, string.Empty);
+                result.Add(path, list);
+                callback?.Invoke(result, 1, path, true);
+            }
+            else
+            {
+                var texts = GetBatchExportKeysConverted();
                 var maxCount = texts.Length;
-                callback?.Invoke( result, maxCount, "", true );
-                for ( int i = 0; i < maxCount; i++ ) {
+                callback?.Invoke(result, maxCount, "", true);
+                for (int i = 0; i < maxCount; i++)
+                {
                     var batchExportKey = texts[i];
-                    string path = GetExportPath( batchExportKey );
-                    ExporterUtils.DebugLog( path );
-                    if ( filter != null && !filter.Contains( path ) ) {
+                    string path = GetExportPath(batchExportKey);
+                    ExporterUtils.DebugLog(path);
+                    if (filter != null && !filter.Contains(path))
+                    {
                         continue;
                     }
-                    if ( !result.ContainsKey( path ) ) {
+                    if (!result.ContainsKey(path))
+                    {
                         FilePathList list = null;
-                        ExporterUtils.DebugLog( "start GetAllPath" );
-                        await GetAllPath( ( v ) => list = v, batchExportKey );
-                        ExporterUtils.DebugLog( "end GetAllPath" );
-                        result.Add( path, list );
+                        ExporterUtils.DebugLog("start GetAllPath");
+                        await GetAllPath((v) => list = v, batchExportKey);
+                        ExporterUtils.DebugLog("end GetAllPath");
+                        result.Add(path, list);
                     }
-                    callback?.Invoke( result, maxCount, path, false );
-                    await Task.Delay( 10 );
+                    callback?.Invoke(result, maxCount, path, false);
+                    await Task.Delay(10);
                 }
-                ExporterUtils.DebugLog( "%batch% set empty" );
-                callback?.Invoke( result, maxCount, "", true );
+                ExporterUtils.DebugLog("%batch% set empty");
+                callback?.Invoke(result, maxCount, "", true);
             }
         }
-        public async Task GetAllPath( System.Action<FilePathList> callback, string batchExportKey ) {
+        public async Task GetAllPath(System.Action<FilePathList> callback, string batchExportKey)
+        {
 #if UNITY_EDITOR
             var referencesPaths = GetReferencesPath( batchExportKey );
             if ( ExporterEditorPrefs.DebugMode ) {
@@ -546,7 +613,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             callback?.Invoke(new FilePathList());
 #endif
         }
-        public static bool AllFileExists( ExporterEditorLogs logs, IEnumerable<string> list ) {
+        public static bool AllFileExists(ExporterEditorLogs logs, IEnumerable<string> list)
+        {
             // ファイルが存在するか確認
             bool result = true;
 #if UNITY_EDITOR
@@ -591,7 +659,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
             return result;
         }
-        static bool Export_Internal( ExporterEditorLogs logs, string exportPath, IEnumerable<string> list ) {
+        static bool Export_Internal(ExporterEditorLogs logs, string exportPath, IEnumerable<string> list)
+        {
 #if UNITY_EDITOR
             // ファイルが存在するか確認
             bool exists = AllFileExists( logs, list );
@@ -623,7 +692,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return false;
 #endif
         }
-        public async Task Export( ExporterEditorLogs logs, HashSet<string> exportPaths ) {
+        public async Task Export(ExporterEditorLogs logs, HashSet<string> exportPaths)
+        {
 #if UNITY_EDITOR
             try {
                 logs.Clear( );
@@ -658,7 +728,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 #endif
         }
-        public static void CallPostProcessScript( MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs ) {
+        public static void CallPostProcessScript(MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs)
+        {
 #if UNITY_EDITOR
             var instanceData = ExportPostProcessUtils.CreateInstance( p );
             if ( instanceData == null ) {
@@ -675,21 +746,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
-        public void OnBeforeSerialize( ) {
-            s_variables = variables.Select( kvp => new DynamicPathVariable( kvp.Key, kvp.Value ) ).ToArray( );
-            s_packageNameSettingsOverride = packageNameSettingsOverride.Select( kvp => new PackageNameSettingsKVP( kvp.Key, kvp.Value ) ).ToArray( );
-            s_postProcessScriptFieldValues = postProcessScriptFieldValues.Select( kvp => new StringPair( kvp.Key, kvp.Value ) ).ToArray( );
+        public void OnBeforeSerialize()
+        {
+            s_variables = variables.Select(kvp => new DynamicPathVariable(kvp.Key, kvp.Value)).ToArray();
+            s_packageNameSettingsOverride = packageNameSettingsOverride.Select(kvp => new PackageNameSettingsKVP(kvp.Key, kvp.Value)).ToArray();
+            s_postProcessScriptFieldValues = postProcessScriptFieldValues.Select(kvp => new StringPair(kvp.Key, kvp.Value)).ToArray();
         }
 
-        public void OnAfterDeserialize( ) {
-            if ( s_variables != null ) {
-                variables = s_variables.ToDictionary( v => v.key, v => v.value );
+        public void OnAfterDeserialize()
+        {
+            if (s_variables != null)
+            {
+                variables = s_variables.ToDictionary(v => v.key, v => v.value);
             }
-            if ( s_packageNameSettingsOverride != null ) {
-                packageNameSettingsOverride = s_packageNameSettingsOverride.ToDictionary( v => v.key, v => v.value );
+            if (s_packageNameSettingsOverride != null)
+            {
+                packageNameSettingsOverride = s_packageNameSettingsOverride.ToDictionary(v => v.key, v => v.value);
             }
-            if ( s_postProcessScriptFieldValues != null ) {
-                postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary( v => v.key, v => v.value );
+            if (s_postProcessScriptFieldValues != null)
+            {
+                postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary(v => v.key, v => v.value);
             }
         }
 
