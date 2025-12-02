@@ -220,7 +220,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUILayout.HelpBox( ExporterTexts.RegexParseError + "\n" + el.RegexError, MessageType.Error );
                             EditorGUILayout.BeginHorizontal( );
                             GUILayout.Space( EditorGUI.indentLevel * 15 );
-                            if ( GUILayout.Button( ExporterTexts.RegexCopyToLog, GUILayout.ExpandWidth( false ) ) ) {
+                            if ( GUILayout.Button( ExporterTexts.RegexOutputToLog, GUILayout.ExpandWidth( false ) ) ) {
                                 Debug.LogError( ExporterTexts.RegexParseError + "\n" + el.RegexError );
                             }
                             EditorGUILayout.EndHorizontal( );

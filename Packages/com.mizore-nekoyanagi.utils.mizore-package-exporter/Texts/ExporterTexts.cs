@@ -127,7 +127,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string ExcludesWereEmpty => Get( "ExcludesWereEmpty" );
         public static string PreserveCase => Get( "PreserveCase" );
         public static string RegexParseError => Get( "RegexParseError" );
-        public static string RegexCopyToLog => Get( "RegexCopyToLog" );
+        public static string RegexOutputToLog => Get( "RegexOutputToLog" );
         public static string CopyTarget( string text ) => Get( "CopyTarget", text );
         public static string CopyTargetWithValue( string type, int index ) => Get( "CopyTargetWithValue", type, index );
         public static string CopyTargetNoValue => Get( "CopyTargetNoValue" );

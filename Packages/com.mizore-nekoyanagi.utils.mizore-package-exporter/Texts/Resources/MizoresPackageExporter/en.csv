@@ -115,7 +115,7 @@ SearchPathType_EndsWith,EndsWith
 SearchPathType_Regex,Regex
 PreserveCase,Preserve Case
 RegexParseError,Regex parse error.
-RegexCopyToLog,Copy to Console
+RegexOutputToLog,Output to Console
 
 AdvancedMode,Advanced
 UsePostProcessScript,Use Post Process Script
