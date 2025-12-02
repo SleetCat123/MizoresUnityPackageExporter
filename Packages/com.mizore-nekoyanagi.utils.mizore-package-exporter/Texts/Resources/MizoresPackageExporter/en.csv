@@ -128,6 +128,7 @@ PostProcessScriptNotFound,Script [{0}] is not found.
 PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
 PostProcessScriptUpdate,Refresh
 PostProcessScriptPopupNotFound,{0}(NotFound)
+PostProcessScriptHelp,Scripts that inherit from IExportPostProcess will be executed after the unitypackage export completes.
 
 EditOnlySingle,{0} can only be edited in single selection mode.
 

@@ -56,6 +56,7 @@ SearchPathType_Regex,正規表現
 PreserveCase,大文字小文字を区別
 
 UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、{0}を継承したスクリプトをunitypackageのエクスポート後に実行できるようになります。\n\n警告: スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。\n\n有効化しますか？
+PostProcessScriptHelp,IExportPostProcessを継承したスクリプトをunitypackageのエクスポート完了後に実行します。
 
 SearchReference,Referencesを検索
 SearchReferenceTooltip,「References」に含まれているAssetが、このAssetにより参照されている場合、「Reference」内の当該Assetを自動的にExport対象に追加します。
