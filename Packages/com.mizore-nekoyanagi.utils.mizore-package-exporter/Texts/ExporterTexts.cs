@@ -149,6 +149,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FileListCategoryNotFound => Get( "FileListCategoryNotFound" );
         public static string FileListCategoryExcludes => Get( "FileListCategoryExcludes" );
         public static string FileListCategoryReferences => Get( "FileListCategoryReferences" );
+        public static string FileListCategoryPostProcess => Get( "FileListCategoryPostProcess" );
 
         public static string FileListTooltipReferencedBy => Get( "FileListTooltipReferencedBy" );
 

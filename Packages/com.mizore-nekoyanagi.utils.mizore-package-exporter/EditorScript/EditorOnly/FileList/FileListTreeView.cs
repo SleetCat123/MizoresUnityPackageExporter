@@ -201,6 +201,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                     case ExporterConsts.PATH_PREFIX_EXCLUDES:
                         path = ExporterTexts.FileListCategoryExcludes;
                         break;
+                    case ExporterConsts.PATH_PREFIX_POSTPROCESS:
+                        path = ExporterTexts.FileListCategoryPostProcess;
+                        break;
                 }
             } else {
                 icon = node.icon;

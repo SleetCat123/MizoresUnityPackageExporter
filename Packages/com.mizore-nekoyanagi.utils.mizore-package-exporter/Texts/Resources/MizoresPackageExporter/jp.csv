@@ -38,6 +38,7 @@ FileListCategoryExportEmpty,エクスポートされるファイルがありま�
 FileListCategoryNotFound,ファイルが見つかりません
 FileListCategoryExcludes,除外されたファイル
 FileListCategoryReferences,参照されているファイル（エクスポート対象に含まれます）
+FileListCategoryPostProcess,ポストプロセスで追加されたファイル
 
 ConvertToRelativePath,相対パスに変換
 ConvertToAbsolutePath,絶対パスに変換

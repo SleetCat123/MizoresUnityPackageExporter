@@ -93,6 +93,7 @@ FileListCategoryExportEmpty,(Empty) Actual Export Target Files
 FileListCategoryNotFound,Not Found Files
 FileListCategoryExcludes,Exclude Files
 FileListCategoryReferences,Referenced Files
+FileListCategoryPostProcess,Files Added by Post Process Script
 
 FileListTooltipReferencedBy,Referenced by
 
