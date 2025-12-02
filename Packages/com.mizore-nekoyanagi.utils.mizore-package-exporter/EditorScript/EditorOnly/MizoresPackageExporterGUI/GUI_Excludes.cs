@@ -214,6 +214,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                         }
                         EditorGUILayout.EndHorizontal( );
+                        // 正規表現エラー表示
+                        if ( !string.IsNullOrEmpty( el.RegexError ) ) {
+                            EditorGUI.indentLevel += 2;
+                            EditorGUILayout.HelpBox( el.RegexError, MessageType.Error );
+                            EditorGUI.indentLevel -= 2;
+                        }
                     }
                     EditorGUILayout.EndVertical( );
                 }

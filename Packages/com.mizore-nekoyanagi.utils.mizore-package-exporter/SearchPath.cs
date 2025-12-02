@@ -32,16 +32,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
         }
         Regex regex;
+        /// <summary>
+        /// 正規表現のパースエラーメッセージ。正常な場合はnull。
+        /// </summary>
+        public string RegexError { get; private set; }
         void UpdateRegex( ) {
             if ( searchType.value != SearchPathType.Regex ) {
                 regex = null;
+                RegexError = null;
                 return;
             }
             try {
                 regex = new Regex( value, preserveCase ? RegexOptions.None : RegexOptions.IgnoreCase );
-            } catch ( System.Exception e ) {
-                Debug.LogError( e );
+                RegexError = null;
+            } catch ( System.ArgumentException e ) {
                 regex = null;
+                RegexError = e.Message;
             }
         }
 
@@ -87,6 +93,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public bool IsMatch( string path ) {
             if ( searchType.value == SearchPathType.Regex ) {
                 UpdateRegex( );
+                // 正規表現エラーの場合はマッチしない
+                if ( regex == null ) {
+                    return false;
+                }
                 return regex.IsMatch( path );
             }
             var a = path;
