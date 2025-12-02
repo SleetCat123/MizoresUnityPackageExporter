@@ -229,7 +229,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                             break;
                     }
                     files = files.Where( v => Path.GetExtension( v ) != ".meta" ).Select( v => Path.GetFileName( v ) );
-                    files = files.Select( v => Path.GetFileNameWithoutExtension( v ) ).Where( v => regex.IsMatch( v ) );
+                    // ファイルの場合は拡張子を除去、フォルダの場合はそのまま使用
+                    files = files.Select( v => {
+                        string fullPath = Path.Combine( path, v );
+                        return File.Exists( fullPath ) ? Path.GetFileNameWithoutExtension( v ) : v;
+                    } ).Where( v => regex.IsMatch( v ) );
                     temp_batchExportKeys = files.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.ListFile:
@@ -768,6 +772,5 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary(v => v.key, v => v.value);
             }
         }
-
     }
 }
