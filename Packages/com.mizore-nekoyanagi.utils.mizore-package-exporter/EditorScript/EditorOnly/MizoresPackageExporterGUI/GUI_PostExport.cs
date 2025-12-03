@@ -161,28 +161,26 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
 
-                    // ソースパス
+                    // ソースパス（PackagePrefsElementInspectorを使用して変数入力対応）
+                    EditorGUILayout.LabelField( ExporterTexts.PostExportSourcePath );
+                    if ( item.sourcePath == null ) {
+                        item.sourcePath = new ObjectRefElement();
+                    }
                     EditorGUI.BeginChangeCheck();
-                    var sourceObj = item.sourcePath?.GetObject( t, string.Empty );
-                    var newSourceObj = EditorGUILayout.ObjectField(
-                        new GUIContent( ExporterTexts.PostExportSourcePath ),
-                        sourceObj,
-                        typeof( Object ),
-                        false
-                    );
+                    bool browse = PackagePrefsElementInspector.Draw<Object>( t, item.sourcePath );
                     if ( EditorGUI.EndChangeCheck() ) {
                         Undo.RecordObject( t, "Change SourcePath" );
-                        if ( item.sourcePath == null ) {
-                            item.sourcePath = new ObjectRefElement();
-                        }
-                        item.sourcePath.SetPathAutoDetect( t, newSourceObj );
                         EditorUtility.SetDirty( t );
                     }
+                    if ( browse ) {
+                        return;
+                    }
 
-                    // パス文字列表示
+                    // ソースパスプレビュー
                     if ( item.sourcePath != null && !string.IsNullOrEmpty( item.sourcePath.Path ) ) {
                         EditorGUI.indentLevel++;
-                        EditorGUILayout.LabelField( item.sourcePath.Path, EditorStyles.miniLabel );
+                        var sourcePreview = item.GetConvertedSourcePath( t, string.Empty );
+                        EditorGUILayout.LabelField( new GUIContent( sourcePreview, sourcePreview ), EditorStyles.miniLabel );
                         EditorGUI.indentLevel--;
                     }
 
@@ -196,6 +194,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         Undo.RecordObject( t, "Change DestName" );
                         item.destName = destName;
                         EditorUtility.SetDirty( t );
+                    }
+
+                    // 出力先名プレビュー
+                    if ( !string.IsNullOrEmpty( item.destName ) ) {
+                        EditorGUI.indentLevel++;
+                        var destPreview = item.GetConvertedDestName( t, string.Empty );
+                        if ( !string.IsNullOrEmpty( destPreview ) ) {
+                            EditorGUILayout.LabelField( new GUIContent( "→ " + destPreview, destPreview ), EditorStyles.miniLabel );
+                        }
+                        EditorGUI.indentLevel--;
                     }
                 }
             }
