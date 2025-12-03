@@ -2,9 +2,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-#if UNITY_2022_1_OR_NEWER
-using System.IO.Compression;
-#endif
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
     public static class GUI_PostExport {
@@ -86,7 +83,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.showMixedValue = true;
                     }
                     EditorGUI.BeginChangeCheck();
-                    var compressionLevel = ( CompressionLevel )EditorGUILayout.EnumPopup(
+                    var compressionLevel = ( System.IO.Compression.CompressionLevel )EditorGUILayout.EnumPopup(
                         new GUIContent( ExporterTexts.PostExportCompressionLevel ),
                         t.compressionLevel
                     );

@@ -65,7 +65,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
 #if UNITY_2022_1_OR_NEWER
         [Tooltip( "zip圧縮レベル" )]
-        public CompressionLevel compressionLevel = CompressionLevel.Optimal;
+        public System.IO.Compression.CompressionLevel compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
 #endif
 
         [Tooltip( "zipを出力するフォルダ名（空の場合はパッケージと同じ場所）" )]
