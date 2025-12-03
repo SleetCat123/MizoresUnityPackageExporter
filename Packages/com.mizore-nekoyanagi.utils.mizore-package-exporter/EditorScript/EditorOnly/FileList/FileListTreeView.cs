@@ -176,6 +176,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             bool isRoot = node.parent == _root;
             string subLabel = null;
             Color subLabelColor = Color.white;
+            string suffixLabel = null;
+            Color suffixLabelColor = Color.white;
             if ( !hierarchyView && node.type == NodeType.Excludes ) {
                 subLabelColor = Color.white * 0.7f;
                 GUI.contentColor = temp_contentColor * 0.8f;
@@ -236,8 +238,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                         break;
                     case NodeType.AdditionalCopy:
                         if ( node.args != null && node.args.Count != 0 ) {
-                            subLabel = "→ " + node.args[0];
-                            subLabelColor = new Color( 0.5f, 0.8f, 1f );
+                            suffixLabel = " → " + node.args[0];
+                            suffixLabelColor = new Color( 0.5f, 0.8f, 1f );
                         }
                         break;
                 }
@@ -294,7 +296,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
             }
 
             rect.x = rect.xMax;
-            DrawLabel( rect, Path.GetFileName( path ), _style );
+            rect = DrawLabel( rect, Path.GetFileName( path ), _style );
+
+            // 末尾ラベル（AdditionalCopyの出力先名など）
+            if ( suffixLabel != null ) {
+                var c = GUI.contentColor;
+                GUI.contentColor = suffixLabelColor;
+                rect.x = rect.xMax;
+                DrawLabel( rect, suffixLabel, _boldStyle );
+                GUI.contentColor = c;
+            }
 
             GUI.contentColor = temp_contentColor;
         }
