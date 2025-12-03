@@ -7,6 +7,7 @@
         public const string PATH_PREFIX_NOTFOUND = "[NOT]";
         public const string PATH_PREFIX_REFERENCED = "[REF]";
         public const string PATH_PREFIX_EXCLUDES = "[EXC]";
+        public const string PATH_PREFIX_ADDITIONAL_COPY = "[ADD]";
 
         public const string BATCH_EXPORT_KEY_DUMMY = "BATCH";
     }

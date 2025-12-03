@@ -201,6 +201,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                     case ExporterConsts.PATH_PREFIX_EXCLUDES:
                         path = ExporterTexts.FileListCategoryExcludes;
                         break;
+                    case ExporterConsts.PATH_PREFIX_ADDITIONAL_COPY:
+                        path = ExporterTexts.FileListCategoryAdditionalCopy;
+                        break;
                 }
             } else {
                 icon = node.icon;
@@ -229,6 +232,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                     case NodeType.References:
                         if ( node.args != null && node.args.Count != 0 ) {
                             subLabel = ExporterTexts.FileListReferencesPathPrefix;
+                        }
+                        break;
+                    case NodeType.AdditionalCopy:
+                        if ( node.args != null && node.args.Count != 0 ) {
+                            subLabel = "→ " + node.args[0];
+                            subLabelColor = new Color( 0.5f, 0.8f, 1f );
                         }
                         break;
                 }

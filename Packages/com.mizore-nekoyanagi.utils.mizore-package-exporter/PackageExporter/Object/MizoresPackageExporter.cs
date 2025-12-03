@@ -602,11 +602,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             result_enumerable = result_enumerable.OrderBy( v => v );
             Debug.Log( "Export Target: \n" + string.Join( "\n", result_enumerable ) );
 
+            // 追加コピーパスの解決（プレビュー用）
+            var additionalCopyPreview = new List<AdditionalCopyPathPreview>( );
+            if ( organizeInFolder ) {
+                foreach ( var copyPath in additionalCopyPaths ) {
+                    if ( copyPath == null || copyPath.sourcePath == null ) {
+                        continue;
+                    }
+                    var convertedPath = copyPath.GetConvertedSourcePath( this, batchExportKey );
+                    if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
+                        continue;
+                    }
+                    var destName = copyPath.GetConvertedDestName( this, batchExportKey );
+                    additionalCopyPreview.Add( new AdditionalCopyPathPreview( convertedPath, destName ) );
+                }
+            }
+
             var filePathList = new FilePathList( ) {
                 batchExportKey = batchExportKey,
                 paths = result_enumerable,
                 excludePaths = excludePaths,
                 referencedPaths = referencesResults,
+                additionalCopyPaths = additionalCopyPreview,
             };
 
             callback?.Invoke( filePathList );

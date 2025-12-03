@@ -93,6 +93,7 @@ FileListCategoryExportEmpty,(Empty) Actual Export Target Files
 FileListCategoryNotFound,Not Found Files
 FileListCategoryExcludes,Exclude Files
 FileListCategoryReferences,Referenced Files
+FileListCategoryAdditionalCopy,Additional Copy Files
 FileListTooltipReferencedBy,Referenced by
 
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.

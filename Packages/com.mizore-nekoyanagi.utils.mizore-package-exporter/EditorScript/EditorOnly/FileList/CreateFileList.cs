@@ -71,6 +71,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                             node.Add( path, NodeType.Excludes );
                         }
 
+                        // 追加コピーパスの追加
+                        if ( list.additionalCopyPaths != null ) {
+                            foreach ( var copyPath in list.additionalCopyPaths ) {
+                                var args = string.IsNullOrEmpty( copyPath.destName ) ? null : new string[] { copyPath.destName };
+                                node.Add( copyPath.sourcePath, NodeType.AdditionalCopy, args );
+                            }
+                        }
+
                         node.id = exportPath;
                         node.path = exportPath;
                         root.Add( node );

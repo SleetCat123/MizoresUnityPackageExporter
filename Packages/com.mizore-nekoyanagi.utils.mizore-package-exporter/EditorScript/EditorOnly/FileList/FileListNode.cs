@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
     public enum NodeType {
-        Default, NotFound, Excludes, References
+        Default, NotFound, Excludes, References, AdditionalCopy
     }
     public class FileListNode {
         public FileListNode parent;
@@ -44,6 +44,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                 case NodeType.Excludes:
                     prefix = ExporterConsts.PATH_PREFIX_EXCLUDES;
                     break;
+                case NodeType.AdditionalCopy:
+                    prefix = ExporterConsts.PATH_PREFIX_ADDITIONAL_COPY;
+                    break;
             }
             FileListNode categoryNode;
             if ( !childrenTable.TryGetValue( prefix, out categoryNode ) ) {
@@ -64,6 +67,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                         break;
                     case NodeType.Excludes:
                         categoryNode.icon = IconCache.RemoveIcon;
+                        break;
+                    case NodeType.AdditionalCopy:
+                        categoryNode.icon = IconCache.AddIcon;
                         break;
                 }
                 categoryNode.type = type;
