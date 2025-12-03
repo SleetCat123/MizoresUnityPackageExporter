@@ -1,6 +1,7 @@
 ﻿using MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -71,11 +72,38 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                             node.Add( path, NodeType.Excludes );
                         }
 
-                        // 追加コピーパスの追加
+                        // 追加コピーパスの追加（フォルダの場合は中身を展開）
                         if ( list.additionalCopyPaths != null ) {
                             foreach ( var copyPath in list.additionalCopyPaths ) {
-                                var args = string.IsNullOrEmpty( copyPath.destName ) ? null : new string[] { copyPath.destName };
-                                node.Add( copyPath.sourcePath, NodeType.AdditionalCopy, args );
+                                var sourcePath = copyPath.sourcePath;
+                                var destName = copyPath.destName;
+
+                                if ( File.Exists( sourcePath ) ) {
+                                    // ファイルの場合
+                                    var outputName = string.IsNullOrEmpty( destName ) ? Path.GetFileName( sourcePath ) : destName;
+                                    node.Add( sourcePath, NodeType.AdditionalCopy, new string[] { outputName } );
+                                } else if ( Directory.Exists( sourcePath ) ) {
+                                    // フォルダの場合は中身を展開
+                                    var files = Directory.GetFiles( sourcePath, "*", SearchOption.AllDirectories );
+                                    foreach ( var file in files ) {
+                                        // .metaファイルはスキップ
+                                        if ( Path.GetExtension( file ) == ".meta" ) {
+                                            continue;
+                                        }
+                                        var relativePath = file.Substring( sourcePath.Length + 1 ).Replace( '\\', '/' );
+                                        string outputPath;
+                                        if ( !string.IsNullOrEmpty( destName ) ) {
+                                            outputPath = destName + "/" + relativePath;
+                                        } else {
+                                            outputPath = relativePath;
+                                        }
+                                        node.Add( file, NodeType.AdditionalCopy, new string[] { outputPath } );
+                                    }
+                                } else {
+                                    // 存在しない場合もそのまま追加（NotFoundとして表示される）
+                                    var args = string.IsNullOrEmpty( destName ) ? null : new string[] { destName };
+                                    node.Add( sourcePath, NodeType.AdditionalCopy, args );
+                                }
                             }
                         }
 
