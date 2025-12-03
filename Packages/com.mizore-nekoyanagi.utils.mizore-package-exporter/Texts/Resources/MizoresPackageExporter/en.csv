@@ -93,8 +93,6 @@ FileListCategoryExportEmpty,(Empty) Actual Export Target Files
 FileListCategoryNotFound,Not Found Files
 FileListCategoryExcludes,Exclude Files
 FileListCategoryReferences,Referenced Files
-FileListCategoryPostProcess,Files Added by Post Process Script
-
 FileListTooltipReferencedBy,Referenced by
 
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.
@@ -118,20 +116,21 @@ RegexParseError,Regex parse error.
 RegexOutputToLog,Output to Console
 
 AdvancedMode,Advanced
-UsePostProcessScript,Use Post Process Script
-UsePostProcessScriptConfirm,Activate PostProcessScript allows scripts that inherit from {0} to be executed after exporting the unitypackage.\n\nWarning: Please make sure that the scripts are reliable and use them at your own risk.\n\nDo you want to activate it?
-FoldoutPostProcessScript,[Advanced] Post Process Script
-PostProcessScript,Script
-PostProcessScriptFields,Fields
-PostProcessScriptResetField,Reset {0}
-PostProcessScriptResetAllFields,Reset All Fields
-PostProcessScriptCleanUnusedFields,Clean Unused Fields
-PostProcessScriptUnusedFields,Unused Fields
-PostProcessScriptNotFound,Script [{0}] is not found.
-PostProcessScriptNotImplement,Script does not implement IExportPostProcess.
-PostProcessScriptUpdate,Refresh
-PostProcessScriptPopupNotFound,{0}(NotFound)
-PostProcessScriptHelp,Scripts that inherit from IExportPostProcess will be executed after the unitypackage export completes.
+
+FoldoutPostExport,Post Export Settings ({0})
+PostExportOrganizeInFolder,Organize in Folder
+PostExportOrganizeInFolderTooltip,Move the package to a folder with the same name after export
+PostExportAdditionalCopyPaths,Additional Copy Paths
+PostExportSourcePath,Source
+PostExportDestName,Destination Name
+PostExportDestNameTooltip,Output name (empty = use original name). Supports variable substitution.
+PostExportCreateZip,Create ZIP
+PostExportCreateZipTooltip,Create a ZIP archive from the export folder
+PostExportCompressionLevel,Compression Level
+PostExportZipFolderName,ZIP Folder Name
+PostExportZipFolderNameTooltip,Folder name for ZIP output (empty = same location as package)
+PostExportZipRequiresOrganize,ZIP creation requires "Organize in Folder" to be enabled.
+PostExportZipNotSupported,ZIP creation is not supported on this version of Unity (requires 2022.1 or newer).
 
 EditOnlySingle,{0} can only be edited in single selection mode.
 

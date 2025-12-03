@@ -70,17 +70,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
                         foreach ( var path in list.excludePaths ) {
                             node.Add( path, NodeType.Excludes );
                         }
-                        if ( list.postprocessPaths != null ) {
-                            foreach ( var element in list.postprocessPaths ) {
-                                if ( element == null ) {
-                                    continue;
-                                }
-                                if ( string.IsNullOrEmpty( element.path ) ) {
-                                    continue;
-                                }
-                                node.Add( element.path, NodeType.PostProcess, element.args );
-                            }
-                        }
 
                         node.id = exportPath;
                         node.path = exportPath;

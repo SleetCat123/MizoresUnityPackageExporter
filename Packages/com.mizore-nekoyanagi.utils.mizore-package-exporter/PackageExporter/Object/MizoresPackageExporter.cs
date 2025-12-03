@@ -7,6 +7,9 @@ using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 using System.Threading.Tasks;
 using System.Text;
+#if UNITY_2022_1_OR_NEWER
+using System.IO.Compression;
+#endif
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -24,17 +27,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             public PackageNameSettings value;
 
             public PackageNameSettingsKVP(string key, PackageNameSettings value)
-            {
-                this.key = key;
-                this.value = value;
-            }
-        }
-        [System.Serializable]
-        public class StringPair
-        {
-            public string key;
-            public string value;
-            public StringPair(string key, string value)
             {
                 this.key = key;
                 this.value = value;
@@ -61,12 +53,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public List<ReferenceElement> references = new List<ReferenceElement>();
 
+        #region PostExport
+        [Tooltip( "エクスポート後にパッケージを同名フォルダに整理する" )]
+        public bool organizeInFolder = false;
 
-        public string postProcessScriptTypeName;
-        [System.NonSerialized]
-        public Dictionary<string, string> postProcessScriptFieldValues = new Dictionary<string, string>();
-        [SerializeField]
-        StringPair[] s_postProcessScriptFieldValues;
+        [Tooltip( "追加でコピーするファイル/フォルダ" )]
+        public List<AdditionalCopyPath> additionalCopyPaths = new List<AdditionalCopyPath>();
+
+        [Tooltip( "zip化する" )]
+        public bool createZip = false;
+
+#if UNITY_2022_1_OR_NEWER
+        [Tooltip( "zip圧縮レベル" )]
+        public CompressionLevel compressionLevel = CompressionLevel.Optimal;
+#endif
+
+        [Tooltip( "zipを出力するフォルダ名（空の場合はパッケージと同じ場所）" )]
+        public string zipFolderName = "_zip";
+        #endregion
 
         #region PackageName
         public PackageNameSettings packageNameSettings = new PackageNameSettings();
@@ -605,15 +609,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 referencedPaths = referencesResults,
             };
 
-            // PostProcessScriptによるパスの追加
-            var instanceData = ExportPostProcessUtils.CreateInstance( this );
-            if ( instanceData != null ) {
-                var postprocessPaths = instanceData.instance.GetPathList( this, filePathList );
-                if ( postprocessPaths != null ) {
-                    filePathList.postprocessPaths = postprocessPaths;
-                }
-            }
-
             callback?.Invoke( filePathList );
 #else
             await Task.Delay(1);
@@ -726,7 +721,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                     bool exported = Export_Internal( logs, exportPath, list.paths );
                     if ( exported ) {
-                        CallPostProcessScript( this, list.batchExportKey, exportPath, list, logs );
+                        ExecutePostExport( this, list.batchExportKey, exportPath, list, logs );
                     }
                 }
             } finally {
@@ -735,21 +730,136 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             }
 #endif
         }
-        public static void CallPostProcessScript(MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs)
+
+        /// <summary>
+        /// エクスポート後の処理を実行（フォルダ整理、追加コピー、zip化）
+        /// </summary>
+        public static void ExecutePostExport( MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs )
         {
 #if UNITY_EDITOR
-            var instanceData = ExportPostProcessUtils.CreateInstance( p );
-            if ( instanceData == null ) {
+            // フォルダ整理、追加コピー、zip化のいずれかが有効な場合のみ処理
+            if ( !p.organizeInFolder && p.additionalCopyPaths.Count == 0 && !p.createZip ) {
                 return;
             }
-            var type = instanceData.type;
-            var instance = instanceData.instance;
-            var fields = instanceData.fields;
-            Debug.Log( $"Call PostProcessScript: {type.Name}.OnExported" );
-            logs.Add( $"Call PostProcessScript: {type.Name}.OnExported" );
-            instance.OnExported( p, exportPath, list, logs );
-            Debug.Log( $"Finish PostProcessScript: {type.Name}.OnExported" );
-            logs.Add( $"Finish PostProcessScript: {type.Name}.OnExported" );
+
+            var dir = Path.GetDirectoryName( exportPath );
+            var packageName = Path.GetFileNameWithoutExtension( exportPath );
+            string folderPath;
+
+            if ( p.organizeInFolder ) {
+                // パッケージを同名フォルダに整理
+                folderPath = Path.Combine( dir, packageName );
+                if ( Directory.Exists( folderPath ) ) {
+                    // 同名のフォルダがある場合はタイムスタンプを付加してリネーム
+                    var lastWriteTime = Directory.GetLastWriteTime( folderPath );
+                    var timeStr = lastWriteTime.ToString( "yyyyMMdd_HHmmss" );
+                    var old = folderPath + "_" + timeStr;
+                    int i = 0;
+                    while ( Directory.Exists( old ) ) {
+                        old = folderPath + "_" + timeStr + "_" + i;
+                        i++;
+                    }
+                    Directory.Move( folderPath, old );
+                    Debug.Log( "Rename old folder: " + old );
+                    logs.Add( "Rename old folder: " + old );
+                }
+                Directory.CreateDirectory( folderPath );
+                // パッケージをフォルダに移動
+                var newPackagePath = Path.Combine( folderPath, Path.GetFileName( exportPath ) );
+                File.Move( exportPath, newPackagePath );
+                Debug.Log( "Move package to folder: " + newPackagePath );
+                logs.Add( "Move package to folder: " + newPackagePath );
+            } else {
+                folderPath = dir;
+            }
+
+            // 追加ファイル/フォルダのコピー
+            foreach ( var copyPath in p.additionalCopyPaths ) {
+                if ( copyPath == null || copyPath.sourcePath == null ) {
+                    continue;
+                }
+                var convertedPath = copyPath.GetConvertedSourcePath( p, batchExportKey );
+                if ( string.IsNullOrWhiteSpace( convertedPath ) ) {
+                    Debug.LogWarning( "Invalid path: " + copyPath.sourcePath );
+                    continue;
+                }
+                var destName = copyPath.GetConvertedDestName( p, batchExportKey );
+
+                if ( File.Exists( convertedPath ) ) {
+                    // ファイルの場合はコピー
+                    var fileName = destName ?? Path.GetFileName( convertedPath );
+                    var destPath = Path.Combine( folderPath, fileName );
+                    Debug.Log( "Copy File: " + convertedPath + " -> " + destPath );
+                    logs.Add( "Copy File: " + convertedPath + " -> " + destPath );
+                    Directory.CreateDirectory( Path.GetDirectoryName( destPath ) );
+                    if ( File.Exists( destPath ) ) {
+                        File.Delete( destPath );
+                    }
+                    File.Copy( convertedPath, destPath );
+                } else if ( Directory.Exists( convertedPath ) ) {
+                    // フォルダの場合は中身をコピー
+                    var destFolderName = destName;
+                    Debug.Log( "Copy Folder: " + convertedPath + ( destFolderName != null ? " -> " + destFolderName : "" ) );
+                    logs.Add( "Copy Folder: " + convertedPath + ( destFolderName != null ? " -> " + destFolderName : "" ) );
+                    var files = Directory.GetFiles( convertedPath, "*", SearchOption.AllDirectories );
+                    foreach ( var file in files ) {
+                        // .metaファイルはコピーしない
+                        if ( Path.GetExtension( file ) == ".meta" ) {
+                            continue;
+                        }
+                        // フォルダ構造を維持してコピー
+                        var relativePath = file.Substring( convertedPath.Length + 1 );
+                        string destPath;
+                        if ( destFolderName != null ) {
+                            destPath = Path.Combine( folderPath, destFolderName, relativePath );
+                        } else {
+                            destPath = Path.Combine( folderPath, relativePath );
+                        }
+                        Directory.CreateDirectory( Path.GetDirectoryName( destPath ) );
+                        if ( File.Exists( destPath ) ) {
+                            File.Delete( destPath );
+                        }
+                        File.Copy( file, destPath );
+                        Debug.Log( "Copy File: " + file + " -> " + destPath );
+                        logs.Add( "Copy File: " + file + " -> " + destPath );
+                    }
+                } else {
+                    Debug.LogWarning( "Path not found: " + convertedPath );
+                    logs.Add( ExporterEditorLogs.LogType.Warning, "Path not found: " + convertedPath );
+                }
+            }
+
+#if UNITY_2022_1_OR_NEWER
+            // zip化
+            if ( p.createZip && p.organizeInFolder ) {
+                string zipDir;
+                if ( string.IsNullOrEmpty( p.zipFolderName ) ) {
+                    zipDir = dir;
+                } else {
+                    zipDir = Path.Combine( dir, p.zipFolderName );
+                    if ( !Directory.Exists( zipDir ) ) {
+                        Directory.CreateDirectory( zipDir );
+                    }
+                }
+                var zipPath = Path.Combine( zipDir, packageName + ".zip" );
+                if ( File.Exists( zipPath ) ) {
+                    File.Delete( zipPath );
+                }
+                Debug.Log( "Create zip: " + zipPath );
+                logs.Add( "Create zip: " + zipPath );
+                ZipFile.CreateFromDirectory( folderPath, zipPath, p.compressionLevel, false );
+                Debug.Log( "zip created: " + zipPath );
+                logs.Add( "zip created: " + zipPath );
+            } else if ( p.createZip && !p.organizeInFolder ) {
+                Debug.LogWarning( "createZip requires organizeInFolder to be enabled" );
+                logs.Add( ExporterEditorLogs.LogType.Warning, "createZip requires organizeInFolder to be enabled" );
+            }
+#else
+            if ( p.createZip ) {
+                Debug.LogError( "createZip is not supported on this version of Unity (requires 2022.1 or newer)" );
+                logs.Add( ExporterEditorLogs.LogType.Error, "createZip is not supported on this version of Unity (requires 2022.1 or newer)" );
+            }
+#endif
 #endif
         }
 
@@ -757,7 +867,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         {
             s_variables = variables.Select(kvp => new DynamicPathVariable(kvp.Key, kvp.Value)).ToArray();
             s_packageNameSettingsOverride = packageNameSettingsOverride.Select(kvp => new PackageNameSettingsKVP(kvp.Key, kvp.Value)).ToArray();
-            s_postProcessScriptFieldValues = postProcessScriptFieldValues.Select(kvp => new StringPair(kvp.Key, kvp.Value)).ToArray();
         }
 
         public void OnAfterDeserialize()
@@ -769,10 +878,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             if (s_packageNameSettingsOverride != null)
             {
                 packageNameSettingsOverride = s_packageNameSettingsOverride.ToDictionary(v => v.key, v => v.value);
-            }
-            if (s_postProcessScriptFieldValues != null)
-            {
-                postProcessScriptFieldValues = s_postProcessScriptFieldValues.ToDictionary(v => v.key, v => v.value);
             }
         }
     }

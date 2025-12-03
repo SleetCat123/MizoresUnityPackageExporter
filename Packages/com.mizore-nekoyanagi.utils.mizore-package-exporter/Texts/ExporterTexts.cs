@@ -92,7 +92,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FoldoutVariables( string range ) => Get( "FoldoutVariables", range );
         public static string FoldoutBatchExportEnabled => Get( "FoldoutBatchExportEnabled" );
         public static string FoldoutBatchExportDisabled => Get( "FoldoutBatchExportDisabled" );
-        public static string FoldoutPostProcessScript => Get( "FoldoutPostProcessScript" );
+        public static string FoldoutPostExport( string range ) => Get( "FoldoutPostExport", range );
         public static string Variables => Get( "Variables" );
         public static string Version => Get( "Version" );
         public static string VersionSource => Get( "VersionSource" );
@@ -151,7 +151,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FileListCategoryNotFound => Get( "FileListCategoryNotFound" );
         public static string FileListCategoryExcludes => Get( "FileListCategoryExcludes" );
         public static string FileListCategoryReferences => Get( "FileListCategoryReferences" );
-        public static string FileListCategoryPostProcess => Get( "FileListCategoryPostProcess" );
 
         public static string FileListTooltipReferencedBy => Get( "FileListTooltipReferencedBy" );
 
@@ -167,20 +166,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string AdvancedMode => Get( "AdvancedMode" );
 
-        public static string UsePostProcessScript => Get( "UsePostProcessScript" );
-        public static string UsePostProcessScriptConfirm => Get( "UsePostProcessScriptConfirm", ExporterConsts.POSTPROCESS_BASECLASS_NAME );
-        public static string PostProcessScript => Get( "PostProcessScript" );
-        public static string PostProcessScriptPopupNotFound( string name ) => string.Format( Get( "PostProcessScriptPopupNotFound" ), name );
-
-        public static string PostProcessScriptHelp => Get( "PostProcessScriptHelp" );
-        public static string PostProcessScriptUpdate => Get( "PostProcessScriptUpdate" );
-        public static string PostProcessScriptResetAllFields => Get( "PostProcessScriptResetAllFields" );
-        public static string PostProcessScriptResetField( string fieldName ) => string.Format( Get( "PostProcessScriptResetField" ), fieldName );
-        public static string PostProcessScriptFields => Get( "PostProcessScriptFields" );
-        public static string PostProcessScriptNotFound( string text ) => string.Format( Get( "PostProcessScriptNotFound" ), text );
-        public static string PostProcessScriptNotImplement => Get( "PostProcessScriptNotImplement" );
-        public static string PostProcessScriptCleanUnusedFields => Get( "PostProcessScriptCleanUnusedFields" );
-        public static string PostProcessScriptUnusedFields => Get( "PostProcessScriptUnusedFields" );
+        public static string PostExportOrganizeInFolder => Get( "PostExportOrganizeInFolder" );
+        public static string PostExportOrganizeInFolderTooltip => Get( "PostExportOrganizeInFolderTooltip" );
+        public static string PostExportAdditionalCopyPaths => Get( "PostExportAdditionalCopyPaths" );
+        public static string PostExportSourcePath => Get( "PostExportSourcePath" );
+        public static string PostExportDestName => Get( "PostExportDestName" );
+        public static string PostExportDestNameTooltip => Get( "PostExportDestNameTooltip" );
+        public static string PostExportCreateZip => Get( "PostExportCreateZip" );
+        public static string PostExportCreateZipTooltip => Get( "PostExportCreateZipTooltip" );
+        public static string PostExportCompressionLevel => Get( "PostExportCompressionLevel" );
+        public static string PostExportZipFolderName => Get( "PostExportZipFolderName" );
+        public static string PostExportZipFolderNameTooltip => Get( "PostExportZipFolderNameTooltip" );
+        public static string PostExportZipRequiresOrganize => Get( "PostExportZipRequiresOrganize" );
+        public static string PostExportZipNotSupported => Get( "PostExportZipNotSupported" );
 
         public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );
 

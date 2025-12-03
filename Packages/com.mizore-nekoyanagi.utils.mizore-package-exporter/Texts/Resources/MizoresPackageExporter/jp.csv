@@ -38,7 +38,6 @@ FileListCategoryExportEmpty,エクスポートされるファイルがありま�
 FileListCategoryNotFound,ファイルが見つかりません
 FileListCategoryExcludes,除外されたファイル
 FileListCategoryReferences,参照されているファイル（エクスポート対象に含まれます）
-FileListCategoryPostProcess,ポストプロセスで追加されたファイル
 
 ConvertToRelativePath,相対パスに変換
 ConvertToAbsolutePath,絶対パスに変換
@@ -58,8 +57,20 @@ PreserveCase,大文字小文字を区別
 RegexParseError,正規表現にエラーがあります。
 RegexOutputToLog,コンソールに出力
 
-UsePostProcessScriptConfirm,Post Process Scriptを有効にすると、{0}を継承したスクリプトをunitypackageのエクスポート後に実行できるようになります。\n\n警告: スクリプトの内容が信頼できるものであることを確認した上で、自己責任で使用してください。\n\n有効化しますか？
-PostProcessScriptHelp,IExportPostProcessを継承したスクリプトをunitypackageのエクスポート完了後に実行します。
+FoldoutPostExport,エクスポート後処理 ({0})
+PostExportOrganizeInFolder,フォルダに整理
+PostExportOrganizeInFolderTooltip,エクスポート後、パッケージを同名のフォルダに移動します
+PostExportAdditionalCopyPaths,追加コピーパス
+PostExportSourcePath,コピー元
+PostExportDestName,出力先名
+PostExportDestNameTooltip,出力先の名前（空の場合は元の名前を使用）。変数置き換え可能。
+PostExportCreateZip,ZIP作成
+PostExportCreateZipTooltip,エクスポートフォルダからZIPアーカイブを作成します
+PostExportCompressionLevel,圧縮レベル
+PostExportZipFolderName,ZIPフォルダ名
+PostExportZipFolderNameTooltip,ZIP出力先のフォルダ名（空の場合はパッケージと同じ場所）
+PostExportZipRequiresOrganize,ZIP作成には「フォルダに整理」を有効にする必要があります。
+PostExportZipNotSupported,このバージョンのUnityではZIP作成はサポートされていません（Unity 2022.1以降が必要）。
 
 SearchReference,Referencesを検索
 SearchReferenceTooltip,「References」に含まれているAssetが、このAssetにより参照されている場合、「Reference」内の当該Assetを自動的にExport対象に追加します。

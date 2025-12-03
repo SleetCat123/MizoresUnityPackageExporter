@@ -76,22 +76,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             if ( EditorGUI.EndChangeCheck( ) ) {
                 ExporterEditorPrefs.AdvancedMode = advanced;
             }
-            if ( advanced ) {
-                // PostProcessScriptを使用するか
-                EditorGUI.BeginChangeCheck( );
-                EditorGUI.indentLevel++;
-                bool usePostProcessScript = EditorGUILayout.Toggle( ExporterTexts.UsePostProcessScript, ExporterEditorPrefs.UsePostProcessScript );
-                EditorGUI.indentLevel--;
-                if ( EditorGUI.EndChangeCheck( ) ) {
-                    // trueにするときは確認メッセージを出す
-                    if ( usePostProcessScript ) {
-                        if ( !EditorUtility.DisplayDialog( ExporterTexts.UsePostProcessScript, ExporterTexts.UsePostProcessScriptConfirm, ExporterTexts.Yes, ExporterTexts.No ) ) {
-                            usePostProcessScript = false;
-                        }
-                    }
-                    ExporterEditorPrefs.UsePostProcessScript = usePostProcessScript;
-                }
-            }
 
             ExporterUtils.SeparateLine( );
 
@@ -151,10 +135,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             ExporterUtils.SeparateLine( );
             GUI_BatchExporter.Draw( this, t, targetlist );
 
-            if ( ExporterEditorPrefs.UsePostProcessScript ) {
-                ExporterUtils.SeparateLine( );
-                GUI_PostProcessScript.Draw( this, t, targetlist );
-            }
+            ExporterUtils.SeparateLine( );
+            GUI_PostExport.Draw( this, t, targetlist );
 
             // ExportPackage
             ExporterUtils.SeparateLine( );
