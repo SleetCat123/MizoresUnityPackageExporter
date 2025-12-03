@@ -804,7 +804,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
                 if ( File.Exists( convertedPath ) ) {
                     // ファイルの場合はコピー
-                    var fileName = destName ?? Path.GetFileName( convertedPath );
+                    string fileName;
+                    if ( destName == null ) {
+                        fileName = Path.GetFileName( convertedPath );
+                    } else if ( destName.EndsWith( "/" ) || destName.EndsWith( "\\" ) ) {
+                        // フォルダ指定の場合は元のファイル名を追加
+                        fileName = destName + Path.GetFileName( convertedPath );
+                    } else {
+                        fileName = destName;
+                    }
                     var destPath = Path.Combine( folderPath, fileName );
                     Debug.Log( "Copy File: " + convertedPath + " -> " + destPath );
                     logs.Add( "Copy File: " + convertedPath + " -> " + destPath );

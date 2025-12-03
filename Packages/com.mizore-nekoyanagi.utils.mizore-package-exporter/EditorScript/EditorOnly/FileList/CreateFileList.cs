@@ -80,7 +80,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.FileList {
 
                                 if ( File.Exists( sourcePath ) ) {
                                     // ファイルの場合
-                                    var outputName = string.IsNullOrEmpty( destName ) ? Path.GetFileName( sourcePath ) : destName;
+                                    string outputName;
+                                    if ( string.IsNullOrEmpty( destName ) ) {
+                                        outputName = Path.GetFileName( sourcePath );
+                                    } else if ( destName.EndsWith( "/" ) || destName.EndsWith( "\\" ) ) {
+                                        // フォルダ指定の場合は元のファイル名を追加
+                                        outputName = destName + Path.GetFileName( sourcePath );
+                                    } else {
+                                        outputName = destName;
+                                    }
                                     node.Add( sourcePath, NodeType.AdditionalCopy, new string[] { outputName } );
                                 } else if ( Directory.Exists( sourcePath ) ) {
                                     // フォルダの場合は中身を展開
