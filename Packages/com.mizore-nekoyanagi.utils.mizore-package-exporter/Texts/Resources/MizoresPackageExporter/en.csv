@@ -133,6 +133,7 @@ PostExportCompressionLevel,Compression Level
 PostExportZipFolderName,ZIP Folder Name
 PostExportZipFolderNameTooltip,Folder name for ZIP output (empty = same location as package)
 PostExportZipNotSupported,ZIP creation is not supported on this version of Unity (requires 2022.1 or newer).
+PostExportCreatingZip,Creating ZIP: {0}
 
 EditOnlySingle,{0} can only be edited in single selection mode.
 

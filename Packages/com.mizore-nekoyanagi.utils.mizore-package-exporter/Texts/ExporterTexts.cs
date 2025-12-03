@@ -181,6 +181,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PostExportZipFolderName => Get( "PostExportZipFolderName" );
         public static string PostExportZipFolderNameTooltip => Get( "PostExportZipFolderNameTooltip" );
         public static string PostExportZipNotSupported => Get( "PostExportZipNotSupported" );
+        public static string PostExportCreatingZip( string fileName ) => Get( "PostExportCreatingZip", fileName );
 
         public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );
 

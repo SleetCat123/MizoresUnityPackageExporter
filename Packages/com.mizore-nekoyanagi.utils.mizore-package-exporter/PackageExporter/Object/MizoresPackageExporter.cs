@@ -700,7 +700,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 string[] pathNames = list.ToArray( );
                 Debug.Log( "Start Export: " + exportPath + "\n" + string.Join( "\n", pathNames ) );
                 AssetDatabase.ExportPackage( pathNames, exportPath, ExportPackageOptions.Default );
-                EditorUtility.RevealInFinder( exportPath );
 
                 logs.Add( ExporterEditorLogs.LogType.Info, ExporterTexts.ExportLogSuccess( exportPath ) );
                 Debug.Log( exportPath + "\nをエクスポートしました。" );
@@ -732,6 +731,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         table = t;
                     }
                 } );
+                string lastRevealPath = null;
                 foreach ( var kvp in table ) {
                     string exportPath = kvp.Key;
                     var list = kvp.Value;
@@ -741,8 +741,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     }
                     bool exported = Export_Internal( logs, exportPath, list.paths );
                     if ( exported ) {
-                        ExecutePostExport( this, list.batchExportKey, exportPath, list, logs );
+                        var revealPath = ExecutePostExport( this, list.batchExportKey, exportPath, list, logs );
+                        // ZIP作成時はZIPパス、それ以外はexportPathをエクスプローラで開く
+                        lastRevealPath = revealPath ?? exportPath;
                     }
+                }
+                // 最後にエクスポートしたファイルをエクスプローラで開く
+                if ( lastRevealPath != null ) {
+                    EditorUtility.RevealInFinder( lastRevealPath );
                 }
             } finally {
                 EditorUtility.ClearProgressBar( );
@@ -754,12 +760,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         /// <summary>
         /// エクスポート後の処理を実行（フォルダ整理、追加コピー、zip化）
         /// </summary>
-        public static void ExecutePostExport( MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs )
+        /// <returns>エクスプローラで開くべきパス（ZIP作成時はZIPパス、それ以外はnull）</returns>
+        public static string ExecutePostExport( MizoresPackageExporter p, string batchExportKey, string exportPath, FilePathList list, ExporterEditorLogs logs )
         {
 #if UNITY_EDITOR
             // フォルダ整理、追加コピー、zip化のいずれかが有効な場合のみ処理
             if ( !p.organizeInFolder && p.additionalCopyPaths.Count == 0 && !p.createZip ) {
-                return;
+                return null;
             }
 
             var dir = Path.GetDirectoryName( exportPath );
@@ -883,16 +890,27 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 logs.Add( "Create zip: " + zipPath );
 
                 if ( p.organizeInFolder ) {
-                    // フォルダに整理している場合はフォルダをzip化
-                    ZipFile.CreateFromDirectory( folderPath, zipPath, p.compressionLevel, false );
+                    // フォルダに整理している場合はフォルダをzip化（進捗表示付き）
+                    var files = Directory.GetFiles( folderPath, "*", SearchOption.AllDirectories );
+                    using ( var archive = ZipFile.Open( zipPath, ZipArchiveMode.Create ) ) {
+                        for ( int i = 0; i < files.Length; i++ ) {
+                            var file = files[i];
+                            var relativePath = file.Substring( folderPath.Length + 1 ).Replace( '\\', '/' );
+                            archive.CreateEntryFromFile( file, relativePath, p.compressionLevel );
+                            EditorUtility.DisplayProgressBar( ExporterTexts.AssetName, ExporterTexts.PostExportCreatingZip( relativePath ), ( float )i / files.Length );
+                        }
+                    }
                 } else {
                     // フォルダに整理していない場合はunitypackage単体をzip化
+                    EditorUtility.DisplayProgressBar( ExporterTexts.AssetName, ExporterTexts.PostExportCreatingZip( Path.GetFileName( exportPath ) ), 0.5f );
                     using ( var archive = ZipFile.Open( zipPath, ZipArchiveMode.Create ) ) {
                         archive.CreateEntryFromFile( exportPath, Path.GetFileName( exportPath ), p.compressionLevel );
                     }
                 }
+                EditorUtility.ClearProgressBar();
                 Debug.Log( "zip created: " + zipPath );
                 logs.Add( "zip created: " + zipPath );
+                return zipPath;
             }
 #else
             if ( p.createZip ) {
@@ -900,6 +918,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 logs.Add( ExporterEditorLogs.LogType.Error, "createZip is not supported on this version of Unity (requires 2022.1 or newer)" );
             }
 #endif
+            return null;
+#else
+            return null;
 #endif
         }
 
