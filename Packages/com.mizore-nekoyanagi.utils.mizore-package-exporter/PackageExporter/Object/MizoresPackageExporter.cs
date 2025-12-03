@@ -506,7 +506,10 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 if ( v == null || v.GetObject( this, batchExportKey ) == null ) {
                     continue;
                 }
-                excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, true, v.GetConvertedPath( this, batchExportKey ) ) );
+                var convertedPath = v.GetConvertedPath( this, batchExportKey );
+                // フォルダの場合はStartsWithで前方一致検索し、フォルダ内のファイルも除外対象にする
+                var searchType = Directory.Exists( convertedPath ) ? SearchPathType.StartsWith : SearchPathType.Exact;
+                excludeSearchPaths.Add( new SearchPath( searchType, true, convertedPath ) );
             }
             foreach ( var v in excludes ) {
                 excludeSearchPaths.Add( new SearchPath( v.searchType, v.PreserveCase, ConvertDynamicPath( v.Value, batchExportKey ) ) );
