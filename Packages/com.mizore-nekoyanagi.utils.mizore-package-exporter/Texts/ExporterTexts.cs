@@ -177,7 +177,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string PostExportCompressionLevel => Get( "PostExportCompressionLevel" );
         public static string PostExportZipFolderName => Get( "PostExportZipFolderName" );
         public static string PostExportZipFolderNameTooltip => Get( "PostExportZipFolderNameTooltip" );
-        public static string PostExportZipRequiresOrganize => Get( "PostExportZipRequiresOrganize" );
         public static string PostExportZipNotSupported => Get( "PostExportZipNotSupported" );
 
         public static string EditOnlySingle( string text ) => string.Format( Get( "EditOnlySingle" ), text );

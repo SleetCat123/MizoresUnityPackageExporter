@@ -831,7 +831,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
 #if UNITY_2022_1_OR_NEWER
             // zip化
-            if ( p.createZip && p.organizeInFolder ) {
+            if ( p.createZip ) {
                 string zipDir;
                 if ( string.IsNullOrEmpty( p.zipFolderName ) ) {
                     zipDir = dir;
@@ -847,12 +847,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
                 Debug.Log( "Create zip: " + zipPath );
                 logs.Add( "Create zip: " + zipPath );
-                ZipFile.CreateFromDirectory( folderPath, zipPath, p.compressionLevel, false );
+
+                if ( p.organizeInFolder ) {
+                    // フォルダに整理している場合はフォルダをzip化
+                    ZipFile.CreateFromDirectory( folderPath, zipPath, p.compressionLevel, false );
+                } else {
+                    // フォルダに整理していない場合はunitypackage単体をzip化
+                    using ( var archive = ZipFile.Open( zipPath, ZipArchiveMode.Create ) ) {
+                        archive.CreateEntryFromFile( exportPath, Path.GetFileName( exportPath ), p.compressionLevel );
+                    }
+                }
                 Debug.Log( "zip created: " + zipPath );
                 logs.Add( "zip created: " + zipPath );
-            } else if ( p.createZip && !p.organizeInFolder ) {
-                Debug.LogWarning( "createZip requires organizeInFolder to be enabled" );
-                logs.Add( ExporterEditorLogs.LogType.Warning, "createZip requires organizeInFolder to be enabled" );
             }
 #else
             if ( p.createZip ) {

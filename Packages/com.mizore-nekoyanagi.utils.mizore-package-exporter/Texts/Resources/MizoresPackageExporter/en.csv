@@ -129,7 +129,6 @@ PostExportCreateZipTooltip,Create a ZIP archive from the export folder
 PostExportCompressionLevel,Compression Level
 PostExportZipFolderName,ZIP Folder Name
 PostExportZipFolderNameTooltip,Folder name for ZIP output (empty = same location as package)
-PostExportZipRequiresOrganize,ZIP creation requires "Organize in Folder" to be enabled.
 PostExportZipNotSupported,ZIP creation is not supported on this version of Unity (requires 2022.1 or newer).
 
 EditOnlySingle,{0} can only be edited in single selection mode.

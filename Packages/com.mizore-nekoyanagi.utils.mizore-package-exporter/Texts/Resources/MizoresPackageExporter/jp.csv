@@ -69,7 +69,6 @@ PostExportCreateZipTooltip,エクスポートフォルダからZIPアーカイ�
 PostExportCompressionLevel,圧縮レベル
 PostExportZipFolderName,ZIPフォルダ名
 PostExportZipFolderNameTooltip,ZIP出力先のフォルダ名（空の場合はパッケージと同じ場所）
-PostExportZipRequiresOrganize,ZIP作成には「フォルダに整理」を有効にする必要があります。
 PostExportZipNotSupported,このバージョンのUnityではZIP作成はサポートされていません（Unity 2022.1以降が必要）。
 
 SearchReference,Referencesを検索

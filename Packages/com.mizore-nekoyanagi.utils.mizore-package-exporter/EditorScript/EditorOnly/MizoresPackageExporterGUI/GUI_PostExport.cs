@@ -39,13 +39,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.showMixedValue = false;
             }
 
-            // 追加コピーパス
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField( ExporterTexts.PostExportAdditionalCopyPaths, EditorStyles.boldLabel );
-            if ( multiple ) {
-                EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostExportAdditionalCopyPaths ), MessageType.Info );
-            } else {
-                DrawAdditionalCopyPaths( t );
+            // 追加コピーパス（フォルダ整理が有効な時のみ表示）
+            if ( t.organizeInFolder ) {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField( ExporterTexts.PostExportAdditionalCopyPaths, EditorStyles.boldLabel );
+                if ( multiple ) {
+                    EditorGUILayout.HelpBox( ExporterTexts.EditOnlySingle( ExporterTexts.PostExportAdditionalCopyPaths ), MessageType.Info );
+                } else {
+                    DrawAdditionalCopyPaths( t );
+                }
             }
 
             // zip設定
@@ -120,10 +122,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                     }
                     EditorGUI.showMixedValue = false;
-                }
-
-                if ( !t.organizeInFolder ) {
-                    EditorGUILayout.HelpBox( ExporterTexts.PostExportZipRequiresOrganize, MessageType.Warning );
                 }
 
                 EditorGUI.indentLevel--;
