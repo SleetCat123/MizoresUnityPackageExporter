@@ -169,6 +169,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public static string PostExportOrganizeInFolder => Get( "PostExportOrganizeInFolder" );
         public static string PostExportOrganizeInFolderTooltip => Get( "PostExportOrganizeInFolderTooltip" );
+        public static string PostExportOrganizeFolderName => Get( "PostExportOrganizeFolderName" );
+        public static string PostExportOrganizeFolderNameTooltip => Get( "PostExportOrganizeFolderNameTooltip" );
         public static string PostExportAdditionalCopyPaths => Get( "PostExportAdditionalCopyPaths" );
         public static string PostExportSourcePath => Get( "PostExportSourcePath" );
         public static string PostExportDestName => Get( "PostExportDestName" );

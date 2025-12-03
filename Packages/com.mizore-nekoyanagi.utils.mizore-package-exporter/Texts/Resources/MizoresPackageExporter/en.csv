@@ -121,6 +121,8 @@ AdvancedMode,Advanced
 FoldoutPostExport,Post Export Settings ({0})
 PostExportOrganizeInFolder,Organize in Folder
 PostExportOrganizeInFolderTooltip,Move the package to a folder with the same name after export
+PostExportOrganizeFolderName,Folder Name
+PostExportOrganizeFolderNameTooltip,Name of the folder to organize into (empty = use package name). Supports variable substitution.
 PostExportAdditionalCopyPaths,Additional Copy Paths
 PostExportSourcePath,Source
 PostExportDestName,Destination Name

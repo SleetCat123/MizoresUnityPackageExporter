@@ -57,6 +57,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         [Tooltip( "エクスポート後にパッケージを同名フォルダに整理する" )]
         public bool organizeInFolder = false;
 
+        [Tooltip( "整理先フォルダ名（空の場合はパッケージ名）。変数置き換え可能" )]
+        public string organizeFolderName = "";
+
         [Tooltip( "追加でコピーするファイル/フォルダ" )]
         public List<AdditionalCopyPath> additionalCopyPaths = new List<AdditionalCopyPath>();
 
@@ -764,8 +767,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
             string folderPath;
 
             if ( p.organizeInFolder ) {
-                // パッケージを同名フォルダに整理
-                folderPath = Path.Combine( dir, packageName );
+                // パッケージをフォルダに整理
+                string folderName;
+                if ( string.IsNullOrWhiteSpace( p.organizeFolderName ) ) {
+                    folderName = packageName;
+                } else {
+                    folderName = p.ConvertDynamicPath( p.organizeFolderName, batchExportKey );
+                }
+                folderPath = Path.Combine( dir, folderName );
                 if ( Directory.Exists( folderPath ) ) {
                     // 同名のフォルダがある場合はタイムスタンプを付加してリネーム
                     var lastWriteTime = Directory.GetLastWriteTime( folderPath );

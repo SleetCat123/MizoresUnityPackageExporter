@@ -39,8 +39,43 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 EditorGUI.showMixedValue = false;
             }
 
-            // 追加コピーパス（フォルダ整理が有効な時のみ表示）
+            // フォルダ整理が有効な時のみ表示
             if ( t.organizeInFolder ) {
+                EditorGUI.indentLevel++;
+
+                // フォルダ名
+                var sameFolderName = targetlist.All( v => v.organizeFolderName == t.organizeFolderName );
+                using ( new EditorGUILayout.HorizontalScope() ) {
+                    if ( !sameFolderName ) {
+                        ExporterUtils.DiffLabel();
+                        EditorGUI.showMixedValue = true;
+                    }
+                    EditorGUI.BeginChangeCheck();
+                    var folderName = EditorGUILayout.TextField(
+                        new GUIContent( ExporterTexts.PostExportOrganizeFolderName, ExporterTexts.PostExportOrganizeFolderNameTooltip ),
+                        t.organizeFolderName
+                    );
+                    if ( EditorGUI.EndChangeCheck() ) {
+                        foreach ( var item in targetlist ) {
+                            Undo.RecordObject( item, "Change OrganizeFolderName" );
+                            item.organizeFolderName = folderName;
+                            EditorUtility.SetDirty( item );
+                        }
+                    }
+                    EditorGUI.showMixedValue = false;
+                }
+
+                // フォルダ名プレビュー
+                if ( !string.IsNullOrEmpty( t.organizeFolderName ) ) {
+                    EditorGUI.indentLevel++;
+                    var preview = t.ConvertDynamicPath( t.organizeFolderName, string.Empty );
+                    EditorGUILayout.LabelField( new GUIContent( preview, preview ), EditorStyles.miniLabel );
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUI.indentLevel--;
+
+                // 追加コピーパス
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField( ExporterTexts.PostExportAdditionalCopyPaths, EditorStyles.boldLabel );
                 if ( multiple ) {

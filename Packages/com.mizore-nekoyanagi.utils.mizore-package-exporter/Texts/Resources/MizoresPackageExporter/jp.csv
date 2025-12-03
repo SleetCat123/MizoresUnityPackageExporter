@@ -61,6 +61,8 @@ RegexOutputToLog,コンソールに出力
 FoldoutPostExport,エクスポート後処理 ({0})
 PostExportOrganizeInFolder,フォルダに整理
 PostExportOrganizeInFolderTooltip,エクスポート後、パッケージを同名のフォルダに移動します
+PostExportOrganizeFolderName,フォルダ名
+PostExportOrganizeFolderNameTooltip,整理先のフォルダ名（空の場合はパッケージ名）。変数置き換え可能。
 PostExportAdditionalCopyPaths,追加コピーパス
 PostExportSourcePath,コピー元
 PostExportDestName,出力先名
