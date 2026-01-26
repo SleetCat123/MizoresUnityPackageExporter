@@ -13,6 +13,7 @@
 - change: （内部処理）各種Enumの値を文字列で保存するように変更
 - fix: エクスポート除外対象のObject／DynamicPathがReferenceの依存Assetを検索してしまうのを修正
 - fix: MizoresPackageExporterを新規作成した直後にエラーが出てしまうのを修正
+- fix: 無効な日付フォーマットが指定された場合にFormatExceptionが発生する問題を修正（HelpBoxで警告表示）
 
 ## [7.2.0] (2024-01-16)
 - add: （上級者向け機能）エクスポート後に所定のinterfaceを継承するスクリプトを実行できる機能を追加

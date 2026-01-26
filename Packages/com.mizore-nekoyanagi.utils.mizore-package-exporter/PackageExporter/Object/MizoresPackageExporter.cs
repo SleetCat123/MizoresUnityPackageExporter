@@ -103,12 +103,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
 
         public string GetPackageName(string batchExportKey)
         {
+            return GetPackageName(batchExportKey, out _);
+        }
+        public string GetPackageName(string batchExportKey, out string formatError)
+        {
             var currentSettings = GetOverridedSettings(batchExportKey);
-            return ConvertDynamicPath(currentSettings.packageName, batchExportKey);
+            return ConvertDynamicPath(currentSettings.packageName, batchExportKey, out formatError);
         }
         public string GetExportFileName(string batchExportKey)
         {
-            return GetPackageName(batchExportKey) + ".unitypackage";
+            return GetExportFileName(batchExportKey, out _);
+        }
+        public string GetExportFileName(string batchExportKey, out string formatError)
+        {
+            return GetPackageName(batchExportKey, out formatError) + ".unitypackage";
         }
         public string GetExportPath(string batchExportKey)
         {
@@ -116,9 +124,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public string[] GetAllExportFileName(string batchExportKey)
         {
+            return GetAllExportFileName(batchExportKey, out _);
+        }
+        public string[] GetAllExportFileName(string batchExportKey, out string formatError)
+        {
+            formatError = null;
             if (batchExportMode == BatchExportMode.Single)
             {
-                return new string[] { GetExportFileName(string.Empty) };
+                return new string[] { GetExportFileName(string.Empty, out formatError) };
             }
             else
             {
@@ -126,7 +139,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 var result = new string[texts.Length];
                 for (int i = 0; i < texts.Length; i++)
                 {
-                    result[i] = GetExportFileName(texts[i]);
+                    result[i] = GetExportFileName(texts[i], out var err);
+                    if (err != null) formatError = err;
                 }
                 return result.Distinct().ToArray();
             }
@@ -296,15 +310,40 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public static string ReplaceDate(string key)
         {
+            return ReplaceDate(key, out _);
+        }
+        public static string ReplaceDate(string key, out string formatError)
+        {
+            formatError = null;
+            string capturedError = null;
             var date = System.DateTime.Now;
-            return Const_Keys.REGEX_DATE_FORMAT.Replace(key, m => date.ToString(m.Groups[1].Value));
+            var result = Const_Keys.REGEX_DATE_FORMAT.Replace(key, m =>
+            {
+                var format = m.Groups[1].Value;
+                try
+                {
+                    return date.ToString(format);
+                }
+                catch (System.FormatException)
+                {
+                    capturedError = format;
+                    return m.Value;
+                }
+            });
+            formatError = capturedError;
+            return result;
         }
         public string ConvertDynamicPath(string path, string batchExportKey)
         {
-            return ConvertDynamicPath_Main(path, 0, batchExportKey);
+            return ConvertDynamicPath_Main(path, 0, batchExportKey, out _);
         }
-        string ConvertDynamicPath_Main(string path, int recursiveCount, string batchExportKey)
+        public string ConvertDynamicPath(string path, string batchExportKey, out string formatError)
         {
+            return ConvertDynamicPath_Main(path, 0, batchExportKey, out formatError);
+        }
+        string ConvertDynamicPath_Main(string path, int recursiveCount, string batchExportKey, out string formatError)
+        {
+            formatError = null;
             if (string.IsNullOrWhiteSpace(path)) return string.Empty;
             if (2 < recursiveCount)
             {
@@ -330,11 +369,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
                 else
                 {
-                    path = path.Replace(key_batchf, ConvertDynamicPath_Main(currentSettings.batchFormat, recursiveCount, batchExportKey));
+                    path = path.Replace(key_batchf, ConvertDynamicPath_Main(currentSettings.batchFormat, recursiveCount, batchExportKey, out _));
                 }
             }
 
-            path = ReplaceDate(path);
+            path = ReplaceDate(path, out formatError);
 
             path = path.Replace(Const_Keys.KEY_NAME, name);
 
@@ -350,14 +389,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                 }
                 else
                 {
-                    path = path.Replace(key_versionf, ConvertDynamicPath_Main(currentSettings.versionFormat, recursiveCount, batchExportKey));
+                    path = path.Replace(key_versionf, ConvertDynamicPath_Main(currentSettings.versionFormat, recursiveCount, batchExportKey, out _));
                 }
             }
 
             var key_packagename = Const_Keys.KEY_PACKAGE_NAME;
             if (path.Contains(key_packagename))
             {
-                var str = ConvertDynamicPath_Main(currentSettings.packageName, recursiveCount, batchExportKey);
+                var str = ConvertDynamicPath_Main(currentSettings.packageName, recursiveCount, batchExportKey, out _);
                 // ファイル名に使用できない文字を_に置き換え
                 str = ExporterUtils.InvalidFileCharsRegex.Replace(str, "_");
                 path = path.Replace(key_packagename, str);

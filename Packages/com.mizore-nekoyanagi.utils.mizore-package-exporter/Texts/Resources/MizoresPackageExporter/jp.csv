@@ -13,6 +13,7 @@ BatchVariableTooltip,注：Batch Exportの文字列と置き換わります。
 FBatchVariableTooltip,注：Batch Formatで変換された文字列が使用されます。%batch%が無い場合は空になります。
 
 DateVariableTooltip,注：現在の日時と置き換わります。(ex: {0})
+DateFormatError,日付フォーマットエラー: {0}
 
 Version,バージョン
 VersionSource,バージョン参照元

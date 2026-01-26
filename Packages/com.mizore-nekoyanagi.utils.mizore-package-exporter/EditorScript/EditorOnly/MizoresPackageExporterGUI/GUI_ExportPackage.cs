@@ -21,9 +21,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             //}
 
             string[][] fileList = new string[targetlist.Length][];
+            string formatError = null;
             bool any = false;
             for ( int i = 0; i < targetlist.Length; i++ ) {
-                var files = targetlist[i].GetAllExportFileName( string.Empty );
+                var files = targetlist[i].GetAllExportFileName( string.Empty, out var err );
+                if ( err != null ) formatError = err;
                 fileList[i] = files;
                 any |= files.Length != 0;
             }
@@ -70,6 +72,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                 }
                 VerticalBoxScope.EndVerticalBox( );
+            }
+            if ( formatError != null ) {
+                ExporterUtils.FormatErrorHelpBox( ExporterTexts.DateFormatError( formatError ) );
             }
             if ( !any ) {
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );

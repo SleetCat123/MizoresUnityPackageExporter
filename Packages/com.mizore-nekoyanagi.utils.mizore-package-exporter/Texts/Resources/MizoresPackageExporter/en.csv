@@ -37,6 +37,7 @@ SettingOverrideBatchFormat,Batch Override
 SettingOverridePackageName,Package Name Override
 
 DateVariableTooltip,[Note] Replaced by formatted current date. (ex: {0})
+DateFormatError,Invalid date format: {0}
 
 ButtonAddNameOverride,Override Settings
 ButtonRemoveNameOverride,Remove Override

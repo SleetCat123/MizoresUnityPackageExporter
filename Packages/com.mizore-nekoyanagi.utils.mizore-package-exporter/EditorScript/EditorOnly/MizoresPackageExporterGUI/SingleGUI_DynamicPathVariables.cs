@@ -46,8 +46,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     DrawBuiltInVariable( Const_Keys.KEY_BATCH_EXPORTER, ExporterTexts.BatchVariableTooltip );
                     DrawBuiltInVariable( Const_Keys.KEY_FORMATTED_BATCH_EXPORTER, ExporterTexts.FormattedBatchVariableTooltip );
                 }
-                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE ) ) );
+                var sampleDate = MizoresPackageExporter.ReplaceDate( Const_Keys.KEY_SAMPLE_DATE, out var formatError );
+                DrawBuiltInVariable( Const_Keys.KEY_SAMPLE_DATE, ExporterTexts.DateVariableTooltip( sampleDate ) );
                 EditorGUI.EndDisabledGroup( );
+                if ( formatError != null ) {
+                    ExporterUtils.FormatErrorHelpBox( ExporterTexts.DateFormatError( formatError ) );
+                }
                 List<string> keys = new List<string>( t.variables.Keys );
                 for ( int i = 0; i < keys.Count; i++ ) {
                     string key = keys[i];

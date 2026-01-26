@@ -79,6 +79,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public static string FormattedBatchVariableTooltip => Get( "FBatchVariableTooltip" );
 
         public static string DateVariableTooltip( string example ) => Get( "DateVariableTooltip", example );
+        public static string DateFormatError( string format ) => Get( "DateFormatError", format );
 
         public static string FoldoutObjects( string range ) => Get( "FoldoutObjects", range );
         public static string FoldoutObjectsTooltip => Get( "FoldoutObjectsTooltip" );

@@ -71,6 +71,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 #endif
         }
 
+        /// <summary>
+        /// フォーマットエラーがある場合にHelpBoxを表示する
+        /// </summary>
+        /// <param name="errorMessage">エラーメッセージ（nullまたは空の場合は表示しない）</param>
+        /// <returns>エラーが表示された場合はtrue</returns>
+        public static bool FormatErrorHelpBox( string errorMessage ) {
+#if UNITY_EDITOR
+            if ( !string.IsNullOrEmpty( errorMessage ) ) {
+                EditorGUILayout.HelpBox( errorMessage, MessageType.Warning );
+                return true;
+            }
+#endif
+            return false;
+        }
+
         public static void AddObjects<TElement>( IEnumerable<MizoresPackageExporter> targetlist, System.Func<MizoresPackageExporter, List<TElement>> getList, Object[ ] objectReferences ) where TElement : ObjectRefElement, new() {
 #if UNITY_EDITOR
             foreach ( var item in targetlist ) {
