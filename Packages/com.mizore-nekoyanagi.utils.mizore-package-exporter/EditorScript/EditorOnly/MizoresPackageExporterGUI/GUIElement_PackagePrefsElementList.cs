@@ -85,11 +85,13 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                     objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
                     i--;
+                    EditorGUILayout.EndHorizontal( );
+                    if ( objects_count.max == 0 ) {
+                        break;
+                    }
+                    continue;
                 }
                 EditorGUILayout.EndHorizontal( );
-                if ( objects_count.max == 0 ) {
-                    break;
-                }
 
                 // ExportTargetObjectElementの場合
                 var exportTargetObjectElement = element as ExportTargetObjectElement;
@@ -109,11 +111,12 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.showMixedValue = false;
                         if ( EditorGUI.EndChangeCheck( ) ) {
                             foreach ( var item in targetlist ) {
-                                ExporterUtils.ResizeList( tList, Mathf.Max( i + 1, tList.Count ), ( ) => new TElement( ) );
-                                ( tList[i] as ExportTargetObjectElement ).searchReference = searchReference;
+                                var itemList = GetList( item );
+                                ExporterUtils.ResizeList( itemList, Mathf.Max( i + 1, itemList.Count ), ( ) => new TElement( ) );
+                                ( itemList[i] as ExportTargetObjectElement ).searchReference = searchReference;
                                 EditorUtility.SetDirty( item );
                             }
-                            objects_count = MinMax.Create( targetlist, v => tList.Count );
+                            objects_count = MinMax.Create( targetlist, v => GetList( v ).Count );
                         }
                         EditorGUI.indentLevel -= 2;
                     }

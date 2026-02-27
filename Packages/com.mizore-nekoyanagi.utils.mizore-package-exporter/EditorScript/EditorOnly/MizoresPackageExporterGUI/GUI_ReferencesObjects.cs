@@ -106,6 +106,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                     }
                     objects_count = MinMax.Create( targetlist, v => v.references.Count );
                     i--;
+                    EditorGUILayout.EndHorizontal( );
+                    if ( objects_count.max == 0 ) {
+                        break;
+                    }
+                    continue;
                 }
                 EditorGUILayout.EndHorizontal( );
 

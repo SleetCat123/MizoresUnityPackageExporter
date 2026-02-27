@@ -181,7 +181,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         double lastUpdate_BatchExportKeys;
         public string[] GetBatchExportKeysConverted()
         {
-            var list = BatchExportKeys;
+            // 元配列を変更しないようにコピーを作成
+            var list = BatchExportKeys.ToArray();
             for (int i = 0; i < list.Length; i++)
             {
                 list[i] = ConvertDynamicPath(list[i], string.Empty);
@@ -258,7 +259,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     temp_batchExportKeys = files.Distinct( ).ToArray( );
                     break;
                 case BatchExportMode.ListFile:
-                    if ( batchExportFolderRoot == null || batchExportFolderRoot.GetObject( this, string.Empty ) == null ) {
+                    if ( batchExportListFile == null || batchExportListFile.GetObject( this, string.Empty ) == null ) {
                         temp_batchExportKeys = new string[0];
                         break;
                     }

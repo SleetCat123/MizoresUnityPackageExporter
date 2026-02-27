@@ -31,6 +31,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public ObjectRefElement( ObjectRefElement source ) {
             this.path = source.path;
+            this.isGUID = source.isGUID;
         }
 
         public Object GetObject( MizoresPackageExporter exporter, string batchExportKey = "" ) {
@@ -54,7 +55,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public void SetGUID( Object value ) {
 #if UNITY_EDITOR
             isGUID = true;
-            path = AssetDatabase.GUIDToAssetPath( AssetDatabase.GetAssetPath( value ) );
+            path = AssetDatabase.AssetPathToGUID( AssetDatabase.GetAssetPath( value ) );
 #else
             throw new System.NotImplementedException( );
 #endif
@@ -115,7 +116,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                     break;
                 case PathType.GUID:
                     isGUID = true;
-                    this.path = AssetDatabase.GUIDToAssetPath( path );
+                    this.path = AssetDatabase.AssetPathToGUID( path );
                     break;
             }
 #else
@@ -146,16 +147,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             return new ObjectRefElement( this );
         }
 
+        public void CopyFrom( ObjectRefElement source ) {
+            this.path = source.path;
+            this.isGUID = source.isGUID;
+        }
+
         public override bool Equals( object obj ) {
             return Equals( obj as ObjectRefElement );
         }
 
         public bool Equals( ObjectRefElement other ) {
-            return this.path == other.path;
+            if ( other is null ) return false;
+            return this.path == other.path && this.isGUID == other.isGUID;
         }
 
         public override int GetHashCode( ) {
-            return path.GetHashCode( );
+            return ( path?.GetHashCode( ) ?? 0 ) ^ isGUID.GetHashCode( );
         }
 
         public override string ToString( ) {

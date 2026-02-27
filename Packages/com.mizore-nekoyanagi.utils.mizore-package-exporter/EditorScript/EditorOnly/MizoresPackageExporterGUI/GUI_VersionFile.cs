@@ -57,9 +57,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             PackagePrefsElementInspector.Draw<TextAsset>( t, s.versionFile );
                             EditorGUI.showMixedValue = false;
                             if ( EditorGUI.EndChangeCheck( ) ) {
-                                var obj = s.versionFile.GetObject( t );
                                 for ( int i = 0; i < targetlist.Length; i++ ) {
-                                    settings[i].versionFile.SetPathAutoDetect( t, obj );
+                                    settings[i].versionFile.CopyFrom( s.versionFile );
                                     targetlist[i].packageNameSettings.UpdateExportVersion( );
                                     EditorUtility.SetDirty( targetlist[i] );
                                 }

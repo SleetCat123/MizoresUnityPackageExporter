@@ -53,6 +53,27 @@ jobs:
           echo "unityPackage=${{ vars.PACKAGE_NAME }}-${{ steps.version.outputs.value }}.unitypackage" >> $GITHUB_ENV
           echo "version=${{ steps.version.outputs.value }}" >> $GITHUB_ENV
 
+      # CHANGELOGから該当バージョンのセクションを抽出
+      - name: Extract Changelog
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          CHANGELOG_PATH="${{ env.packagePath }}/CHANGELOG.md"
+
+          # バージョンセクションを抽出（次の##までまたはファイル末尾まで）
+          CONTENT=$(awk -v ver="$VERSION" '
+            /^## \[/ {
+              if (found) exit
+              if (index($0, "[" ver "]")) found=1
+            }
+            found && !/^## \[/ { print }
+          ' "$CHANGELOG_PATH")
+
+          # GitHub Outputに設定（複数行対応）
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       # Zip the Package for release
       - name: Create Package Zip
         working-directory: "${{ env.packagePath }}"
@@ -80,6 +101,7 @@ jobs:
       - name: Make Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         with:
+          body: ${{ steps.changelog.outputs.content }}
           files: |
             ${{ env.zipFile }}
             ${{ env.unityPackage }}

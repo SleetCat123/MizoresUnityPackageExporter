@@ -125,9 +125,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             }
                             EditorGUI.showMixedValue = false;
                             if ( EditorGUI.EndChangeCheck( ) ) {
-                                var obj = t.batchExportFolderRoot.GetObject( t );
                                 foreach ( var item in targetlist ) {
-                                    item.batchExportFolderRoot.SetPathAutoDetect( t, obj );
+                                    item.batchExportFolderRoot.CopyFrom( t.batchExportFolderRoot );
                                     item.UpdateBatchExportKeys( );
                                     EditorUtility.SetDirty( item );
                                 }
@@ -180,9 +179,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                             EditorGUI.indentLevel--;
                             EditorGUI.showMixedValue = false;
                             if ( EditorGUI.EndChangeCheck( ) ) {
-                                var obj = t.batchExportListFile.GetObject( t );
                                 foreach ( var item in targetlist ) {
-                                    item.batchExportListFile.SetPathAutoDetect( t, obj );
+                                    item.batchExportListFile.CopyFrom( t.batchExportListFile );
                                     item.UpdateBatchExportKeys( );
                                     EditorUtility.SetDirty( item );
                                 }
@@ -272,15 +270,15 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 }
 
                 EditorGUI.indentLevel++;
-                var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list );
-                EditorGUI.BeginDisabledGroup( !unusedOverrides.Any( ) );
+                var unusedOverrides = item.packageNameSettingsOverride.Keys.Except( list ).ToList( );
+                EditorGUI.BeginDisabledGroup( unusedOverrides.Count == 0 );
                 Rect buttonrect = EditorGUI.IndentedRect( EditorGUILayout.GetControlRect( ) );
                 if ( GUI.Button( buttonrect, ExporterTexts.ButtonCleanNameOverride ) ) {
                     foreach ( var remove in unusedOverrides ) {
                         Debug.Log( "Override Removed: \n" + remove );
                         item.packageNameSettingsOverride.Remove( remove );
                     }
-                    Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count( ) ) );
+                    Debug.Log( ExporterTexts.LogCleanNameOverride( unusedOverrides.Count ) );
                 }
                 EditorGUI.EndDisabledGroup( );
                 EditorGUI.indentLevel--;

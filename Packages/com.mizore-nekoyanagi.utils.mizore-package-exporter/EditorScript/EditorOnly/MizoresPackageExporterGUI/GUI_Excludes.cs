@@ -152,12 +152,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         }
                         minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
                         i--;
+                        EditorGUILayout.EndHorizontal( );
+                        if ( minmax_count.max == 0 ) {
+                            break;
+                        }
+                        continue;
                     }
                     EditorGUILayout.EndHorizontal( );
 
-                    EditorGUI.BeginChangeCheck( );
                     EditorGUI.indentLevel += 2;
                     EditorGUILayout.BeginHorizontal( );
+
+                    EditorGUI.BeginChangeCheck( );
                     SearchPathType searchType;
                     if ( samevalue_in_all_type ) {
                         searchType = ( SearchPathType )LocalizedEnumPopup.EnumPopup( t.excludes[i].searchType );
@@ -166,21 +172,31 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         searchType = ( SearchPathType )LocalizedEnumPopup.EnumPopup( SearchPathType.Exact );
                         EditorGUI.showMixedValue = false;
                     }
+                    bool searchTypeChanged = EditorGUI.EndChangeCheck( );
 
+                    EditorGUI.BeginChangeCheck( );
+                    bool preserveCase;
                     if ( samevalue_in_all_preservecase ) {
-                        t.excludes[i].PreserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
+                        preserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
                     } else {
                         EditorGUI.showMixedValue = true;
-                        t.excludes[i].PreserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
+                        preserveCase = EditorGUILayout.Toggle( ExporterTexts.PreserveCase, t.excludes[i].PreserveCase );
                         EditorGUI.showMixedValue = false;
                     }
+                    bool preserveCaseChanged = EditorGUI.EndChangeCheck( );
+
                     EditorGUI.indentLevel -= 2;
                     EditorGUILayout.EndHorizontal( );
 
-                    if ( EditorGUI.EndChangeCheck( ) ) {
+                    if ( searchTypeChanged || preserveCaseChanged ) {
                         foreach ( var item in targetlist ) {
                             ExporterUtils.ResizeList( item.excludes, Mathf.Max( i + 1, item.excludes.Count ), ( ) => new SearchPath( ) );
-                            item.excludes[i].searchType = searchType;
+                            if ( searchTypeChanged ) {
+                                item.excludes[i].searchType = searchType;
+                            }
+                            if ( preserveCaseChanged ) {
+                                item.excludes[i].PreserveCase = preserveCase;
+                            }
                             EditorUtility.SetDirty( item );
                         }
                         minmax_count = MinMax.Create( targetlist, v => v.excludes.Count );
