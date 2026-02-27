@@ -82,7 +82,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                             element.SetPath( PathUtils.GetRelativePath( t.GetDirectoryPath( ), path ) );
                             break;
                         case PathType.GUID:
-                            element.SetGUID( AssetDatabase.GUIDToAssetPath( path ) );
+                            element.SetGUID( AssetDatabase.AssetPathToGUID( path ) );
                             break;
                     }
                     ExporterUtils.DebugLog( "Path changed: " + prevElement + " -> " + element );

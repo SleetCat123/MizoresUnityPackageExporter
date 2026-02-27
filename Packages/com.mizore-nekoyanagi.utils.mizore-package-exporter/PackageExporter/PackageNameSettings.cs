@@ -29,7 +29,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public PackageNameSettings( ) { }
         public PackageNameSettings( PackageNameSettings source ) {
             this.versionSource = source.versionSource.value;
-            this.versionFile = source.versionFile;
+            this.versionFile = source.versionFile != null ? ( ObjectRefElement )source.versionFile.Clone( ) : null;
             this.versionString = source.versionString;
             this.versionFormat = source.versionFormat;
             this.batchFormat = source.batchFormat;
@@ -91,8 +91,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                             _exportVersion = ExporterUtils.InvalidFileCharsRegex.Replace( _exportVersion, "_" );
                         }
                     }
-                } catch ( System.Exception e ) {
-                    throw e;
+                } catch ( System.Exception ) {
+                    throw;
                 }
             }
 #endif

@@ -75,19 +75,21 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
 
         public override int GetHashCode( ) {
-            return value.GetHashCode( ) ^ preserveCase.GetHashCode( ) ^ searchType.GetHashCode( );
+            return ( value?.GetHashCode( ) ?? 0 ) ^ preserveCase.GetHashCode( ) ^ searchType.GetHashCode( );
         }
         public bool Equals( SearchPath other ) {
+            if ( other is null ) return false;
             return this.value == other.value && this.searchType == other.searchType && this.preserveCase == other.preserveCase;
         }
         public override bool Equals( object obj ) {
-            return Equals( ( SearchPath )obj );
+            return obj is SearchPath other && Equals( other );
         }
         public static bool operator ==( SearchPath a, SearchPath b ) {
+            if ( a is null ) return b is null;
             return a.Equals( b );
         }
         public static bool operator !=( SearchPath a, SearchPath b ) {
-            return !a.Equals( b );
+            return !( a == b );
         }
 
         public bool IsMatch( string path ) {

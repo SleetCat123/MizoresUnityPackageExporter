@@ -17,5 +17,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         public bool Equals( ExportTargetObjectElement other ) {
             return base.Equals( other ) && this.searchReference == other.searchReference;
         }
+        public override int GetHashCode( ) {
+            return base.GetHashCode( ) ^ searchReference.GetHashCode( );
+        }
     }
 }
