@@ -89,36 +89,38 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
                 v2.excludeObjects = v1.excludeObjects.Select( v => new ObjectRefElement( v.Path ) ).ToList( );
                 v2.excludes = v1.excludes.Select( v => {
                     var searchType = SearchPathType.Disabled;
-                    var ignoreCase = false;
+                    // preserveCase=true: 大文字小文字を区別（IgnoreCaseなしの型）
+                    // preserveCase=false: 大文字小文字を無視（IgnoreCase付きの型）
+                    var preserveCase = true;
                     switch ( v.searchType ) {
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Disabled:
                             searchType = SearchPathType.Disabled;
-                            ignoreCase = false;
+                            preserveCase = false;
                             break;
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Exact:
                             searchType = SearchPathType.Exact;
-                            ignoreCase = true;
+                            preserveCase = true;
                             break;
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Partial:
                             searchType = SearchPathType.Partial;
-                            ignoreCase = false;
+                            preserveCase = true;
                             break;
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Partial_IgnoreCase:
                             searchType = SearchPathType.Partial;
-                            ignoreCase = true;
+                            preserveCase = false;
                             break;
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Regex:
                             searchType = SearchPathType.Regex;
-                            ignoreCase = false;
+                            preserveCase = true;
                             break;
                         case MizoresPackageExporterV1.SearchPath.SearchPathType.Regex_IgnoreCase:
                             searchType = SearchPathType.Regex;
-                            ignoreCase = true;
+                            preserveCase = false;
                             break;
                         default:
                             break;
                     }
-                    return new SearchPath( searchType, ignoreCase, v.value );
+                    return new SearchPath( searchType, preserveCase, v.value );
                 } ).ToList( );
                 v2.references = v1.references.Select( v => new ReferenceElement( new ObjectRefElement( v.Path ), ReferenceMode.Include ) ).ToList( );
                 v2.packageNameSettings = ( PackageNameSettings )v1.packageNameSettings;
