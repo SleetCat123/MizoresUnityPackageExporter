@@ -1,0 +1,22 @@
+{
+    "name": "MizoresPackageExporter.Tests.Editor",
+    "rootNamespace": "",
+    "references": [
+        "MizoresPackageExporter",
+        "MizoresPackageExporter.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
