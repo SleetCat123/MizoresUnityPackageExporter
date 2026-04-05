@@ -98,6 +98,7 @@ FileListCategoryAdditionalCopy,Additional Copy Files
 FileListTooltipReferencedBy,Referenced by
 
 ExportListEmpty,Export List is empty.\nPlease check the Batch Export settings.
+ExportDuplicatePathError,Duplicate export paths detected:\n{0}\nPackages with the same output path cannot be exported simultaneously.
 
 ConvertToRelativePath,Convert to relative path
 ConvertToAbsolutePath,Convert to absolute path

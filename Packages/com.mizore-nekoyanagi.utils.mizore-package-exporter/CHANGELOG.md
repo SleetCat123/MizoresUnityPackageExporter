@@ -1,5 +1,6 @@
 # ChangeLog
 ## [8.0.0] (2024
+- add: 複数のunitypackageを同時にエクスポートする際、出力先パスが重複している場合にエラー表示するようにした
 - add: References検索対象から除外するファイルを指定できるようにした
 - add: Objectで指定されたAssetがReferencesを検索するかどうかを個別に指定できるようにした
 - add: Objectsなどの項目にもフォルダ／ファイルの選択ボタンを追加
@@ -7,24 +8,27 @@
 - add: ファイル一覧の表示とエクスポート時にプログレスバーを表示するようにした
 - add: Excludesの条件にStartsWithとEndsWithを追加
 - add: Objects、References、ExcludeObjectsでDynamicVariableを使用できるようにした
+- add: 複数オブジェクト編集に対応していない項目にHelpBoxを表示するようにした
+- add: DynamicPathで%..name%のように書くと、現在のパスから.の個数だけ上の階層にあるフォルダの名前を取得するようにした
+- add: エクスポート後にunitypackageを同名フォルダに整理する機能を追加
+- add: フォルダ整理時のフォルダ名をカスタマイズ可能に
+- add: 整理先フォルダに追加のファイル／フォルダをコピーする機能を追加
+- add: エクスポート後にzipファイルを作成する機能を追加（Unity 2022.1以降）
+- add: zip圧縮の進捗表示を追加
 - change: 上記変更にともないDynamicPathをObjectsに統合
 - change: フォルダ／ファイルの選択ボタンの表示を変更
-- change: PostProcessScriptの選択をPopupにした
+- change: PostProcessScript機能を廃止し、エクスポート後処理（フォルダ整理、追加コピーパス、zip作成）を標準機能として実装
 - change: （内部処理）各種Enumの値を文字列で保存するように変更
+- change: DynamicPathのプレビューで%batch%が表示されるようにした
+- change: BatchExport設定がFoldersでフォルダが未指定のとき、Exporterがあるディレクトリを使用するようにした
 - fix: エクスポート除外対象のObject／DynamicPathがReferenceの依存Assetを検索してしまうのを修正
 - fix: MizoresPackageExporterを新規作成した直後にエラーが出てしまうのを修正
 - fix: 無効な日付フォーマットが指定された場合にFormatExceptionが発生する問題を修正（HelpBoxで警告表示）
 - fix: 一括エクスポートのFoldersモードでフォルダ入力欄に%name%等の動的変数を含むパスを入力した場合、変換後の値で上書きされてしまう問題を修正
 - fix: 複数オブジェクト選択時にObjectsのSearchReference設定が最初のインスタンスにのみ反映される問題を修正
 - fix: 複数オブジェクト選択時にExcludesのPreserveCase設定が最初のインスタンスにのみ反映される問題を修正
-
-## [7.2.0] (2024-01-16)
-- add: （上級者向け機能）エクスポート後に所定のinterfaceを継承するスクリプトを実行できる機能を追加
-- add: 複数オブジェクト編集に対応していない項目にHelpBoxを表示するようにした
-- add: DynamicPathで%..name%のように書くと、現在のパスから.の個数だけ上の階層にあるフォルダの名前を取得するようにした
-- change: DynamicPathのプレビューで%batch%が表示されるようにした
-- change: BatchExport設定がFoldersでフォルダが未指定のとき、Exporterがあるディレクトリを使用するようにした
 - fix: ファイルをDynamicPathにドラッグ＆ドロップして追加した時に早退パスへの変換が行われていなかったのを修正
+- fix: zip作成がフォルダ整理なしでも動作するように修正
 
 ## [7.1.1] (2023-12-22)
 - fix: ビルド時にエラーが出てしまうのを修正

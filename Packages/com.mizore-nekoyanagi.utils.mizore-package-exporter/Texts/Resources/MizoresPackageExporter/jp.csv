@@ -31,6 +31,7 @@ ButtonCheck,エクスポートするファイルの有無を確認
 PackageName,unitypackage名
 
 ExportListEmpty,エクスポートできるunitypackageがありません。\n一括エクスポートの設定を確認してください。
+ExportDuplicatePathError,出力先パスが重複しています:\n{0}\n同一の出力先パスを持つパッケージは同時にエクスポートできません。
 
 FileListTreeView,階層表示
 

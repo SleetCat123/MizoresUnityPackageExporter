@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using Const_Keys = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts_Keys;
 
@@ -14,7 +16,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             public string version;
         }
 
-        public VersionSourceData versionSource;
+        public VersionSourceData versionSource = VersionSource.String;
         public ObjectRefElement versionFile;
         public string versionString;
         public string versionFormat = $"-{Const_Keys.KEY_VERSION}";
@@ -28,12 +30,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public PackageNameSettings( ) { }
         public PackageNameSettings( PackageNameSettings source ) {
-            this.versionSource = source.versionSource.value;
+            this.versionSource = source.versionSource != null ? source.versionSource.value : VersionSource.String;
             this.versionFile = source.versionFile != null ? ( ObjectRefElement )source.versionFile.Clone( ) : null;
             this.versionString = source.versionString;
             this.versionFormat = source.versionFormat;
             this.batchFormat = source.batchFormat;
             this.packageName = source.packageName;
+            this.useOverride_version = source.useOverride_version;
+            this.useOverride_versionFormat = source.useOverride_versionFormat;
+            this.useOverride_batchFormat = source.useOverride_batchFormat;
+            this.useOverride_packageName = source.useOverride_packageName;
             this.lastUpdate_ExportVersion = source.lastUpdate_ExportVersion;
             this._exportVersion = source._exportVersion;
         }
@@ -100,7 +106,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
 
         public void SetBase( PackageNameSettings baseSettings ) {
             if ( !useOverride_version ) {
-                this.versionSource = baseSettings.versionSource.value;
+                this.versionSource = baseSettings.versionSource != null ? baseSettings.versionSource.value : VersionSource.String;
                 this.versionFile = baseSettings.versionFile;
                 this.versionString = baseSettings.versionString;
                 UpdateExportVersion( );

@@ -2,8 +2,8 @@
 using UnityEngine;
 using Const = MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterConsts;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 
 namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
@@ -30,8 +30,16 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                 any |= files.Length != 0;
             }
 
+            // 出力先パスの重複チェック
+            var allFiles = new List<string>( );
+            for ( int i = 0; i < targetlist.Length; i++ ) {
+                allFiles.AddRange( fileList[i] );
+            }
+            var duplicates = allFiles.GroupBy( f => f ).Where( g => g.Count( ) > 1 ).Select( g => g.Key ).ToList( );
+            bool hasDuplicate = duplicates.Count > 0;
+
             // List Button
-            using ( new EditorGUI.DisabledGroupScope( !any ) ) {
+            using ( new EditorGUI.DisabledGroupScope( !any || hasDuplicate ) ) {
                 if ( GUILayout.Button( ExporterTexts.ButtonExportPackages, GUILayout.Height( 50 ) ) ) {
                     var task = FileList.FileListWindow.Show( ed.logs, targetlist.ToArray( ) );
                 }
@@ -75,6 +83,9 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             }
             if ( formatError != null ) {
                 ExporterUtils.FormatErrorHelpBox( ExporterTexts.DateFormatError( formatError ) );
+            }
+            if ( hasDuplicate ) {
+                EditorGUILayout.HelpBox( ExporterTexts.ExportDuplicatePathError( string.Join( "\n", duplicates ) ), MessageType.Error );
             }
             if ( !any ) {
                 EditorGUILayout.HelpBox( ExporterTexts.ExportListEmpty, MessageType.Error );

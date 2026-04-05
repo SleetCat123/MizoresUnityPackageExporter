@@ -39,7 +39,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         public const int INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION = 0;
         public const int CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION = 2;
         [SerializeField]
-        public int packageExporterVersion = INITIAL_PACKAGE_EXPORTER_OBJECT_VERSION;
+        public int packageExporterVersion = CURRENT_PACKAGE_EXPORTER_OBJECT_VERSION;
 
         public List<ExportTargetObjectElement> objects = new List<ExportTargetObjectElement>();
 
@@ -554,9 +554,14 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     continue;
                 }
                 var convertedPath = v.GetConvertedPath( this, batchExportKey );
-                // フォルダの場合はStartsWithで前方一致検索し、フォルダ内のファイルも除外対象にする
-                var searchType = Directory.Exists( convertedPath ) ? SearchPathType.StartsWith : SearchPathType.Exact;
-                excludeSearchPaths.Add( new SearchPath( searchType, true, convertedPath ) );
+                if ( Directory.Exists( convertedPath ) ) {
+                    // フォルダ自身を Exact で除外（excludePaths に表示されるように）
+                    excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, true, convertedPath ) );
+                    // 配下のファイルを StartsWith + "/" で除外（兄弟フォルダを誤マッチしないように末尾に"/"を付ける）
+                    excludeSearchPaths.Add( new SearchPath( SearchPathType.StartsWith, true, convertedPath + "/" ) );
+                } else {
+                    excludeSearchPaths.Add( new SearchPath( SearchPathType.Exact, true, convertedPath ) );
+                }
             }
             foreach ( var v in excludes ) {
                 excludeSearchPaths.Add( new SearchPath( v.searchType, v.PreserveCase, ConvertDynamicPath( v.Value, batchExportKey ) ) );
