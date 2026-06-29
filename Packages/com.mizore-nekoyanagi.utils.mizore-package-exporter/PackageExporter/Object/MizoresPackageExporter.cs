@@ -580,7 +580,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     excludePaths.Add( item.path );
                     continue;
                 }
-                if ( Path.GetExtension( item.path ).Length != 0 ) {
+                if ( Directory.Exists( item.path ) ) {
+                    // フォルダ自身はエクスポート対象外（拡張子チェックより先に行う）
+                    // ※ "my.package.v1" のようにフォルダ名にドットが含まれると
+                    //   Path.GetExtension が ".v1" を返してしまい、ファイルと誤認識するため
+                } else if ( Path.GetExtension( item.path ).Length != 0 ) {
                     if ( useReference && item.searchReference ) {
                         // 依存Assetを検索
                         var dependencies = AssetDatabase.GetDependencies( item.path, true );
@@ -612,8 +616,6 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                         // 依存Assetを検索しない場合はそのまま追加
                         paths.Add( item.path );
                     }
-                } else if ( Directory.Exists( item.path ) ) {
-                    // 何もしない
                 } else {
                     // 拡張子が無いファイルはそのまま追加
                     paths.Add( item.path );
