@@ -264,6 +264,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
             CollectionAssert.Contains(exporter.BatchExportKeys, "beta");
         }
 
+        [Test]
+        public void ListFile_DuplicateLines_Deduplicated()
+        {
+            Directory.CreateDirectory(TEST_ROOT);
+            const string LIST_FILE = TEST_ROOT + "/list_dup.txt";
+            File.WriteAllText(LIST_FILE, "alpha\nbeta\nalpha\nbeta\ngamma");
+            AssetDatabase.Refresh();
+
+            exporter.batchExportMode     = BatchExportMode.ListFile;
+            exporter.batchExportListFile = new ObjectRefElement(LIST_FILE);
+            exporter.UpdateBatchExportKeys();
+
+            var keys = exporter.BatchExportKeys;
+            Assert.AreEqual(3, keys.Length,
+                "ListFile の重複行は Distinct により1件に集約されること");
+            CollectionAssert.AreEquivalent(new[] { "alpha", "beta", "gamma" }, keys);
+        }
+
         // ===== GetBatchExportKeysConverted =====
 
         [Test]
@@ -280,6 +298,44 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
             Assert.AreEqual(1, converted.Length);
             Assert.AreEqual("BatchTestExporter_variant", converted[0],
                 "GetBatchExportKeysConverted は各キーに ConvertDynamicPath を適用すること");
+        }
+
+        [Test]
+        public void GetBatchExportKeysConverted_SingleMode_ReturnsEmptyArray()
+        {
+            exporter.batchExportMode = BatchExportMode.Single;
+            exporter.UpdateBatchExportKeys();
+
+            var converted = exporter.GetBatchExportKeysConverted();
+
+            Assert.AreEqual(0, converted.Length,
+                "Single モードでは GetBatchExportKeysConverted も空配列を返すこと");
+        }
+
+        [Test]
+        public void GetBatchExportKeysConverted_FoldersMode_FolderNameKeysPassThroughUnchanged()
+        {
+            // Folders モードのキーはファイルシステム上のフォルダ名（% を含まない）なので
+            // ConvertDynamicPath を適用しても変換されずそのまま返されること。
+            Directory.CreateDirectory(BATCH_ROOT + "/Quest");
+            Directory.CreateDirectory(BATCH_ROOT + "/PC");
+            AssetDatabase.Refresh();
+
+            exporter.batchExportMode      = BatchExportMode.Folders;
+            exporter.batchExportFolderMode = BatchExportFolderMode.Folders;
+            exporter.batchExportFolderRoot = new ObjectRefElement(BATCH_ROOT);
+            exporter.batchExportFolderRegex = string.Empty;
+            exporter.UpdateBatchExportKeys();
+
+            // UpdateBatchExportKeys が "Quest" と "PC" を収集していることを前提として確認
+            CollectionAssert.AreEquivalent(new[] { "Quest", "PC" }, exporter.BatchExportKeys,
+                "前提: Folders モードで Quest と PC がキーとして収集されること");
+
+            var converted = exporter.GetBatchExportKeysConverted();
+
+            // フォルダ名には % が含まれないため ConvertDynamicPath を通しても変換されない
+            CollectionAssert.AreEquivalent(new[] { "Quest", "PC" }, converted,
+                "Folders モードのキー（フォルダ名）は変数を含まないため GetBatchExportKeysConverted でもそのまま返されること");
         }
     }
 }
