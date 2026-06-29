@@ -14,9 +14,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             var baseUri = new System.Uri( basePath );
             var uri = new System.Uri( path );
             var relativeUri = baseUri.MakeRelativeUri( uri );
-            var result = "./" + relativeUri.ToString( );
-            result = result.Replace( "%25", "%" );
-            result = result.Replace( "%25", "%" );
+            var result = "./" + System.Uri.UnescapeDataString( relativeUri.ToString( ) );
             result = result.Replace( "\\", "/" );
             return result;
         }
