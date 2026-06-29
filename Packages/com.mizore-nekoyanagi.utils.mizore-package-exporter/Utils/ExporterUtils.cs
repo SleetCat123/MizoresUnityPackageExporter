@@ -313,5 +313,18 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             }
 #endif
         }
+
+        /// <summary>
+        /// シーケンスの中で2回以上出現する要素を返す（大文字小文字を区別しない）。
+        /// UIの重複エラー表示および GetAllExportFileName の重複検出で共通利用する。
+        /// Windows等のcase-insensitiveファイルシステムでの衝突を検出するため OrdinalIgnoreCase を使用。
+        /// </summary>
+        public static string[] FindDuplicates( IEnumerable<string> items ) {
+            return items
+                .GroupBy( x => x, System.StringComparer.OrdinalIgnoreCase )
+                .Where( g => g.Count( ) > 1 )
+                .Select( g => g.Key )
+                .ToArray( );
+        }
     }
 }

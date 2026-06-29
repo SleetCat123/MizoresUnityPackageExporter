@@ -124,11 +124,22 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public string[] GetAllExportFileName(string batchExportKey)
         {
-            return GetAllExportFileName(batchExportKey, out _);
+            return GetAllExportFileName(batchExportKey, out _, out _);
         }
         public string[] GetAllExportFileName(string batchExportKey, out string formatError)
         {
+            return GetAllExportFileName(batchExportKey, out formatError, out _);
+        }
+        /// <summary>
+        /// このエクスポーターが出力するすべての unitypackage ファイル名を返す。
+        /// バッチモード時は重複するファイル名を Distinct で排除した結果を返す。
+        /// バッチ内で重複が生じたファイル名は duplicateFileNames に返す。
+        /// 重複検出には ExporterUtils.FindDuplicates を使用する。
+        /// </summary>
+        public string[] GetAllExportFileName(string batchExportKey, out string formatError, out string[] duplicateFileNames)
+        {
             formatError = null;
+            duplicateFileNames = new string[0];
             if (batchExportMode == BatchExportMode.Single)
             {
                 return new string[] { GetExportFileName(string.Empty, out formatError) };
@@ -142,7 +153,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
                     result[i] = GetExportFileName(texts[i], out var err);
                     if (err != null) formatError = err;
                 }
-                return result.Distinct().ToArray();
+                duplicateFileNames = ExporterUtils.FindDuplicates(result);
+                return result.Distinct(System.StringComparer.OrdinalIgnoreCase).ToArray();
             }
         }
         public string GetFormattedVersion(string batchExportKey)
@@ -464,7 +476,7 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter
         }
         public async Task GetAllPath_Batch(IEnumerable<string> filter, GetAllPath_BatchCallback callback)
         {
-            var result = new Dictionary<string, FilePathList>();
+            var result = new Dictionary<string, FilePathList>(System.StringComparer.OrdinalIgnoreCase);
             if (batchExportMode == BatchExportMode.Single)
             {
                 var path = GetExportPath(string.Empty);

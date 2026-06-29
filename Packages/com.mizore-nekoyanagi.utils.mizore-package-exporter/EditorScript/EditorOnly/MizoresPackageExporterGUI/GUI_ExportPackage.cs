@@ -23,19 +23,25 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
             string[][] fileList = new string[targetlist.Length][];
             string formatError = null;
             bool any = false;
+            // 同一 Exporter 内のバッチキー間重複を収集する
+            var intraDuplicates = new List<string>( );
+            var hasIntraDuplicate = new bool[targetlist.Length];
             for ( int i = 0; i < targetlist.Length; i++ ) {
-                var files = targetlist[i].GetAllExportFileName( string.Empty, out var err );
+                var files = targetlist[i].GetAllExportFileName( string.Empty, out var err, out var dups );
                 if ( err != null ) formatError = err;
                 fileList[i] = files;
                 any |= files.Length != 0;
+                intraDuplicates.AddRange( dups );
+                hasIntraDuplicate[i] = dups.Length > 0;
             }
 
-            // 出力先パスの重複チェック
+            // 出力先パスの重複チェック（Exporter 間重複）
             var allFiles = new List<string>( );
             for ( int i = 0; i < targetlist.Length; i++ ) {
                 allFiles.AddRange( fileList[i] );
             }
-            var duplicates = allFiles.GroupBy( f => f ).Where( g => g.Count( ) > 1 ).Select( g => g.Key ).ToList( );
+            // Exporter 内バッチ重複 + Exporter 間重複を合算して一覧化
+            var duplicates = intraDuplicates.Concat( ExporterUtils.FindDuplicates( allFiles ) ).Distinct( System.StringComparer.OrdinalIgnoreCase ).ToList( );
             bool hasDuplicate = duplicates.Count > 0;
 
             // List Button
@@ -55,9 +61,11 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.ExporterEditor {
                         EditorGUI.BeginDisabledGroup( true );
                         EditorGUILayout.ObjectField( obj, typeof( MizoresPackageExporter ), false );
                         EditorGUI.EndDisabledGroup( );
+                        EditorGUI.BeginDisabledGroup( hasIntraDuplicate[i] );
                         if ( GUILayout.Button( ExporterTexts.ButtonExportSinglePackage, GUILayout.Width( 60 ) ) ) {
                             var task = FileList.FileListWindow.Show( ed.logs, new MizoresPackageExporter[] { obj } );
                         }
+                        EditorGUI.EndDisabledGroup( );
                     }
                 }
                 for ( int j = 0; j < files.Length; j++ ) {
