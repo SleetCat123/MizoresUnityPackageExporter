@@ -64,6 +64,24 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
         }
 
         [Test]
+        public void CustomVariable_RepeatedSameVariable_AllOccurrencesReplaced()
+        {
+            exporter.variables["platform"] = "Quest";
+            var result = exporter.ConvertDynamicPath("%platform%/%platform%/Prefab", string.Empty);
+            Assert.AreEqual("Quest/Quest/Prefab", result,
+                "同じカスタム変数が複数回出ても全て置換されること");
+        }
+
+        [Test]
+        public void CustomVariable_ValueContainsBuiltInVariable_BuiltInVariableIsResolved()
+        {
+            exporter.variables["target"] = "%name%_Target";
+            var result = exporter.ConvertDynamicPath("Assets/%target%", string.Empty);
+            Assert.AreEqual("Assets/TestExporter_Target", result,
+                "カスタム変数の値に組み込み変数が含まれる場合も続けて展開されること");
+        }
+
+        [Test]
         public void CustomVariable_UndefinedKey_LeftAsIs()
         {
             // 未定義の変数キーはそのまま残る
@@ -187,6 +205,19 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
             Assert.AreEqual("_v3.0.0", result);
         }
 
+        [Test]
+        public void VersionFormatted_FormatContainsBatchVariable_BatchVariableResolved()
+        {
+            exporter.packageNameSettings.versionSource = VersionSource.String;
+            exporter.packageNameSettings.versionString = "3.0.0";
+            exporter.packageNameSettings.versionFormat = "_%batch%_%version%";
+            exporter.UpdateAllExportVersions();
+
+            var result = exporter.ConvertDynamicPath("%versionf%", "Quest");
+            Assert.AreEqual("_Quest_3.0.0", result,
+                "versionFormat 内の %batch% と %version% が同じ batchExportKey で展開されること");
+        }
+
         // ===== %packagename% =====
 
         [Test]
@@ -206,6 +237,31 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
             var result = exporter.ConvertDynamicPath("%packagename%", string.Empty);
             Assert.AreEqual("My_Package_Name", result,
                 "展開された packagename の '/' と ':' が '_' に置換されること");
+        }
+
+        // ===== %date:...% =====
+
+        [Test]
+        public void DateVariable_InConvertDynamicPath_ReplacedWithCurrentDate()
+        {
+            var before = System.DateTime.Now;
+            var result = exporter.ConvertDynamicPath("Build_%date:yyyyMMdd%", string.Empty, out var formatError);
+            var after = System.DateTime.Now;
+
+            Assert.IsNull(formatError);
+            Assert.That(result,
+                Is.EqualTo($"Build_{before:yyyyMMdd}").Or.EqualTo($"Build_{after:yyyyMMdd}"),
+                "ConvertDynamicPath でも %date:...% が ReplaceDate と同じ規則で展開されること");
+        }
+
+        [Test]
+        public void DateVariable_InvalidFormat_InConvertDynamicPath_ReturnsOriginalAndSetsFormatError()
+        {
+            var result = exporter.ConvertDynamicPath("Build_%date:Q%", string.Empty, out var formatError);
+
+            Assert.AreEqual("Build_%date:Q%", result);
+            Assert.AreEqual("Q", formatError,
+                "ConvertDynamicPath 経由でも不正な日付フォーマットが formatError に返ること");
         }
 
         // ===== %.name% (相対名変数) =====

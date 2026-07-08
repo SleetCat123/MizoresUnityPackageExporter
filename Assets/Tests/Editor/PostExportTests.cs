@@ -204,6 +204,28 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
         }
 
         [Test]
+        public void AdditionalCopyPaths_SourcePathAndDestNameVariables_ReplacedDuringPostExport()
+        {
+            _exporter.organizeInFolder = true;
+            var srcFile = Path.Combine(_tempDir, "PostExportTestPkg_Quest_README.txt").Replace('\\', '/');
+            File.WriteAllText(srcFile, "variable source content");
+            var sourcePathWithVariables = Path.Combine(_tempDir, "%name%_%batch%_README.txt").Replace('\\', '/');
+            _exporter.additionalCopyPaths.Add(
+                new AdditionalCopyPath(sourcePathWithVariables, destName: "docs/%batch%_%name%.txt"));
+
+            var exportPath = CreateFakePackage("TestPackage.unitypackage");
+            MizoresPackageExporter.ExecutePostExport(
+                _exporter, "Quest", exportPath, new FilePathList(), _logs);
+
+            var destFile = Path.Combine(_tempDir, "TestPackage", "docs", "Quest_PostExportTestPkg.txt")
+                .Replace('\\', '/');
+            Assert.IsTrue(File.Exists(destFile),
+                "追加コピーの sourcePath と destName に含まれる %name% / %batch% が置換されること");
+            Assert.AreEqual("variable source content", File.ReadAllText(destFile),
+                "変数置換後のコピー元ファイル内容がコピー先に反映されること");
+        }
+
+        [Test]
         public void AdditionalCopyPaths_Folder_CopiesContentsPreservingStructure()
         {
             _exporter.organizeInFolder = true;

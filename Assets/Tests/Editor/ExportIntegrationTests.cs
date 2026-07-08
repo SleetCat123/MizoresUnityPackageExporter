@@ -200,6 +200,33 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
         }
 
         /// <summary>
+        /// excludes の値に %batch% を含めた場合、GetAllPath に渡した batchExportKey で展開されること。
+        /// ユーザーがバッチごとに異なる除外パスを指定する通常フローの回帰確認。
+        /// </summary>
+        [UnityTest]
+        public IEnumerator GetAllPath_ExcludesPathWithBatchVariable_AppliesBatchKey()
+        {
+            exporter.excludes.Clear();
+            exporter.excludes.Add(new SearchPath(SearchPathType.Exact, false, EXPORT_TARGET + "/%batch%.mat"));
+
+            FilePathList result = null;
+            Task task = exporter.GetAllPath(list => result = list, "Alpha");
+            while (!task.IsCompleted)
+                yield return null;
+            if (task.IsFaulted)
+                throw task.Exception.InnerException ?? task.Exception;
+
+            var paths = result.paths.ToList();
+            var excludePaths = result.excludePaths.ToList();
+            CollectionAssert.DoesNotContain(paths, ALPHA_MAT,
+                "excludes 内の %batch% が Alpha に展開され、Alpha.mat が除外されること");
+            CollectionAssert.Contains(paths, BETA_MAT,
+                "batch key に一致しない Beta.mat は paths に残ること");
+            CollectionAssert.Contains(excludePaths, ALPHA_MAT,
+                "batch key 展開後に除外された Alpha.mat は excludePaths に含まれること");
+        }
+
+        /// <summary>
         /// .log ファイルが excludePaths に含まれること。
         /// </summary>
         [UnityTest]
@@ -1345,6 +1372,138 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter.Tests
             {
                 foreach (var p in new[] { TEX_PATH, MAT_PATH })
                 {
+                    if (File.Exists(p)) File.Delete(p);
+                    var meta = p + ".meta";
+                    if (File.Exists(meta)) File.Delete(meta);
+                }
+                AssetDatabase.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// references Include で依存ファイルを候補に入れても、
+        /// excludes（SearchPath）に一致する依存ファイルは最終 paths から除外されること。
+        ///
+        /// GetAllPath は依存解決後に excludes を再適用するため、
+        /// 「直接 objects にはないが references から追加された依存」にも excludes が効く必要がある。
+        /// </summary>
+        [UnityTest]
+        public IEnumerator GetAllPath_ReferencesIncludeDependency_ExcludesPatternRemovesReferencedDependency()
+        {
+            const string TEX_PATH = TEST_ROOT + "/DepTexture_RefExcludePattern.asset";
+            const string MAT_PATH = TEST_ROOT + "/DepMaterial_RefExcludePattern.mat";
+
+            try
+            {
+                CreateTextureAsset(TEX_PATH);
+                AssetDatabase.SaveAssets();
+                CreateMaterialWithTextureDependency(MAT_PATH, TEX_PATH);
+
+                var deps = AssetDatabase.GetDependencies(MAT_PATH, true);
+                Assert.IsTrue(System.Array.IndexOf(deps, TEX_PATH) >= 0,
+                    "前提: Material が Texture に依存していること");
+
+                exporter.objects.Clear();
+                exporter.references.Clear();
+                exporter.excludes.Clear();
+                exporter.excludeObjects.Clear();
+
+                exporter.references.Add(
+                    new ReferenceElement(new ObjectRefElement(TEX_PATH), ReferenceMode.Include));
+                exporter.excludes.Add(
+                    new SearchPath(SearchPathType.EndsWith, false, "DepTexture_RefExcludePattern.asset"));
+
+                var matElem = new ExportTargetObjectElement(MAT_PATH);
+                matElem.searchReference = true;
+                exporter.objects.Add(matElem);
+
+                FilePathList result = null;
+                Task task = exporter.GetAllPath(list => result = list, string.Empty);
+                while (!task.IsCompleted)
+                    yield return null;
+                if (task.IsFaulted)
+                    throw task.Exception.InnerException ?? task.Exception;
+
+                var paths = result.paths.ToList();
+                var excludePaths = result.excludePaths.ToList();
+                CollectionAssert.Contains(paths, MAT_PATH,
+                    "Material 自身は自己依存バイパスにより paths に含まれること");
+                CollectionAssert.DoesNotContain(paths, TEX_PATH,
+                    "references から追加された依存でも excludes に一致する場合は paths から除外されること");
+                CollectionAssert.Contains(excludePaths, TEX_PATH,
+                    "依存解決後に excludes で除外されたパスは excludePaths に記録されること");
+            }
+            finally
+            {
+                foreach (var p in new[] { TEX_PATH, MAT_PATH })
+                {
+                    AssetDatabase.DeleteAsset(p);
+                    if (File.Exists(p)) File.Delete(p);
+                    var meta = p + ".meta";
+                    if (File.Exists(meta)) File.Delete(meta);
+                }
+                AssetDatabase.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// references Include で依存ファイルを候補に入れても、
+        /// excludeObjects に同じ依存ファイルを指定した場合は最終 paths から除外されること。
+        ///
+        /// ユーザーが「参照候補に広い範囲を入れ、個別ファイルを除外する」通常フローの回帰確認。
+        /// </summary>
+        [UnityTest]
+        public IEnumerator GetAllPath_ReferencesIncludeDependency_ExcludeObjectsRemovesReferencedDependency()
+        {
+            const string TEX_PATH = TEST_ROOT + "/DepTexture_RefExcludeObject.asset";
+            const string MAT_PATH = TEST_ROOT + "/DepMaterial_RefExcludeObject.mat";
+
+            try
+            {
+                CreateTextureAsset(TEX_PATH);
+                AssetDatabase.SaveAssets();
+                CreateMaterialWithTextureDependency(MAT_PATH, TEX_PATH);
+
+                var texObject = AssetDatabase.LoadAssetAtPath<Texture2D>(TEX_PATH);
+                Assert.IsNotNull(texObject, "前提: 除外対象の Texture Object が存在すること");
+                var deps = AssetDatabase.GetDependencies(MAT_PATH, true);
+                Assert.IsTrue(System.Array.IndexOf(deps, TEX_PATH) >= 0,
+                    "前提: Material が Texture に依存していること");
+
+                exporter.objects.Clear();
+                exporter.references.Clear();
+                exporter.excludes.Clear();
+                exporter.excludeObjects.Clear();
+
+                exporter.references.Add(
+                    new ReferenceElement(new ObjectRefElement(TEX_PATH), ReferenceMode.Include));
+                exporter.excludeObjects.Add(new ObjectRefElement(texObject));
+
+                var matElem = new ExportTargetObjectElement(MAT_PATH);
+                matElem.searchReference = true;
+                exporter.objects.Add(matElem);
+
+                FilePathList result = null;
+                Task task = exporter.GetAllPath(list => result = list, string.Empty);
+                while (!task.IsCompleted)
+                    yield return null;
+                if (task.IsFaulted)
+                    throw task.Exception.InnerException ?? task.Exception;
+
+                var paths = result.paths.ToList();
+                var excludePaths = result.excludePaths.ToList();
+                CollectionAssert.Contains(paths, MAT_PATH,
+                    "Material 自身は自己依存バイパスにより paths に含まれること");
+                CollectionAssert.DoesNotContain(paths, TEX_PATH,
+                    "references から追加された依存でも excludeObjects に指定されている場合は paths から除外されること");
+                CollectionAssert.Contains(excludePaths, TEX_PATH,
+                    "依存解決後に excludeObjects で除外されたパスは excludePaths に記録されること");
+            }
+            finally
+            {
+                foreach (var p in new[] { TEX_PATH, MAT_PATH })
+                {
+                    AssetDatabase.DeleteAsset(p);
                     if (File.Exists(p)) File.Delete(p);
                     var meta = p + ".meta";
                     if (File.Exists(meta)) File.Delete(meta);
