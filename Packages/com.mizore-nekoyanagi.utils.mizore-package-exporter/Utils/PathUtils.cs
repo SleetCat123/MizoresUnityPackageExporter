@@ -8,30 +8,59 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             if ( IsRelativePath( path ) ) {
                 return path;
             }
-            // ドライブ表記がないとエラーが出るので対策としてD:/を付ける
-            basePath = "D:/" + basePath;
-            path = "D:/" + path.Replace( "%", "%25" );
-            var baseUri = new System.Uri( basePath );
-            var uri = new System.Uri( path );
-            var relativeUri = baseUri.MakeRelativeUri( uri );
-            var result = "./" + System.Uri.UnescapeDataString( relativeUri.ToString( ) );
-            result = result.Replace( "\\", "/" );
-            return result;
+
+            var baseParts = SplitNormalizedPath( basePath );
+            var pathParts = SplitNormalizedPath( path );
+            var commonLength = 0;
+            while ( commonLength < baseParts.Length && commonLength < pathParts.Length
+                && string.Equals( baseParts[commonLength], pathParts[commonLength], System.StringComparison.OrdinalIgnoreCase ) ) {
+                commonLength++;
+            }
+
+            var resultParts = new System.Collections.Generic.List<string>( );
+            for ( var i = commonLength; i < baseParts.Length; i++ ) {
+                resultParts.Add( ".." );
+            }
+            for ( var i = commonLength; i < pathParts.Length; i++ ) {
+                resultParts.Add( pathParts[i] );
+            }
+
+            if ( resultParts.Count == 0 ) {
+                return ".";
+            }
+
+            return "./" + string.Join( "/", resultParts );
         }
         public static string GetProjectAbsolutePath( string basePath, string path ) {
             if ( !IsRelativePath( path ) ) {
                 return path;
             }
-            // ドライブ表記がないとエラーが出るので対策としてD:/を付ける
-            basePath = "D:/" + basePath;
-            path = path.Replace( "%", "%25" );
-            var baseUri = new System.Uri( basePath );
-            var absoluteUri = new System.Uri( baseUri, path );
-            var result = absoluteUri.LocalPath;
-            result = result.Substring( 3 );
-            result = result.Replace( "%25", "%" );
-            result = result.Replace( "\\", "/" );
-            return result;
+
+            var parts = new System.Collections.Generic.List<string>( SplitNormalizedPath( basePath ) );
+            foreach ( var part in SplitNormalizedPath( path ) ) {
+                if ( part == "." ) {
+                    continue;
+                }
+
+                if ( part == ".." ) {
+                    if ( parts.Count > 0 ) {
+                        parts.RemoveAt( parts.Count - 1 );
+                    }
+                    continue;
+                }
+
+                parts.Add( part );
+            }
+
+            return string.Join( "/", parts );
+        }
+
+        static string[] SplitNormalizedPath( string path ) {
+            if ( string.IsNullOrEmpty( path ) ) {
+                return new string[0];
+            }
+
+            return path.Replace( "\\", "/" ).Trim( '/' ).Split( new[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries );
         }
         public static bool IsRelativePath( string path ) {
             if ( string.IsNullOrEmpty( path ) ) {
