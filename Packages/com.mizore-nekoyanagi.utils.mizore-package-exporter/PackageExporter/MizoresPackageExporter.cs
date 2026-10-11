@@ -509,16 +509,8 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
             Debug.Log( string.Join( "\n", list_full ) );
             for ( int i = 0; i < list_full.Count; i++ ) {
                 var path = list_full[i];
-                if ( Path.GetExtension( path ).Length != 0 ) {
-                    if ( File.Exists( path ) == false ) {
-                        var text = ExporterTexts.ExportLogNotFound( path );
-                        logs.Add( ExporterEditorLogs.LogType.Error, text );
-                        Debug.LogError( text );
-                        result = false;
-
-                        list_full[i] = ExporterTexts.FileListNotFoundPathPrefix + path;
-                    }
-                } else if ( Directory.Exists( path ) == false ) {
+                // 拡張子の有無にかかわらず、ファイルとフォルダーの両方の存在を確認する。
+                if ( Directory.Exists( path ) == false && File.Exists( path ) == false ) {
                     var text = ExporterTexts.ExportLogNotFound( path );
                     logs.Add( ExporterEditorLogs.LogType.Error, text );
                     Debug.LogError( text );

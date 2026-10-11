@@ -43,21 +43,20 @@ namespace MizoreNekoyanagi.PublishUtil.PackageExporter {
         }
         public static GetIconResult TryGetIcon( string path, out Texture icon ) {
 #if UNITY_EDITOR
-            if ( Path.GetExtension( path ).Length != 0 ) {
-                if ( File.Exists( path ) ) {
-                    icon = AssetDatabase.GetCachedIcon( path );
-                    return GetIconResult.ExistsFile;
-                } else {
-                    icon = IconCache.ErrorIcon;
-                    return GetIconResult.NotExistsFile;
-                }
-            } else if ( Directory.Exists( path ) ) {
+            // ドットを含むフォルダーや拡張子のないファイルも、実際の存在に基づいて判別する。
+            if ( Directory.Exists( path ) ) {
                 icon = AssetDatabase.GetCachedIcon( path );
                 return GetIconResult.ExistsFolder;
-            } else {
-                icon = IconCache.ErrorIcon;
-                return GetIconResult.NotExistsFolder;
             }
+            if ( File.Exists( path ) ) {
+                icon = AssetDatabase.GetCachedIcon( path );
+                return GetIconResult.ExistsFile;
+            }
+
+            icon = IconCache.ErrorIcon;
+            return Path.GetExtension( path ).Length != 0
+                ? GetIconResult.NotExistsFile
+                : GetIconResult.NotExistsFolder;
 #else
             icon = null;
             return GetIconResult.NotExistsFile;
